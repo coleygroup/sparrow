@@ -1,7 +1,7 @@
 import pickle
 import pandas as pd
 from rdkit import Chem
-from rdkit.Chem.Draw import IPythonConsole #Needed to show molecules
+# from rdkit.Chem.Draw import IPythonConsole #Needed to show molecules
 from rdkit.Chem.Draw.MolDrawing import MolDrawing, DrawingOptions #Only needed if mo
 
 import makeit.utilities.contexts as context_cleaner
@@ -61,10 +61,11 @@ for key, value in tqdm(encoded_rxn_dict.items()):
         for cond in uncleaned_contexts[i][:5]:
             if cond is not "":
                 cond_dict[cond].append((key,i))
-    ctr+=1
-    if ctr>=10:
-        break
-        
+    # ctr+=1
+    # if ctr>=10:
+    #     break
+
+                        
 with open(case+'/encoded_rxn_dict_with_cond.pkl','wb') as RXN_DICT:
     pickle.dump(encoded_rxn_dict, RXN_DICT)
 
