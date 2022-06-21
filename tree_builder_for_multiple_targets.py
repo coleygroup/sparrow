@@ -1,4 +1,8 @@
 # from makeit.retrosynthetic.tree_builder import TreeBuilder
+import os, sys
+sys.path.append('ASKCOS')
+sys.path.append('ASKCOS/askcos')
+
 from makeit.retrosynthetic.mcts.tree_builder import MCTS
 from makeit.synthetic.evaluation.tree_evaluator import TreeEvaluator
 from makeit.utilities.io.logger import MyLogger
