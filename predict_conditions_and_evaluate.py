@@ -1,21 +1,25 @@
+import os 
+os.environ['KERAS_BACKEND'] = 'theano'
+os.environ["CUDA_VISIBLE_DEVICES"] = '-1'
+
 import pickle
 import pandas as pd
 from rdkit import Chem
 # from rdkit.Chem.Draw import IPythonConsole #Needed to show molecules
 from rdkit.Chem.Draw.MolDrawing import MolDrawing, DrawingOptions #Only needed if mo
 
-import makeit.utilities.contexts as context_cleaner
-from makeit.synthetic.context.neuralnetwork import NeuralNetContextRecommender
-from makeit.synthetic.evaluation.evaluator import Evaluator
-import makeit.global_config as gc
+import askcos.utilities.contexts as context_cleaner
+from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
+from askcos.synthetic.evaluation.evaluator import Evaluator
+import askcos.global_config as gc
 import collections
 import sys
 
-case = sys.argv[1]
-with open(case+'/reaction_dict.pickle','rb') as RD:
+case =  'case_1_test/'
+with open(case+'reaction_dict.pickle','rb') as RD:
     rxn_dict = pickle.load(RD)
 
-target_df = pd.read_csv(case+'/target_list.csv')
+target_df = pd.read_csv(case+'target_list.csv')
 target_list = list(target_df.loc[target_df['numberofpaths']>0]['SMILES'])
 target_dict = set([Chem.MolToSmiles(Chem.MolFromSmiles(target)) for target in target_list])
 small_target_dict = target_dict
@@ -44,8 +48,8 @@ for key, value in tqdm(encoded_rxn_dict.items()):
     rxn = rxn_le[key]
     rsmi = rxn.split('>>')[0]
     psmi = rxn.split('>>')[1]
-    uncleaned_contexts = cont.get_n_conditions(rxn, n=10, return_separate=True)
-    contexts = cont.get_n_conditions(rxn, n=10, return_separate=False)
+    uncleaned_contexts = cont.get_n_conditions(rxn, n=10, return_scores=True) # from return_separate (?)
+    contexts = cont.get_n_conditions(rxn, n=10, return_scores=False)
     contexts = [context_cleaner.clean_context(context) for context in contexts]
     try:
         eval_res = evaluator.evaluate(rsmi, psmi, contexts,  )

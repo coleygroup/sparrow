@@ -1,22 +1,26 @@
-# from makeit.retrosynthetic.tree_builder import TreeBuilder
+from distutils import core
 import os, sys
-sys.path.append('ASKCOS')
-sys.path.append('ASKCOS/askcos')
+os.environ['KERAS_BACKEND'] = 'theano'
 
-from makeit.retrosynthetic.mcts.tree_builder import MCTS
-from makeit.synthetic.evaluation.tree_evaluator import TreeEvaluator
-from makeit.utilities.io.logger import MyLogger
-import makeit.global_config as gc
+from askcos.retrosynthetic.mcts.tree_builder import MCTS
+from askcos.synthetic.evaluation.tree_evaluator import TreeEvaluator
+from askcos.utilities.io.logger import MyLogger
+import askcos.global_config as gc
+from askcos.utilities.io import name_parser
 import pandas as pd
-from makeit.utilities.io import name_parser
 from rdkit import Chem
 import pickle
 import pprint
-import sys
-# from construct_path_chemical_matrix import get_chemical_table_from_routes
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
+data_folder = "case_1_test/"
+results_folder = data_folder
+csv_path = data_folder + "target_list.csv"
 
 MyLogger.initialize_logFile()
-results_folder = sys.argv[1]+'/'
+# results_folder = sys.argv[1]+'/'
+
 
 print('start to load targets')
 # dataset = pd.read_csv('common_substructure.csv')
@@ -26,21 +30,24 @@ print('start to load targets')
 # with open('truncated_mol_lib.pickle','r') as MOLLIB:
 # with open('WHO_EM/WHO_truncated.pickle','r') as MOLLIB:
 #     truncated_mol_lib = pickle.load(MOLLIB)
-smiles_df=pd.read_csv('targets.csv')
-smiles_list = list(smiles_df['smiles'])
+# smiles_df=pd.read_csv('targets.csv')
+smiles_df=pd.read_csv(csv_path)
+smiles_list = list(smiles_df['SMILES'])
 
 n_paths = []
 
 truncated_mol_lib = [Chem.MolFromSmiles(smiles) for smiles in smiles_list]
-print(len(truncated_mol_lib))# for name in dataset['SMILES']:
+# print(len(truncated_mol_lib))# for name in dataset['SMILES']:
 
 print("{} target molecules to expand".format(len(truncated_mol_lib)))
 celery = False
-NCPUS = 4
+NCPUS = 10
 # treeBuilder = TreeBuilder(celery=celery, mincount=25, mincount_chiral=10)
-Tree = MCTS(nproc=NCPUS, mincount=gc.RETRO_TRANSFORMS_CHIRAL['mincount'], 
-        mincount_chiral=gc.RETRO_TRANSFORMS_CHIRAL['mincount_chiral'],
-        celery=celery)
+# Tree = MCTS(nproc=NCPUS, mincount=gc.RETRO_TRANSFORMS_CHIRAL['mincount'], 
+#         mincount_chiral=gc.RETRO_TRANSFORMS_CHIRAL['mincount_chiral'],
+#         celery=celery)
+Tree = MCTS(nproc=NCPUS)
+
 
 all_routes = []
 all_trees = []
@@ -63,16 +70,10 @@ for mol in truncated_mol_lib:
     try:
         smiles = Chem.MolToSmiles(mol, isomericSmiles=False)   
         print('expanding target {}'.format(smiles)) 
-        status, paths = Tree.get_buyable_paths(smiles,
+        paths, status, graph = Tree.get_buyable_paths(smiles,
                                             nproc=NCPUS,
-                                            max_depth=10,
-                                            expansion_time=60,
-                                            max_trees=10000, 
-                                            max_cum_template_prob=0.995,
-                                            max_branching=25, apply_fast_filter=True, filter_threshold=0.75,
-                                            template_count=1000,
-                                            max_natom_dict={'C':10,'N':3,'O':5,'logic': 'or'},
-                                            max_ppg=0,
+                                            expansion_time=20, 
+                                            termination_logic={'or': ['buyable']},
                                             # min_chemical_history_dict={'as_reactant':1, 'as_product':1,'logic':'and'},
                                             soft_reset=soft_reset,
                                             soft_stop=True)
@@ -96,7 +97,7 @@ for mol in truncated_mol_lib:
         feasible_trees = []
         n_paths.append(len(paths))
     except Exception as e:
-        status_file.write('{}\t{}\t{}\t\n'.format(smiles,0,e))
+        status_file.write('{}\t{}\t{}\t\n'.format(smiles,0,e[-1]))
         n_paths.append(0)
         pass    # index_list_all_routes.extend(index_list_one_target)
     print(len(all_routes))
