@@ -1,0 +1,3 @@
+[submodule "askcos/data"]
+	path = askcos/data
+	url = https://gitlab.com/mlpds_mit/ASKCOS/askcos-data.git
