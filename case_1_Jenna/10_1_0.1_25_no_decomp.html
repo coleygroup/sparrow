@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+  <head>
+    <meta charset="utf-8">
+    <title>case_1_Jenna/10_1_0.1_25_no_decomp</title>
+    <style>
+	.node circle {
+	  fill: #fff;
+	  stroke: steelblue;
+	  stroke-width: 3px;
+	}
+	.node rect {
+		fill: #fff;
+		stroke: steelblue;
+		stroke_width: 3px;
+	}
+	.node text { font: 12px sans-serif; }
+	.link {
+	  fill: none;
+	  stroke: #ccc;
+	  stroke-width: 2px;
+	}
+    </style>
+  </head>
+  <body>
+<!-- load the d3.js library -->	
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+var treeData = [
+{'name': 'dummy_root', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(Nc3ccc4c(n3)NC(=O)C(C)(C)O4)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': '', 'names': '', 'score': '0.951', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CC1(C)Oc2ccc(Cl)nc2NC1=O', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(N)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..CN%28C%29C%3DO..O%3DC%28%5BO-%5D%29%5BO-%5D.%5BCs%2B%5D.', 'names': '', 'score': '1.000', '_id': 2, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(N)cc(OC)c1OC', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/Nc1nc(Br)ncc1F', 'rc_type': 'chemical', 'children': []}]}]}]}], '_id': 'T0', 'score': '0.951'}, {'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(Nc3ccc4c(n3)N(COP(=O)(O)O)C(=O)C(C)(C)O4)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/....O%3DCO.', 'names': '', 'score': '0.000', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(Nc3ccc4c(n3)N(COP(=O)(OC(C)(C)C)OC(C)(C)C)C(=O)C(C)(C)O4)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..CN%28C%29C%3DO..O%3DC%28%5BO-%5D%29%5BO-%5D.%5BCs%2B%5D.', 'names': '', 'score': '0.988', '_id': 2, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CC(C)(C)OP(=O)(OCCl)OC(C)(C)C', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(Nc3ccc4c(n3)NC(=O)C(C)(C)O4)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': '', 'names': '', 'score': '0.951', '_id': 3, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CC1(C)Oc2ccc(Cl)nc2NC1=O', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(N)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..CN%28C%29C%3DO..O%3DC%28%5BO-%5D%29%5BO-%5D.%5BCs%2B%5D.', 'names': '', 'score': '1.000', '_id': 4, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(N)cc(OC)c1OC', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/Nc1nc(Br)ncc1F', 'rc_type': 'chemical', 'children': []}]}]}]}]}]}]}]}], '_id': 'T1', 'score': '0.000'}]}
+];
+var margin = {top: 20, right: 120, bottom: 20, left: 0},
+	width = 3000 - margin.right - margin.left,
+	height = 400 - margin.top - margin.bottom;
+var i = 0;
+var tree = d3.layout.tree()
+	.size([height, width]);
+var diagonal = d3.svg.diagonal()
+	.projection(function(d) { return [d.y, d.x]; });
+var svg = d3.select("body").append("svg")
+	.attr("width", width + margin.right + margin.left)
+	.attr("height", height + margin.top + margin.bottom)
+  .append("g")
+	.attr("transform", 
+	      "translate(" + margin.left + "," + margin.top + ")");
+root = treeData[0];
+update(root);
+function update(source) {
+  // Compute the new tree layout.
+  var nodes = tree.nodes(root).reverse(),
+	  links = tree.links(nodes);
+  // Normalize for fixed-depth.
+  nodes.forEach(function(d) { d.y = d.depth * 120; });
+  // Declare the nodes…
+  var node = svg.selectAll("g.node")
+	  .data(nodes, function(d) { return d.id || (d.id = ++i); });
+  // Enter the nodes.
+  var nodeEnter = node.enter().append("g")
+	  .attr("class", "node")
+	  .attr("transform", function(d) { 
+		  return "translate(" + d.y + "," + d.x + ")"; });
+  nodeEnter.append("image")
+      .attr("xlink:href", function(d) { return d.smiles; })
+      .attr("x", "-80px")
+      .attr("y", "-35px")
+      .attr("width", "70px")
+      .attr("height", "70px");
+  nodeEnter.append("path")
+  	  .style("stroke", "black")
+  	  .style("fill", function(d) { if (d.freq==1) { return "white"; }
+  	  								else if (d.freq==2) { return "yellow";}
+  	  								else if (d.freq==3) { return "orange"; }
+  	  								else if (d.freq>=4) { return "red"; }
+  	  								else {return "white";}
+  	  								})
+  	  .attr("d", d3.svg.symbol()
+  	  				.size(100)
+  	  				.type(function(d) {if
+  	  					(d.rc_type == "chemical") {return "circle";} else if
+  	  					(d.rc_type == "reaction") {return "cross";}
+  	  				}));
+  nodeEnter.append("text")
+	  .attr("x", 0)
+	  .attr("y", 35)
+	  .attr("text-anchor", function(d) { 
+		  return d.children || d._children ? "end" : "start"; })
+	  .text(function(d) { return d.names; })
+	  .style("fill-opacity", 1);
+  nodeEnter.append("text")
+	  .attr("x", -60)
+	  .attr("y", -30)
+	  .attr("text-anchor", function(d) { 
+		  return d.children || d._children ? "end" : "start"; })
+	  .text(function(d) { return d._id; })
+	  .style("fill-opacity", 1);
+  nodeEnter.append("text")
+	  .attr("x", 0)
+	  .attr("y", -30)
+	  .attr("text-anchor", function(d) { 
+		  return d.children || d._children ? "end" : "start"; })
+	  .text(function(d) { return d.score; })
+	  .style("fill-opacity", 1);
+  // Declare the links…
+  var link = svg.selectAll("path.link")
+	  .data(links, function(d) { return d.target.id; });
+  // Enter the links.
+  link.enter().insert("path", "g")
+	  .attr("class", "link")
+	  .style("stroke", function(d) { return d.target.level; })
+	  .attr("d", diagonal);
+  // remove the first level, leaving the targets as the first level
+  node.each(function(d){
+	if (d.name == "dummy_root")
+    	d3.select(this).remove();});
+	link.each(function(d){
+	if (d.source.name == "dummy_root") 
+	    d3.select(this).remove();});
+}
+</script>
+  </body>
+</html>

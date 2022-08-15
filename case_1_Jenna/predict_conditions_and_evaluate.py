@@ -1,8 +1,15 @@
-import os 
+import os, sys
 os.environ['KERAS_BACKEND'] = 'theano'
 os.environ["CUDA_VISIBLE_DEVICES"] = '-1'
+sys.path.append('/home/jfromer/Molecule_library_synthesis/')
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1' 
+
 import tensorflow as tf
+tf.autograph.experimental.do_not_convert
+tf.config.set_visible_devices([], 'GPU')
 tf.keras.backend.set_floatx('float32')
+
 
 import pickle
 import pandas as pd
@@ -17,7 +24,7 @@ import askcos.global_config as gc
 import collections
 import sys
 
-case =  'case_2/'
+case =  'case_1_Jenna/'
 with open(case+'reaction_dict.pickle','rb') as RD:
     rxn_dict = pickle.load(RD)
 

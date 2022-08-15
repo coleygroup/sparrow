@@ -17,7 +17,7 @@ import askcos.global_config as gc
 import collections
 import sys
 
-case =  'case_2/'
+case =  'case_1/'
 with open(case+'reaction_dict.pickle','rb') as RD:
     rxn_dict = pickle.load(RD)
 

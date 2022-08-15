@@ -11,10 +11,14 @@ import pandas as pd
 from rdkit import Chem
 import pickle
 import pprint
+import tensorflow as tf 
+
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+tf.config.set_visible_devices([], 'GPU')
 
-data_folder = "case_1_test/"
+
+data_folder = "case_1_small/"
 results_folder = data_folder
 csv_path = data_folder + "target_list.csv"
 
@@ -64,19 +68,21 @@ for mol in truncated_mol_lib:
     if is_first_target:
         soft_reset = False
         is_first_target = False
+        soft_stop = True
     else:
         soft_reset = True
+        soft_stop = False
 # for mol in [Chem.MolFromSmiles('O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1')]:
     try:
         smiles = Chem.MolToSmiles(mol, isomericSmiles=False)   
         print('expanding target {}'.format(smiles)) 
         paths, status, graph = Tree.get_buyable_paths(smiles,
                                             nproc=NCPUS,
-                                            expansion_time=20, 
+                                            expansion_time=30, 
                                             termination_logic={'or': ['buyable']},
                                             # min_chemical_history_dict={'as_reactant':1, 'as_product':1,'logic':'and'},
                                             soft_reset=soft_reset,
-                                            soft_stop=True)
+                                            soft_stop=soft_stop)
         print('done for target {}'.format(smiles))
 
         for chemical in Tree.Chemicals:
@@ -100,7 +106,7 @@ for mol in truncated_mol_lib:
         status_file.write('{}\t{}\t{}\t\n'.format(smiles,0,e[-1]))
         n_paths.append(0)
         pass    # index_list_all_routes.extend(index_list_one_target)
-    print(len(all_routes))
+    # print(len(all_routes))
 
 with open(results_folder+'reaction_dict.pickle','wb') as RD:
     pickle.dump(reaction_dict, RD)
