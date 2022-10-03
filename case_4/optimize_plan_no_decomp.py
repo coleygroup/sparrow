@@ -11,25 +11,28 @@ from tqdm import tqdm
 from askcos.prioritization.precursors.scscore import SCScorePrecursorPrioritizer
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI
 from gurobipy import *
+from rdkit.Chem import QED
 
 # options, change for each case 
-case = 'case_1_Jenna'
-# weights = [10,1,0.1,22]
-weights = [1,1,1,10]
-constrain_all_targets =1 
+case = 'case_4'
+# weights = [10,1,0.1,22] [start, condition, penalty, acuisiton]
+weights = [1,1,1,3]
+constrain_all_targets = 0
 
-## load reactions
+## load reactions 
 with open(case+'/reaction_dict.pickle','rb') as RD:
     rxn_dict = pickle.load(RD)
 
 ##load the list of targets
 target_df = pd.read_csv(case+'/target_list.csv')
 target_list = list(target_df.loc[target_df['numberofpaths']>0]['SMILES'])
+target_list = [Chem.MolToSmiles(Chem.MolFromSmiles(target),False) for target in target_list]
 print(str(len(target_list)) + " targets")
-target_dict = set([Chem.MolToSmiles(Chem.MolFromSmiles(target),False) for target in target_list])
-rewards = {}
-for target in target_dict:
-	rewards[target] = weights[3]
+target_dict = set(target_list)
+
+# calculate rewards
+rewards = {smi: (QED.default(Chem.MolFromSmiles(smi))) for smi in target_list}
+
 
 ###label rxns
 i=0
@@ -49,7 +52,7 @@ with open(case+'/encoded_rxn_dict_with_cond.pkl','rb') as RXN_DICT:
 	
 with open(case+'/cond_dict.pkl','rb') as COND_DICT:
     cond_dict = pickle.load(COND_DICT,encoding="bytes")
-# num_rxns=len(encoded_rxn_dict)
+num_rxns=len(encoded_rxn_dict)
 ####calculate penalty
 
 for key,value in encoded_rxn_dict.items():
@@ -66,7 +69,7 @@ chem_dict_start = {}
 chem_dict_tar = {}
 chem_dict_inter = {}
 chem_le={}
-# chem_le_rev={}
+chem_le_rev={}
 _id = 0
 for key,value in encoded_rxn_dict.items():
     for c, stoi in value.items():
@@ -75,7 +78,7 @@ for key,value in encoded_rxn_dict.items():
             continue
         if c not in chem_le:
             chem_le[c]=_id
-            # chem_le_rev[_id]=c
+            chem_le_rev[_id]=c
             _id+=1
         if c in chem_dict_start:
             chem_dict_start[c][1].append(key)
@@ -132,26 +135,23 @@ for key,value in encoded_rxn_dict.items():
             encoded_rxn_dict_chem_only[key][c]=stoi
 
 ##calculate SCSCores###
-# scscorer = SCScorePrecursorPrioritizer()
-# scscorer.load_model(model_tag='1024bool')
+scscorer = SCScorePrecursorPrioritizer()
+scscorer.load_model(model_tag='1024bool')
 
-# encoded_start_dict = {}
-# start_set= set([])
-# scscore_dict = {}
-# for key, value in chem_dict_start.items():
-#     start_set.add(chem_le[key])
-#     encoded_start_dict[chem_le[key]]=value
-#     scscore_dict[chem_le[key]] = scscorer.get_score_from_smiles(key, noprice=True)
-
-# encode starting materials 
 encoded_start_dict = {}
-for key, value in chem_dict_start.items(): 
-	encoded_start_dict[chem_le[key]]=value
+start_set= set([])
+scscore_dict = {}
+for key, value in chem_dict_start.items():
+    start_set.add(chem_le[key])
+    encoded_start_dict[chem_le[key]]=value
+    scscore_dict[chem_le[key]] = scscorer.get_score_from_smiles(key, noprice=True)
 
 ###encode the intermediates
+inter_set = set([])
 encoded_inter_dict = {}
 for key, value in chem_dict_inter.items():
     encoded_inter_dict[chem_le[key]]=value
+    inter_set.add(chem_le[key])
 
 ####encode condition dictionary######
 i=0
@@ -165,15 +165,17 @@ for key, value in cond_dict.items():
     i+=1
 
 ###encode target dictionary MAYBE NOT NECESSARY
-# encoded_tar_dict = {}
-# for key, value in chem_dict_tar.items():
-#     encoded_tar_dict[chem_le[key]]=value
+tar_set = set([])
+encoded_tar_dict = {}
+for key, value in chem_dict_tar.items():
+    tar_set.add(chem_le[key])
+    encoded_tar_dict[chem_le[key]]=value
 
 print('\n')
 print('number of starting materials: ',len(encoded_start_dict))
-print('number of intermediates: ',len(encoded_inter_dict))
+print('number of intermediates: ',len(inter_set))
 print('number of catalysts/solvents/reagents: ',len(encoded_cond_dict))
-print('number of reactions: ', len(encoded_rxn_dict))
+print('number of reactions: ', num_rxns)
 print('\n')
 
 ####combined planning without decomposition
@@ -193,7 +195,7 @@ for i in encoded_rxn_dict.keys():
 	O[i]=LpVariable.dicts('option'+str(i), range(len(encoded_rxn_dict[i]['cond'])),lowBound=0,upBound=1,cat='Binary')
 
 
-prob = LpProblem('Network_analysis', LpMinimize)
+prob = LpProblem('Network analysis', LpMinimize)
 M=len(target_dict)
 #objective
 prob += weights[0]*lpSum([rb[i] for i in dummy_edg])\
@@ -210,7 +212,7 @@ for target in tqdm(list(target_dict)):
 		prob += lpSum([r[i] for i in rxn_to_target])==1+lpSum([r[i] for i in rxn_from_target])
 	else: 
 		prob += lpSum([r[i] for i in rxn_to_target])<=1+lpSum([r[i] for i in rxn_from_target])
-		prob += prob.objective - rewards[target]*(lpSum([r[i] for i in rxn_to_target]) - lpSum([r[i] for i in rxn_from_target]))
+		prob += prob.objective - weights[3]*rewards[target]*(lpSum([r[i] for i in rxn_to_target]) - lpSum([r[i] for i in rxn_from_target]))
 
 # for all intermediates either some reaction in and some reaction out, or no reaction in or no reaction out
 
@@ -267,7 +269,7 @@ for v in prob.variables():
 		cond_no = int(v.name.split('_')[1])
 		if rxn_no in real_edg:
 			selected_rxns_id_list.append(rxn_no)
-			selected_rxns_list.append(list(rxn_dict.keys())[rxn_no])
+			selected_rxns_list.append(rxn_le[rxn_no])
 			selected_rxns_times.append(int(v.varValue))
 			selected_cond_dict[rxn_no]=cond_no
 
@@ -322,7 +324,7 @@ def construct_tree_from_graph(target, used_inter, used_start, used_rxns):
 #                 return
 #             seen_rxns.add(node)
             rxn = node
-            node = {'is_reaction':True, 'smiles':list(rxn_dict.keys())[rxn],'forward_score':encoded_rxn_dict[rxn]['score'][selected_cond_dict[rxn]],'context':encoded_rxn_dict[rxn]['cond'][selected_cond_dict[rxn]], 'children':[]}
+            node = {'is_reaction':True, 'smiles':rxn_le[rxn],'forward_score':encoded_rxn_dict[rxn]['score'][selected_cond_dict[rxn]],'context':encoded_rxn_dict[rxn]['cond'][selected_cond_dict[rxn]], 'children':[]}
             chemicals = [key for key,value in encoded_rxn_dict[rxn].items() if value ==-1]
             for chemical in chemicals:
                 node['children'].append(find_buyable_path(chemical, seen_chemicals))
@@ -483,8 +485,8 @@ def create_tree_html(trees,file_name):
 	fid_out.write('      .attr("xlink:href", function(d) { return d.smiles; })\n')
 	fid_out.write('      .attr("x", "-80px")\n')
 	fid_out.write('      .attr("y", "-35px")\n')
-	fid_out.write('      .attr("width", "70px")\n')
-	fid_out.write('      .attr("height", "70px");\n')
+	fid_out.write('      .attr("width", "80px")\n')
+	fid_out.write('      .attr("height", "80px");\n')
 	fid_out.write('  nodeEnter.append("path")\n')
 	fid_out.write('  	  .style("stroke", "black")\n')
 	fid_out.write('  	  .style("fill", function(d) { if (d.freq==1) { return "white"; }\n')
@@ -494,7 +496,7 @@ def create_tree_html(trees,file_name):
 	fid_out.write('  	  								else {return "white";}\n')
 	fid_out.write('  	  								})\n')
 	fid_out.write('  	  .attr("d", d3.svg.symbol()\n')
-	fid_out.write('  	  				.size(100)\n')
+	fid_out.write('  	  				.size(20)\n')
 	fid_out.write('  	  				.type(function(d) {if\n')
 	fid_out.write('  	  					(d.rc_type == "chemical") {return "circle";} else if\n')
 	fid_out.write('  	  					(d.rc_type == "reaction") {return "cross";}\n')

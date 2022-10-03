@@ -1,7 +1,7 @@
 <!DOCTYPE html>
   <head>
     <meta charset="utf-8">
-    <title>case_1_Jenna/1_1_1_10_no_decomp</title>
+    <title>case_2_Jenna/1_12_1_12_no_decomp</title>
     <style>
 	.node circle {
 	  fill: #fff;
@@ -26,11 +26,11 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 var treeData = [
-{'name': 'dummy_root', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(Nc3ccc4c(n3)N(COP(=O)(O)O)C(=O)C(C)(C)O4)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..ClCCl..O%3DC%28%5BO-%5D%29O.%5BNa%2B%5D.O%3DC%28O%29C%28F%29%28F%29F', 'names': '', 'score': '0.241', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(Nc3ccc4c(n3)N(COP(=O)(O)OC(C)(C)C)C(=O)C(C)(C)O4)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/....Cl.', 'names': '', 'score': '0.160', '_id': 2, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(Nc3ccc4c(n3)N(COP(=O)(OC(C)(C)C)OC(C)(C)C)C(=O)C(C)(C)O4)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..CN%28C%29C%3DO..O%3DC%28%5BO-%5D%29%5BO-%5D.%5BCs%2B%5D.', 'names': '', 'score': '0.988', '_id': 3, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CC(C)(C)OP(=O)(OCCl)OC(C)(C)C', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(Nc3ccc4c(n3)NC(=O)C(C)(C)O4)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': '', 'names': '', 'score': '0.951', '_id': 4, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CC1(C)Oc2ccc(Cl)nc2NC1=O', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(N)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..CN%28C%29C%3DO..O%3DC%28%5BO-%5D%29%5BO-%5D.%5BCs%2B%5D.', 'names': '', 'score': '1.000', '_id': 5, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(N)cc(OC)c1OC', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/Nc1nc(Br)ncc1F', 'rc_type': 'chemical', 'children': []}]}]}]}]}]}]}]}]}]}], '_id': 'T0', 'score': '0.036'}, {'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(Nc3ccc4c(n3)NC(=O)C(C)(C)O4)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': '', 'names': '', 'score': '0.951', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CC1(C)Oc2ccc(Cl)nc2NC1=O', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(Nc2ncc(F)c(N)n2)cc(OC)c1OC', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..CN%28C%29C%3DO..O%3DC%28%5BO-%5D%29%5BO-%5D.%5BCs%2B%5D.', 'names': '', 'score': '1.000', '_id': 2, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/COc1cc(N)cc(OC)c1OC', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/Nc1nc(Br)ncc1F', 'rc_type': 'chemical', 'children': []}]}]}]}], '_id': 'T1', 'score': '0.951'}]}
+{'name': 'dummy_root', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CSC(=S)NCc1c[nH]c2ccccc12', 'rc_type': 'chemical', 'children': [{'smiles': '', 'names': '', 'score': '0.872', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/S=C(S)NCc1c[nH]c2ccccc12', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/CI', 'rc_type': 'chemical', 'children': []}]}], '_id': 'T2', 'score': '0.872'}]}
 ];
 var margin = {top: 20, right: 120, bottom: 20, left: 0},
 	width = 3000 - margin.right - margin.left,
-	height = 400 - margin.top - margin.bottom;
+	height = 1400 - margin.top - margin.bottom;
 var i = 0;
 var tree = d3.layout.tree()
 	.size([height, width]);
@@ -62,8 +62,8 @@ function update(source) {
       .attr("xlink:href", function(d) { return d.smiles; })
       .attr("x", "-80px")
       .attr("y", "-35px")
-      .attr("width", "70px")
-      .attr("height", "70px");
+      .attr("width", "80px")
+      .attr("height", "80px");
   nodeEnter.append("path")
   	  .style("stroke", "black")
   	  .style("fill", function(d) { if (d.freq==1) { return "white"; }
@@ -73,7 +73,7 @@ function update(source) {
   	  								else {return "white";}
   	  								})
   	  .attr("d", d3.svg.symbol()
-  	  				.size(100)
+  	  				.size(20)
   	  				.type(function(d) {if
   	  					(d.rc_type == "chemical") {return "circle";} else if
   	  					(d.rc_type == "reaction") {return "cross";}

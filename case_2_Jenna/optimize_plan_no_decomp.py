@@ -11,14 +11,15 @@ from tqdm import tqdm
 from askcos.prioritization.precursors.scscore import SCScorePrecursorPrioritizer
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI
 from gurobipy import *
+from rdkit.Chem import QED
 
 # options, change for each case 
 case = 'case_2_Jenna'
-# weights = [10,1,0.1,22]
-weights = [1,1,1,10]
+# weights = [10,1,0.1,22] [start, condition, penalty, acuisiton]
+weights = [20,1,1,20]
 constrain_all_targets = 0 
 
-## load reactions
+## load reactions 
 with open(case+'/reaction_dict.pickle','rb') as RD:
     rxn_dict = pickle.load(RD)
 
@@ -27,6 +28,10 @@ target_df = pd.read_csv(case+'/target_list.csv')
 target_list = list(target_df.loc[target_df['numberofpaths']>0]['SMILES'])
 print(str(len(target_list)) + " targets")
 target_dict = set([Chem.MolToSmiles(Chem.MolFromSmiles(target),False) for target in target_list])
+
+# calculate rewards
+rewards = {smi: (QED.default(Chem.MolFromSmiles(smi))) for smi in target_dict}
+
 
 ###label rxns
 i=0
@@ -206,7 +211,7 @@ for target in tqdm(list(target_dict)):
 		prob += lpSum([r[i] for i in rxn_to_target])==1+lpSum([r[i] for i in rxn_from_target])
 	else: 
 		prob += lpSum([r[i] for i in rxn_to_target])<=1+lpSum([r[i] for i in rxn_from_target])
-		prob += prob.objective - weights[3]*(lpSum([r[i] for i in rxn_to_target]) - lpSum([r[i] for i in rxn_from_target]))
+		prob += prob.objective - weights[3]*rewards[target]*(lpSum([r[i] for i in rxn_to_target]) - lpSum([r[i] for i in rxn_from_target]))
 
 # for all intermediates either some reaction in and some reaction out, or no reaction in or no reaction out
 
@@ -479,8 +484,8 @@ def create_tree_html(trees,file_name):
 	fid_out.write('      .attr("xlink:href", function(d) { return d.smiles; })\n')
 	fid_out.write('      .attr("x", "-80px")\n')
 	fid_out.write('      .attr("y", "-35px")\n')
-	fid_out.write('      .attr("width", "70px")\n')
-	fid_out.write('      .attr("height", "70px");\n')
+	fid_out.write('      .attr("width", "80px")\n')
+	fid_out.write('      .attr("height", "80px");\n')
 	fid_out.write('  nodeEnter.append("path")\n')
 	fid_out.write('  	  .style("stroke", "black")\n')
 	fid_out.write('  	  .style("fill", function(d) { if (d.freq==1) { return "white"; }\n')
@@ -490,7 +495,7 @@ def create_tree_html(trees,file_name):
 	fid_out.write('  	  								else {return "white";}\n')
 	fid_out.write('  	  								})\n')
 	fid_out.write('  	  .attr("d", d3.svg.symbol()\n')
-	fid_out.write('  	  				.size(100)\n')
+	fid_out.write('  	  				.size(20)\n')
 	fid_out.write('  	  				.type(function(d) {if\n')
 	fid_out.write('  	  					(d.rc_type == "chemical") {return "circle";} else if\n')
 	fid_out.write('  	  					(d.rc_type == "reaction") {return "cross";}\n')
