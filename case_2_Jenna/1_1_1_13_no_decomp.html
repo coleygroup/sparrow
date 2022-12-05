@@ -1,7 +1,7 @@
 <!DOCTYPE html>
   <head>
     <meta charset="utf-8">
-    <title>case_2_Jenna/1_1_1_10_no_decomp</title>
+    <title>case_2_Jenna/1_1_1_13_no_decomp</title>
     <style>
 	.node circle {
 	  fill: #fff;
@@ -26,7 +26,7 @@
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 var treeData = [
-{'name': 'dummy_root', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CSC(=S)NCc1c[nH]c2ccccc12', 'rc_type': 'chemical', 'children': [{'smiles': '', 'names': '', 'score': '0.872', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/S=C(S)NCc1c[nH]c2ccccc12', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/CI', 'rc_type': 'chemical', 'children': []}]}], '_id': 'T3', 'score': '0.872'}, {'smiles': 'http://askcos.mit.edu/draw/smiles/NCCc1cc2ccccc2[nH]1', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/....%5BAlH7-%5D.%5BLi%2B%5D.', 'names': '', 'score': '0.999', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/N%23CCc1cc2ccccc2[nH]1', 'rc_type': 'chemical', 'children': []}]}], '_id': 'T4', 'score': '0.999'}, {'smiles': 'http://askcos.mit.edu/draw/smiles/O=C(Cc1cccnc1)c1cc2cc(OC(F)(F)F)ccc2[nH]1', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/....%5BLi%5DC%28C%29%28C%29C.', 'names': '', 'score': '0.997', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CON(C)C(=O)Cc1cccnc1', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/FC(F)(F)Oc1ccc2[nH]c(Br)cc2c1', 'rc_type': 'chemical', 'children': []}]}], '_id': 'T5', 'score': '0.997'}]}
+{'name': 'dummy_root', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CSC(=S)NCc1c[nH]c2ccccc12', 'rc_type': 'chemical', 'children': [{'smiles': '', 'names': '', 'score': '0.872', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/S=C(S)NCc1c[nH]c2ccccc12', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/CI', 'rc_type': 'chemical', 'children': []}]}], '_id': 'T0', 'score': '0.872'}, {'smiles': 'http://askcos.mit.edu/draw/smiles/CN1C(=O)C(Cc2c[nH]c3ccccc23)NC1=S', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..Cc1ccccc1..S%3DP12SP3%28%3DS%29SP%28%3DS%29%28S1%29SP%28%3DS%29%28S2%29S3.', 'names': '', 'score': '0.313', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CN1C(=O)NC(Cc2c[nH]c3ccccc23)C1=O', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/....%5BH%5D%5BH%5D.', 'names': '', 'score': '0.997', '_id': 2, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CN1C(=O)N/C(=C/c2c[nH]c3ccccc23)C1=O', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..CCO...', 'names': '', 'score': '0.961', '_id': 3, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/O=Cc1c[nH]c2ccccc12', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/CN1C(=O)CNC1=O', 'rc_type': 'chemical', 'children': []}]}]}]}]}]}], '_id': 'T1', 'score': '0.300'}, {'smiles': 'http://askcos.mit.edu/draw/smiles/O=C(Cc1cccnc1)c1cc2cc(OC(F)(F)F)ccc2[nH]1', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/....%5BLi%5DC%28C%29%28C%29C.', 'names': '', 'score': '0.997', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/CON(C)C(=O)Cc1cccnc1', 'rc_type': 'chemical', 'children': []}, {'smiles': 'http://askcos.mit.edu/draw/smiles/FC(F)(F)Oc1ccc2[nH]c(Br)cc2c1', 'rc_type': 'chemical', 'children': []}]}], '_id': 'T2', 'score': '0.997'}, {'smiles': 'http://askcos.mit.edu/draw/smiles/NCCc1cc2ccccc2[nH]1', 'rc_type': 'chemical', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/..CCO..%5BH%5D%5BH%5D.', 'names': '', 'score': '0.956', '_id': 1, 'rc_type': 'reaction', 'children': [{'smiles': 'http://askcos.mit.edu/draw/smiles/O=[N+]([O-])CCc1cc2ccccc2[nH]1', 'rc_type': 'chemical', 'children': []}]}], '_id': 'T6', 'score': '0.956'}]}
 ];
 var margin = {top: 20, right: 120, bottom: 20, left: 0},
 	width = 3000 - margin.right - margin.left,
@@ -62,8 +62,8 @@ function update(source) {
       .attr("xlink:href", function(d) { return d.smiles; })
       .attr("x", "-80px")
       .attr("y", "-35px")
-      .attr("width", "70px")
-      .attr("height", "70px");
+      .attr("width", "80px")
+      .attr("height", "80px");
   nodeEnter.append("path")
   	  .style("stroke", "black")
   	  .style("fill", function(d) { if (d.freq==1) { return "white"; }
@@ -73,7 +73,7 @@ function update(source) {
   	  								else {return "white";}
   	  								})
   	  .attr("d", d3.svg.symbol()
-  	  				.size(100)
+  	  				.size(20)
   	  				.type(function(d) {if
   	  					(d.rc_type == "chemical") {return "circle";} else if
   	  					(d.rc_type == "reaction") {return "cross";}

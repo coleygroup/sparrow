@@ -15,8 +15,8 @@ from rdkit.Chem import QED
 
 # options, change for each case 
 case = 'case_2_Jenna'
-# weights = [10,1,0.1,22] [start, condition, penalty, acuisiton]
-weights = [20,1,1,20]
+# weights = [10,1,0.1,22] [start, CSR, penalty, acuisiton]
+weights = [1,1,1,13]
 constrain_all_targets = 0 
 
 ## load reactions 
