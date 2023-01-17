@@ -15,7 +15,7 @@ from gurobipy import *
 # options, change for each case 
 case = 'case_1_Jenna'
 # weights = [10,1,0.1,22]
-weights = [1,1,1,10]
+weights = [1,1,1,5]
 constrain_all_targets =1 
 
 ## load reactions

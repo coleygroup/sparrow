@@ -16,7 +16,7 @@ from rdkit.Chem import QED
 # options, change for each case 
 case = 'case_4'
 # weights = [10,1,0.1,22] [start, condition, penalty, acuisiton]
-weights = [1,1,1,3]
+weights = [1,0.1,0.1,5]
 constrain_all_targets = 0
 
 ## load reactions 
@@ -550,4 +550,10 @@ for target in target_dict:
     trees.append({'tree':tree})
 #     print(get_cum_score_from_tree(tree))
 create_tree_html(trees, case+'/'+suffix)
+
+save_info = [{'trees': trees, 'used_inter':used_inter, 'used_start':used_start, 'used_rxns': used_rxns}]
+with open(case+'/'+suffix + '.pkl', 'wb') as handle:
+    pickle.dump(save_info, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+
 print('Done! See results file at {}'.format(case+'/'+suffix+'.html'))

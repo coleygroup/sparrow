@@ -18,7 +18,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 tf.config.set_visible_devices([], 'GPU')
 
 
-data_folder = "case_1_small/"
+data_folder = "case_1/"
 results_folder = data_folder
 csv_path = data_folder + "target_list.csv"
 
