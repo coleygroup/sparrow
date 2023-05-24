@@ -1,4 +1,4 @@
-from src.mars.route_graph import RouteGraph
+from mars.route_graph import RouteGraph
 
 class RouteSelector: 
     def __init__(self, route_graph: RouteGraph) -> None:

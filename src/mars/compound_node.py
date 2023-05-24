@@ -15,5 +15,8 @@ class CompoundNode(Node):
                 **kwargs) -> None:
     
         super().__init__(smiles, parents, children, **kwargs)
+        
+        self.buyable = 0 #TODO: update CompoundNode to determine buyability 
+        self.cost_per_g = 0 #TODO: update CompoundNode to determine cost if buyable  
 
         return
