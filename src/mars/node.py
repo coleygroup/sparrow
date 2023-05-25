@@ -20,6 +20,7 @@ class Node(ABC):
         if children: 
             self.update(children=children)
 
+        self.selected = 0
 
     def update(self, parents=None, children=None): 
         """ Adds children and parents to node """
