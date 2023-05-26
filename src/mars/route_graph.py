@@ -34,6 +34,7 @@ class RouteGraph:
         if askcos_MCTS_tree or paths: 
             self.build_from_MCTS(MCTS_tree=askcos_MCTS_tree, paths=paths)
 
+        self.ids = {}
         
         return
     
@@ -41,6 +42,7 @@ class RouteGraph:
                           smiles: str, 
                           parents: Optional[Iterable[str]] = None, 
                           children: Optional[Iterable[str]] = None,
+                          dummy: Optional[bool] = False,
                           **kwargs) -> ReactionNode:
         """ Adds reaction node to graph from reaction smiles. If parents/chidlren provided, first add them as 
         compound nodes  """ 
@@ -66,6 +68,7 @@ class RouteGraph:
                 smiles, 
                 parents=parent_nodes, 
                 children=child_nodes, 
+                dummy=dummy,
                 **kwargs)
         
         # go back to parent nodes and add this new node as a child 
@@ -76,7 +79,7 @@ class RouteGraph:
         # go back to child nodes and add this new node as a parent 
         if children: 
             for child in children: 
-                self.compound_nodes[parent].update(parents=[self.reaction_nodes[smiles]])
+                self.compound_nodes[child].update(parents=[self.reaction_nodes[smiles]])
         
         return self.reaction_nodes[smiles]
     
@@ -213,7 +216,7 @@ class RouteGraph:
             nc = smiles.count("c") + smiles.count("C")
             nn = smiles.count("N") + smiles.count("n")
             no = smiles.count("O") + smiles.count("o")
-            if nc<=10 and nn<=3 and no<=5:
+            if nc<=12 and nn<=3 and no<=5:
                 node.set_as_buyable()
 
         return 
@@ -238,13 +241,31 @@ class RouteGraph:
     
     def intermediate_nodes(self): 
         """ Returns a list of CompoundNodes that have is_intermediate==1 """
-        inter_nodes = [node for node in self.compound_nodes if node.is_intermediate==1 ]
+        inter_nodes = [node for node in self.compound_nodes.values() if node.is_intermediate==1 ]
         return inter_nodes
     
     def starting_material_nodes(self):
         """ Returns a list of CompoundNodes that have buyable==1 """
-        starting_nodes = [node for node in self.compound_nodes if node.buyable==1]
+        starting_nodes = [node for node in self.compound_nodes.values() if node.buyable==1]
         return starting_nodes
+    
+    def id_nodes(self):
+        """ Sets IDs for all nodes """
+        
+        self.rxn_ids = {}
+        for node, i in zip(self.reaction_nodes.values(), range(len(self.reaction_nodes))):
+            self.rxn_ids[f"R{i}"] = node
+            node.id = f"R{i}"
+
+        self.compound_ids = {}
+        for node, i in zip(self.compound_nodes.values(), range(len(self.compound_nodes))):
+            self.compound_ids[f"C{i}"] = node
+            node.id = f"R{i}"
+        
+        self.ids = {**self.rxn_ids, **self.compound_ids}
+
+        return self.ids
+
 
 
 

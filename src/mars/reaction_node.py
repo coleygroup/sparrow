@@ -19,8 +19,9 @@ class ReactionNode(Node):
     """
     def __init__(self, 
                  smiles: str,
-                 parents: Optional[List[Node]],
-                 children: Optional[List[Node]],
+                 parents: Optional[List[Node]] = None,
+                 children: Optional[List[Node]] = None,
+                 dummy: Optional[bool] = False,
                  **kwargs) -> None:
         
         super().__init__(smiles, parents, children, **kwargs)
@@ -28,6 +29,7 @@ class ReactionNode(Node):
         self.conditions = [] #TODO: add conditions 
         self.score = 0
         self.penalty = np.inf
+        self.dummy = dummy
 
         return 
     
@@ -53,11 +55,14 @@ class ReactionNode(Node):
         evaluation_results = evaluator.evaluate(
             reactant_smiles=reactant_smi, 
             target=product_smi, 
-            contexts=self.conditions
+            contexts=[self.conditions],
         )
 
         self.score = evaluation_results[0]['target']['prob']
-        self.penalty = np.min([1/self.score, 20])
+        if self.score == 0:
+            self.penalty = 20 ## Do we want to remove these reactions from the graph? 
+        else:
+            self.penalty = np.min([1/self.score, 20])
 
         return self.conditions, self.score
 
@@ -69,6 +74,6 @@ class ReactionNode(Node):
             return_scores=False
         )
 
-        conditions = context_cleaner.clean_context(contexts)
+        conditions = context_cleaner.clean_context(contexts[0])
 
         return conditions

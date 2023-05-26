@@ -21,10 +21,11 @@ class Node(ABC):
             self.update(children=children)
 
         self.selected = 0
+        self.id = 0
 
     def update(self, parents=None, children=None): 
         """ Adds children and parents to node """
-        # fix for empty dictionary!!!! 
+
         if parents:
             for parent in parents: 
                 self.parents[parent.smiles] = parent 
