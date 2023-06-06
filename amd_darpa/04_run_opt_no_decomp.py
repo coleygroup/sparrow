@@ -98,7 +98,11 @@ with open(Path(case)/'optimal_vars.pkl', 'wb') as f:
 suffix = '_'.join(map(str,weights))+'_no_decomp'
 trees = []
 for target in target_dict:
-    tree = construct_tree_from_graph(target, used_inter, used_start, used_rxns)
+    tree = construct_tree_from_graph(
+		target, used_inter, used_start, used_rxns,
+		encoded_rxn_dict, selected_cond_dict, rxn_le, 
+		chem_dict_inter,
+		)
     trees.append({'tree':tree})
 #     print(get_cum_score_from_tree(tree))
 create_tree_html(trees, case+'/'+suffix)

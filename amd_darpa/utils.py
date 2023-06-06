@@ -1,3 +1,5 @@
+import urllib
+
 def construct_tree_from_graph(
     target, 
     used_inter, 
@@ -66,51 +68,53 @@ def construct_tree_from_graph(
     return find_buyable_path(target, set())
 
 def construct_tree_for_d3_visualization(tree,depth,new_tree = {}):
-    if 'is_chemical' in tree.keys():
-#         new_tree['smiles']='http://askcos.mit.edu/draw/smiles/'+str(urllib.quote(tree['smiles'],safe= ''))
-        new_tree['smiles']='http://askcos.mit.edu/draw/smiles/'+str(tree['smiles']).replace('#','%23')
-        new_tree['rc_type'] ='chemical'
-        try:
-            new_tree['freq'] = chemical_freq_dict[tree['smiles']]
-        except:
-            pass
-        new_tree['smiles']=str(new_tree['smiles'])
-    else:
-        new_tree['smiles']='http://askcos.mit.edu/draw/smiles/'
-        new_tree['names']=''
-        new_tree['score']='%.3f' % tree['forward_score']
-        new_tree['_id']=int(depth)
-        for i in range(5):
-            for c in tree['context'][i].split('.'):   
-                if 'Reaxys' not in c:
-                    new_tree['smiles']+='.'+str(urllib.parse.quote(c,safe= '')).replace('#','%23')
-                elif 'Reaxys Name' in c:
-                    new_tree['names']+=str(c)[11:]+'.'
-                else:
-                    new_tree['names']+=str(c)
-        if new_tree['smiles'] == "http://askcos.mit.edu/draw/smiles/.....":
-            new_tree['smiles'] = ''
-        new_tree['names']=str(new_tree['names'])
-        new_tree['rc_type']='reaction'
-    new_tree['children'] = []
-    if tree['children']:
-        for child in tree['children']:
-            new_tree['children'].append({})
-            construct_tree_for_d3_visualization(child,depth+0.5, new_tree['children'][-1])
-    return new_tree
+	if 'is_chemical' in tree.keys():
+	#         new_tree['smiles']='http://askcos.mit.edu/draw/smiles/'+str(urllib.quote(tree['smiles'],safe= ''))
+		new_tree['smiles']='http://askcos.mit.edu/draw/smiles/'+str(tree['smiles']).replace('#','%23')
+		new_tree['rc_type'] ='chemical'
+		try:
+			new_tree['freq'] = chemical_freq_dict[tree['smiles']]
+		except:
+			pass
+		new_tree['smiles']=str(new_tree['smiles'])
+	else:
+		new_tree['smiles']='http://askcos.mit.edu/draw/smiles/'
+		new_tree['names']=''
+		new_tree['score']='%.3f' % tree['forward_score']
+		new_tree['_id']=int(depth)
+		for i in range(min(5, (len(tree['context'])))):
+			for c in tree['context'][i].split('.'):   
+				if 'Reaxys' not in c:
+					new_tree['smiles']+='.'+str(urllib.parse.quote(c,safe= '')).replace('#','%23')
+				elif 'Reaxys Name' in c:
+					new_tree['names']+=str(c)[11:]+'.'
+				else:
+					new_tree['names']+=str(c)
+		if new_tree['smiles'] == "http://askcos.mit.edu/draw/smiles/.....":
+			new_tree['smiles'] = ''
+		new_tree['names']=str(new_tree['names'])
+		new_tree['rc_type']='reaction'
+	new_tree['children'] = []
+	if tree['children']:
+		for child in tree['children']:
+			if child: 
+				new_tree['children'].append({})
+				construct_tree_for_d3_visualization(child,depth+0.5, new_tree['children'][-1])
+	return new_tree
 
 def get_cum_score_from_tree(tree):
-    cum_score=1
+	cum_score=1
 
-    if tree['children']:
-        if 'is_reaction' in tree:
-            cum_score = tree['forward_score']
-        for child in tree['children']:
-            if 'is_chemical' in tree:
-                cum_score = get_cum_score_from_tree(child)
-            else:
-                cum_score *= get_cum_score_from_tree(child)
-    return cum_score
+	if tree['children']:
+		if 'is_reaction' in tree:
+			cum_score = tree['forward_score']
+		for child in tree['children']:
+			if child: 
+				if 'is_chemical' in tree:
+					cum_score = get_cum_score_from_tree(child)
+				else:
+					cum_score *= get_cum_score_from_tree(child)
+	return cum_score
 
 def create_tree_html(trees,file_name):
 	height = 200*len(trees)
