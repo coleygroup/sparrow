@@ -1,9 +1,11 @@
 from mars.route_graph import RouteGraph
-from typing import Dict, Union, List
+from typing import Dict, Union, List, Optional
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
 from askcos.synthetic.evaluation.evaluator import Evaluator
 from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
 import askcos.global_config as gc
+from pathlib import Path
+import pickle 
 
 reward_type = Union[int, float]
 
@@ -18,31 +20,35 @@ class RouteSelector:
                  target_dict: Dict[str, reward_type],
                  constrain_all_targets: bool = False, 
                  weights: List = [1,1,1,1],
+                 calc_reaction_scores: Optional[bool] = True,
                  ) -> None:
         
         self.graph = route_graph        
         self.target_dict = target_dict
-        self.targets = list(target_dict.keys())
+
         self.rewards = list(target_dict.values())
 
         self.constrain_all_targets = constrain_all_targets
 
         self.graph.set_compound_types(target_dict)
 
-        context_recommender = NeuralNetContextRecommender()
-        context_recommender.load_nn_model(
-            model_path=gc.NEURALNET_CONTEXT_REC['model_path'], 
-            info_path=gc.NEURALNET_CONTEXT_REC['info_path'], 
-            weights_path=gc.NEURALNET_CONTEXT_REC['weights_path']
-        )
-        self.graph.calc_reaction_scores(
-            context_recommender,
-            evaluator=Evaluator(),
-        )
+        if calc_reaction_scores: 
+            context_recommender = NeuralNetContextRecommender()
+            context_recommender.load_nn_model(
+                model_path=gc.NEURALNET_CONTEXT_REC['model_path'], 
+                info_path=gc.NEURALNET_CONTEXT_REC['info_path'], 
+                weights_path=gc.NEURALNET_CONTEXT_REC['weights_path']
+            )
+            self.graph.calc_reaction_scores(
+                context_recommender,
+                evaluator=Evaluator(),
+            )
         
         self.add_dummy_starting_rxn_nodes()
 
         self.graph.id_nodes()
+        self.targets = [self.graph.compound_nodes[tar].id for tar in target_dict.keys()]
+        self.target_dict = {self.graph.compound_nodes[tar].id: score for tar, score in target_dict.items()}
 
         self.problem = LpProblem("Route_Selection", LpMinimize)
 
@@ -104,7 +110,8 @@ class RouteSelector:
         # flow into target node - flow out of target node = 0 (target not selected)
         # or 1 (target is selected )
         for target in self.targets: 
-            parent_ids, child_ids = self.get_compound_child_and_parent_ids(target)
+            target_smi = self.graph.ids[target].smiles
+            parent_ids, child_ids = self.get_compound_child_and_parent_ids(target_smi)
             self.problem += (
                 lpSum([self.f[parent_id] for parent_id in parent_ids])
                     - lpSum([self.f[child_id] for child_id in child_ids])  
@@ -116,7 +123,7 @@ class RouteSelector:
     
     def set_intermediate_flow_constraint(self): 
         """ Sets constraint on flow through intermediate nodes: net flow must be zero """
-        intermediate_nodes = self.graph.intermediate_nodes()
+        intermediate_nodes = [*self.graph.intermediate_nodes(), *self.graph.starting_material_nodes()]
         inter_smiles = [node.smiles for node in intermediate_nodes]
         
         for inter in inter_smiles: 
@@ -160,7 +167,8 @@ class RouteSelector:
     def set_all_targets_selected_constraint(self):
         """ Sets constraint that all targets are selected """
         for target in self.targets: 
-            parent_ids, child_ids = self.get_compound_child_and_parent_ids(target)
+            target_smi = self.graph.ids[target].smiles
+            parent_ids, child_ids = self.get_compound_child_and_parent_ids(target_smi)
             self.problem += (
                 lpSum([self.f[parent_id] for parent_id in parent_ids])
                     - lpSum([self.f[child_id] for child_id in child_ids])  
@@ -213,6 +221,19 @@ class RouteSelector:
     def routes_from_optimal_variables(self):
         """ Takes optimal variables from problem solution and converts it to a set of routes """
         # TODO: implement this 
+        nonzero_vars = [
+            var for var in self.problem.variables() if var.varValue > 0.01
+        ]
+        selected_targets = { var.name.split("target_")[1]: self.graph.ids[var.name.split("target_")[1]]
+            for var in nonzero_vars
+            if var.name.find("target_") == 0 
+        } # dict {id: smiles} for selected targets 
 
-        return 
+        print('Selected targets: ')
+        for tar in selected_targets: 
+            print(tar)
+
+        return nonzero_vars
+
+     
     

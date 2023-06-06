@@ -260,7 +260,7 @@ class RouteGraph:
         self.compound_ids = {}
         for node, i in zip(self.compound_nodes.values(), range(len(self.compound_nodes))):
             self.compound_ids[f"C{i}"] = node
-            node.id = f"R{i}"
+            node.id = f"C{i}"
         
         self.ids = {**self.rxn_ids, **self.compound_ids}
 
