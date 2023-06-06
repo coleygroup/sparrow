@@ -7,3 +7,4 @@ askcos_site
 *.zip
 dist 
 build 
+**/__pycache__/
