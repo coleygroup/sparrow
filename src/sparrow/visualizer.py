@@ -1,7 +1,7 @@
 """ Visualizes selected routes """
-from mars.route_graph import RouteGraph
-from mars.node import Node
-from mars.reaction_node import ReactionNode
+from sparrow.route_graph import RouteGraph
+from sparrow.node import Node
+from sparrow.reaction_node import ReactionNode
 from pulp import LpVariable
 from typing import List, Dict
 import pandas as pd 

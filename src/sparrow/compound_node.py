@@ -1,4 +1,4 @@
-from mars.node import Node 
+from sparrow.node import Node 
 from typing import Iterable, Optional, List 
 
 

@@ -13,7 +13,6 @@ import askcos.global_config as gc
 
 from typing import Iterable, Dict, Union, Optional, List
 from pathlib import Path
-from itertools import chain 
 
 import pickle 
 
