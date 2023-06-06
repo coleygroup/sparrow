@@ -1,9 +1,9 @@
 import sys 
-sys.path.append('/home/jfromer/Molecule_library_synthesis') # need to figure out a way to get rid of this
+sys.path.append('/home/jfromer/sparrow') # need to figure out a way to get rid of this
 
-from mars.reaction_node import ReactionNode
-from mars.compound_node import CompoundNode
-from mars.node import Node
+from sparrow.reaction_node import ReactionNode
+from sparrow.compound_node import CompoundNode
+from sparrow.node import Node
 
 from askcos.retrosynthetic.mcts.tree_builder import MCTS
 import askcos.utilities.contexts as context_cleaner

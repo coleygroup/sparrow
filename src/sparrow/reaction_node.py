@@ -1,7 +1,7 @@
 import sys 
-sys.path.append('/home/jfromer/Molecule_library_synthesis') # need to figure out a way to get rid of this 
+sys.path.append('/home/jfromer/sparrow') # need to figure out a way to get rid of this 
 
-from mars.node import Node
+from sparrow.node import Node
 from typing import Iterable, Optional, List
 
 import askcos.utilities.contexts as context_cleaner
