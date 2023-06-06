@@ -1,28 +1,32 @@
-# Molecule_library_synthesis
-This is the code repository for optimization of synthesis plans for multiple molecules. the conda environment tested for running the following code is stored as environment.yml.
+# SPARROW (Synthesis Planning And Rewards-based Route Optimization Workflow)
 
-# Step 1. Retrosynthesis
+A workflow to simultaneously select molecules and their synthetic routes for lead optimization and design-make-test cycles. This optimization approach aims to minimize synthetic cost while selecting the molecules that are most likely to fulfill design constraints.  
 
-The code will require external dependency of the ASKCOS software, which need to be downloaded at
-git clone https://github.com/Coughy1991/ASKCOS.
+## Overview 
+This repository performs the following steps: 
+1. Performs a tree search to identify synthetic routes for a set of provided candidate molecules using ASKCOS 
+2. Combines synthetic routes for all molecules into one synthesis network (defined as a **RouteGraph** object).
+3. Calculates confidence scores for all reactions in the network using the ASKCOS forward predictor. These scores indicate the confidence of the model in the success of the reaction and serve as a proxy to estimate the likelihood that the reaction will succeed. 
+4. Defines optimization problem variables using PuLP
+5. Sets relevant constraints on the optimization variables and sets the objective function. 
+6. Solves optimization problem with Gurobi.  
+7. Visualizes the resulting selected routes and target molecules. 
 
-After downloading the repository, the folder ASKCOS as well as the subfolder ASKCOS/askcos should be added to PYTHONPATH
+## Install 
+Create conda environment and install this module. 
 
-The pipeline for running the code include the following steps:
+```
+conda env create -f environment.ymp
+conda activate sparrow
+python setup.py develop
+```
 
-1. create a folder to store the results (e.g. case_1), and input the SMILES of target molecules in the "targets.csv" file
-2. run KERAS_BACKEND=theano python tree_builder_for_multiple_target.py case_1 to construct the reaction network for multiple molecule targets
-3. run KERAS_BACKEND=theano python predict_conditions_and_evaluate.py case_1 to evaluate the reactions
+## Requirements 
+Currently requires ASKCOS to be downloaded in the directory. (TODO: allow ASKCOS to not be in directory if RouteGraph already defined with scores.)
 
-# Step 2. Optimization
-The GUROBI optimizer is needed for running the optimization. The instruction for installation and obtaining a free academic license can be found at https://www.gurobi.com/
+## Running optimization workflow 
+TODO: describe how to complete a run 
 
-Run the following command for optimizing synthesis plans:
+##  Optimization Problem Formulation 
+TODO: describe optimization problem, constraints, and objective function 
 
-python optimize_synthesis_plan_for_library.py [-h] [-directory [DIRECTORY]]
-                                              [-separate] [-decomposition]
-                                              [-weights WEIGHTS WEIGHTS WEIGHTS]
-                                              
-e.g. python optimize_synthesis_plan_for_library.py -directory case_1 -decomposition -weights 10 1 0.1
-
-will run combined synthesis planning for case_1 with the decomposition method used, and weights beging 10,1 and 0.1.
