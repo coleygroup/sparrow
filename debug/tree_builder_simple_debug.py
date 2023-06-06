@@ -13,7 +13,7 @@ import pickle
 import pprint
 import tensorflow as tf 
 
-from src.mars.route_graph import RouteGraph
+from src.sparrow.route_graph import RouteGraph
 
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
