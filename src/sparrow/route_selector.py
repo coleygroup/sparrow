@@ -1,6 +1,7 @@
 from sparrow.route_graph import RouteGraph
 from typing import Dict, Union, List, Optional
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
+from rdkit import Chem
 
 reward_type = Union[int, float]
 
@@ -19,13 +20,16 @@ class RouteSelector:
                  ) -> None:
         
         self.graph = route_graph        
-        self.target_dict = target_dict
+        self.target_dict = {
+            Chem.MolToSmiles(Chem.MolFromSmiles(smi), isomericSmiles=False):score 
+            for smi, score in target_dict.items()
+            }
 
-        self.rewards = list(target_dict.values())
+        self.rewards = list(self.target_dict.values())
 
         self.constrain_all_targets = constrain_all_targets
 
-        self.graph.set_compound_types(target_dict)
+        self.graph.set_compound_types(self.target_dict)
 
         if calc_reaction_scores: 
             from askcos.synthetic.evaluation.evaluator import Evaluator
@@ -237,7 +241,7 @@ class RouteSelector:
 
         return 
     
-    def routes_from_optimal_variables(self):
+    def optimal_variables(self):
         """ Takes optimal variables from problem solution and converts it to a set of routes """
         # TODO: implement this 
         nonzero_vars = [

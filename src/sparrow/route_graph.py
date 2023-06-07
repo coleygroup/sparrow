@@ -1,6 +1,3 @@
-import sys 
-sys.path.append('/home/jfromer/sparrow') # need to figure out a way to get rid of this
-
 from sparrow.reaction_node import ReactionNode
 from sparrow.compound_node import CompoundNode
 from sparrow.node import Node

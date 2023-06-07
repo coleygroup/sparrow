@@ -1,6 +1,3 @@
-import sys 
-sys.path.append('/home/jfromer/sparrow') # need to figure out a way to get rid of this, to load askcos 
-
 from sparrow.node import Node
 from typing import Iterable, Optional, List
 
@@ -34,7 +31,6 @@ class ReactionNode(Node):
             evaluator = None, 
         ): 
 
-        import askcos.utilities.contexts as context_cleaner
         from askcos.synthetic.evaluation.evaluator import Evaluator
         from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
         import askcos.global_config as gc
@@ -66,7 +62,9 @@ class ReactionNode(Node):
 
         return self.conditions, self.score
 
-    def predict_conditions(self, context_recommender: NeuralNetContextRecommender):
+    def predict_conditions(self, context_recommender):
+        import askcos.utilities.contexts as context_cleaner
+        
         contexts = context_recommender.get_n_conditions(
             self.smiles, 
             n=1, 
