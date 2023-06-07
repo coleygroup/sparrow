@@ -1,0 +1,13 @@
+name: sparrow
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.7
+  - hdbscan
+  - jupyter
+  - numpy
+  - pango
+  - pymongo
+  - pytorch=1.7.1=cpu_py37hf1c21f6_2
+  - pyyaml

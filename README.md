@@ -16,8 +16,9 @@ This repository performs the following steps:
 Create conda environment and install this module. 
 
 ```
-conda env create -f environment.ymp
+conda env create -f environment.yml (Won't work yet)
 conda activate sparrow
+pip install -r requirements.txt
 python setup.py develop
 ```
 
