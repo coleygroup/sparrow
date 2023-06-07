@@ -1,10 +1,6 @@
 from sparrow.route_graph import RouteGraph
 from typing import Dict, Union, List, Optional
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
-from askcos.synthetic.evaluation.evaluator import Evaluator
-from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
-import askcos.global_config as gc
-from pathlib import Path
 
 reward_type = Union[int, float]
 
@@ -32,6 +28,10 @@ class RouteSelector:
         self.graph.set_compound_types(target_dict)
 
         if calc_reaction_scores: 
+            from askcos.synthetic.evaluation.evaluator import Evaluator
+            from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
+            import askcos.global_config as gc
+
             context_recommender = NeuralNetContextRecommender()
             context_recommender.load_nn_model(
                 model_path=gc.NEURALNET_CONTEXT_REC['model_path'], 
@@ -66,7 +66,7 @@ class RouteSelector:
             cat="Binary",
         ) # whether each target is selected for synthesis 
         
-        starting_nodes = self.graph.starting_material_nodes()
+        starting_nodes = self.graph.buyable_nodes()
         self.s = LpVariable.dicts(
             "start",
             [node.id for node in starting_nodes],
@@ -87,6 +87,12 @@ class RouteSelector:
             upBound=len(self.targets),
             cat=LpInteger,
         )  # flow through reaction node 
+
+        self.r = LpVariable.dicts(
+            "rxnused", 
+            rxn_ids, 
+            cat="Binary",
+        )
 
         return 
 
@@ -122,7 +128,7 @@ class RouteSelector:
     
     def set_intermediate_flow_constraint(self): 
         """ Sets constraint on flow through intermediate nodes: net flow must be zero """
-        intermediate_nodes = [*self.graph.intermediate_nodes(), *self.graph.starting_material_nodes()]
+        intermediate_nodes = [*self.graph.intermediate_nodes(), *self.graph.buyable_nodes()]
         inter_smiles = [node.smiles for node in intermediate_nodes]
         
         for inter in inter_smiles: 
@@ -139,7 +145,7 @@ class RouteSelector:
     def set_starting_material_constraint(self):
         """ Sets constraint on 's' variables and dummy reaction nodes """
 
-        starting_smis = [node.smiles for node in self.graph.starting_material_nodes()]
+        starting_smis = [node.smiles for node in self.graph.buyable_nodes()]
         N = len(self.targets)
         for start in starting_smis: 
             parent_ids, _ = self.get_compound_child_and_parent_ids(start) 
@@ -147,6 +153,20 @@ class RouteSelector:
             self.problem += (
                 N*self.s[self.graph.compound_nodes[start].id] >= lpSum([self.f[rxn] for rxn in parent_ids]),
                 f"Start_{self.graph.compound_nodes[start].id}_from_dummy_flow"
+            )
+
+        return 
+    
+    def set_reaction_used_constraint(self):
+        """ Sets constraint on 'r' abd 'f' variables, so if f_rxn > 0, r_rxn = 1"""
+
+        N = len(self.targets)
+        for rxn_smi, node in enumerate(self.graph.reaction_nodes): 
+            # parent_ids, _ = self.get_compound_child_and_parent_ids(rxn_smi) 
+            # ^ parent_smis should only have one dummy rxn node if this is done correctly 
+            self.problem += (
+                N*self.r[node.id] >= self.f[rxn_smi],
+                f"Rxnused-flow_{node.id}"
             )
 
         return 
@@ -188,7 +208,7 @@ class RouteSelector:
     def add_dummy_starting_rxn_nodes(self): 
         """ Adds reaction nodes that form all starting materials, as described in 
         TODO: describe this in README """
-        for start_node in self.graph.starting_material_nodes(): 
+        for start_node in self.graph.buyable_nodes(): 
             dummy_rxn_smiles = f">>{start_node.smiles}"
             self.graph.add_reaction_node(dummy_rxn_smiles, children=[start_node.smiles], dummy=True)
 
@@ -202,11 +222,11 @@ class RouteSelector:
         if self.constrain_all_targets: #TODO: fix this 
             self.problem += self.weights[0]
         else:
-            self.problem += -1*self.weights[0]*lpSum([self.target_dict[target]*self.a[target] for target in self.targets]) 
-            self.problem += self.problem.objective + self.weights[1]*lpSum([s for s in self.s.values()])
+            self.problem += -1*self.weights[0]*lpSum([self.target_dict[target]*self.a[target] for target in self.targets]) # reward
+            self.problem += self.problem.objective + self.weights[1]*lpSum([s for s in self.s.values()]) # starting materials 
             self.problem += self.problem.objective + self.weights[2]*0 # not considering conditions yet 
-            self.problem += self.problem.objective + self.weights[3]*lpSum([self.o[rxn][target]*self.graph.id_nodes()[rxn].penalty for rxn in rxn_ids for target in self.targets])
-                
+            self.problem += self.problem.objective + self.weights[3]*lpSum([self.r[rxn]*self.graph.id_nodes()[rxn].penalty for rxn in rxn_ids])
+                # reaction penalties 
         return 
     
     def optimize(self):
