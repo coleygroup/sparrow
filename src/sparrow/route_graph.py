@@ -5,12 +5,6 @@ from sparrow.reaction_node import ReactionNode
 from sparrow.compound_node import CompoundNode
 from sparrow.node import Node
 
-from askcos.retrosynthetic.mcts.tree_builder import MCTS
-import askcos.utilities.contexts as context_cleaner
-from askcos.synthetic.evaluation.evaluator import Evaluator
-from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
-import askcos.global_config as gc
-
 from typing import Iterable, Dict, Union, Optional, List
 from pathlib import Path
 
@@ -23,7 +17,7 @@ class RouteGraph:
     and compounds (CompoundNodes).
     """
     def __init__(self, 
-                 askcos_MCTS_tree: Optional[MCTS] = None, 
+                 askcos_MCTS_tree = None, 
                  paths: List = None, 
                 ) -> None:
         
@@ -31,6 +25,12 @@ class RouteGraph:
         self.reaction_nodes = {}
         
         if askcos_MCTS_tree or paths: 
+            from askcos.retrosynthetic.mcts.tree_builder import MCTS
+            import askcos.utilities.contexts as context_cleaner
+            from askcos.synthetic.evaluation.evaluator import Evaluator
+            from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
+            import askcos.global_config as gc
+
             self.build_from_MCTS(MCTS_tree=askcos_MCTS_tree, paths=paths)
 
         self.ids = {}
@@ -156,7 +156,7 @@ class RouteGraph:
 
         return 
 
-    def build_from_MCTS(self, MCTS_tree: MCTS = None, paths: List = None): 
+    def build_from_MCTS(self, MCTS_tree = None, paths: List = None): 
         """ 
         Builds RouteGraph from Monte Carlo Tree Search output from 
         ASKCOS or paths output from MCTS.get_buyable_paths
@@ -174,8 +174,8 @@ class RouteGraph:
         return 
 
     def calc_reaction_scores(self, 
-            context_recommender: NeuralNetContextRecommender = None,
-            evaluator: Evaluator = None, 
+            context_recommender = None,
+            evaluator = None, 
         ):
         """ TODO: insert description """        
 
@@ -243,10 +243,10 @@ class RouteGraph:
         inter_nodes = [node for node in self.compound_nodes.values() if node.is_intermediate==1 ]
         return inter_nodes
     
-    def starting_material_nodes(self):
+    def buyable_nodes(self):
         """ Returns a list of CompoundNodes that have buyable==1 """
-        starting_nodes = [node for node in self.compound_nodes.values() if node.buyable==1]
-        return starting_nodes
+        buyable_nodes = [node for node in self.compound_nodes.values() if node.buyable==1]
+        return buyable_nodes
     
     def id_nodes(self):
         """ Sets IDs for all nodes """

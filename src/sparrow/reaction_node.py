@@ -1,13 +1,8 @@
 import sys 
-sys.path.append('/home/jfromer/sparrow') # need to figure out a way to get rid of this 
+sys.path.append('/home/jfromer/sparrow') # need to figure out a way to get rid of this, to load askcos 
 
 from sparrow.node import Node
 from typing import Iterable, Optional, List
-
-import askcos.utilities.contexts as context_cleaner
-from askcos.synthetic.evaluation.evaluator import Evaluator
-from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
-import askcos.global_config as gc
 
 import numpy as np 
 
@@ -35,9 +30,14 @@ class ReactionNode(Node):
     
     def calc_conditions_and_score(
             self, 
-            context_recommender: NeuralNetContextRecommender = None,
-            evaluator: Evaluator = None, 
+            context_recommender = None,
+            evaluator = None, 
         ): 
+
+        import askcos.utilities.contexts as context_cleaner
+        from askcos.synthetic.evaluation.evaluator import Evaluator
+        from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
+        import askcos.global_config as gc
 
         if context_recommender is None: 
             context_recommender = NeuralNetContextRecommender()
