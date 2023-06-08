@@ -27,14 +27,17 @@ def build_rxn_graph(
     mols = [Chem.MolFromSmiles(smi) for smi in target_smis]
 
     for mol in mols:
+        
+        soft_reset = True
+        soft_stop = True 
 
-        if is_first_target:
-            soft_reset = False
-            is_first_target = False
-            soft_stop = True
-        else:
-            soft_reset = True
-            soft_stop = False
+        # if is_first_target:
+        #     soft_reset = True # False
+        #     is_first_target = False
+        #     soft_stop = False # True
+        # else:
+        #     soft_reset = True
+        #     soft_stop = False
 
         smiles = Chem.MolToSmiles(mol, isomericSmiles=False)   
         print('expanding target {}'.format(smiles)) 
@@ -52,6 +55,8 @@ def build_rxn_graph(
             pickle.dump(paths, f)
 
         print('done for target {}'.format(smiles))
+
+        Tree.stop()
 
     
     route_graph = RouteGraph(askcos_MCTS_tree=Tree)
