@@ -6,3 +6,5 @@ dist
 build 
 **/__pycache__/
 UNKNOWN**
+*.egg-info/
+*.egg
