@@ -13,14 +13,34 @@ This repository performs the following steps:
 7. Visualizes the resulting selected routes and target molecules. 
 
 ## Install 
-Create conda environment and install this module. 
+Create conda environment using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. 
 
 ```
-conda env create -f environment.yml (Won't work yet)
+mamba env create -f environment.yml (Won't work yet)
 conda activate sparrow
 pip install -r requirements.txt
+```
+
+Install ASKCOS to the local repository. SPARROW can still be used without ASKCOS if a **RouteGraph** with previously calculated scores is available.  
+```
+git clone *link to askcos-core*
+```
+
+You also need to add askcos-data to the askcos path to use the models and ensure that the large files are also pulled. (git lfs must be installed.)
+```
+cd askcos-core/askcos/
+git clone *link to askcos-data*
+git lfs pull
+```
+Then change the name of askcos-data folder to "data". 
+
+Setup this package 
+```
 python setup.py develop
 ```
+Note: currently trying to automatically install askcos when running setup.py, but it isn't working. For now, all scripts should start by adding the askcos-core folder to path so that askcos can be imported.  
+
+
 
 ## Requirements 
 Currently requires ASKCOS to be downloaded in the directory. (TODO: allow ASKCOS to not be in directory if RouteGraph already defined with scores.)
