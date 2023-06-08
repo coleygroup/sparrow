@@ -8,6 +8,7 @@ import tensorflow as tf
 from typing import List 
 
 from sparrow.route_graph import RouteGraph
+import pickle 
 
 tf.config.set_visible_devices([], 'GPU')
 MyLogger.initialize_logFile()
@@ -46,6 +47,10 @@ def build_rxn_graph(
             soft_reset=soft_reset,
             soft_stop=soft_stop
         )
+
+        with open('paths.pickle', 'wb') as f:
+            pickle.dump(paths, f)
+
         print('done for target {}'.format(smiles))
 
     
