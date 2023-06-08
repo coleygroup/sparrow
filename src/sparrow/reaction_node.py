@@ -68,10 +68,10 @@ class ReactionNode(Node):
         contexts = context_recommender.get_n_conditions(
             self.smiles, 
             n=1, 
-            return_separate=False, 
+            return_separate=True, 
             return_scores=False
         )
 
-        conditions = context_cleaner.clean_context(contexts[0])
+        conditions = context_cleaner.clean_context(contexts[0][:4])
 
         return conditions
