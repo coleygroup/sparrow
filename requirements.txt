@@ -20,3 +20,4 @@ cairosvg
 sphinx
 pandas
 setuptools
+joblib==1.1.0
