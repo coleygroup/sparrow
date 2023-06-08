@@ -16,7 +16,7 @@ This repository performs the following steps:
 Create conda environment using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. 
 
 ```
-mamba env create -f environment.yml (Won't work yet)
+mamba env create -f environment.yml
 conda activate sparrow
 pip install -r requirements.txt
 ```
@@ -30,17 +30,27 @@ You also need to add askcos-data to the askcos path to use the models and ensure
 ```
 cd askcos-core/askcos/
 git clone *link to askcos-data*
+cd askcos-data/
 git lfs pull
 ```
 Then change the name of askcos-data folder to "data". 
 
-Setup this package 
+Finally, setup this package: 
 ```
 python setup.py develop
 ```
 Note: currently trying to automatically install askcos when running setup.py, but it isn't working. For now, all scripts should start by adding the askcos-core folder to path so that askcos can be imported.  
 
+### Installing Mamba
+If on Linux with x86 cores: 
+```
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh
+bash Mambaforge-Linux-x86_64.sh
+```
+Otherwise, use correct link from [Mambaforge installation page](https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh)
 
+### ASKCOS Location 
+Members of the [MLPDS](https://mlpds.mit.edu/) Consortium have access to the most recent version of ASKCOS on GitLab. A publically available version is available [here](https://github.com/ASKCOS).
 
 ## Requirements 
 Currently requires ASKCOS to be downloaded in the directory. (TODO: allow ASKCOS to not be in directory if RouteGraph already defined with scores.)
