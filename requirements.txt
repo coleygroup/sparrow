@@ -16,8 +16,7 @@ tensorflow
 tensorflow-estimator
 scikit-learn
 scipy
-cairosvg=2.4.2
+cairosvg
 sphinx
-pycairo
 pandas
 setuptools

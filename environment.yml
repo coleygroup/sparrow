@@ -11,3 +11,4 @@ dependencies:
   - pymongo
   - pytorch=1.7.1=cpu_py37hf1c21f6_2
   - pyyaml
+  - pycairo
