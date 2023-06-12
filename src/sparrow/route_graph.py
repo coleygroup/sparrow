@@ -4,6 +4,8 @@ from sparrow.node import Node
 
 from typing import Iterable, Dict, Union, Optional, List
 from pathlib import Path
+from tqdm import tqdm
+import sys, os 
 
 import pickle 
 
@@ -21,14 +23,9 @@ class RouteGraph:
         self.compound_nodes = {}
         self.reaction_nodes = {}
         
-        if askcos_MCTS_tree or paths: 
-            from askcos.retrosynthetic.mcts.tree_builder import MCTS
-            import askcos.utilities.contexts as context_cleaner
-            from askcos.synthetic.evaluation.evaluator import Evaluator
-            from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
-            import askcos.global_config as gc
+        if askcos_MCTS_tree or paths:
 
-            self.build_from_MCTS(MCTS_tree=askcos_MCTS_tree, paths=paths)
+            self.add_from_MCTS(MCTS_tree=askcos_MCTS_tree, paths=paths)
 
         self.ids = {}
         
@@ -153,11 +150,17 @@ class RouteGraph:
 
         return 
 
-    def build_from_MCTS(self, MCTS_tree = None, paths: List = None): 
+    def add_from_MCTS(self, MCTS_tree = None, paths: List = None): 
         """ 
         Builds RouteGraph from Monte Carlo Tree Search output from 
         ASKCOS or paths output from MCTS.get_buyable_paths
         """
+        from askcos.retrosynthetic.mcts.tree_builder import MCTS
+        import askcos.utilities.contexts as context_cleaner
+        from askcos.synthetic.evaluation.evaluator import Evaluator
+        from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
+        import askcos.global_config as gc
+
         if paths is None: 
             if MCTS_tree is None: 
                 print("Must provide at least one of MCTS_tree or paths")
@@ -174,14 +177,20 @@ class RouteGraph:
             context_recommender = None,
             evaluator = None, 
         ):
-        """ TODO: insert description """        
+        """ TODO: insert description """ 
 
-        for rxn_node in self.reaction_nodes.values(): 
+        # disable printing 
+        old_stdout = sys.stdout # backup current stdout
+        sys.stdout = open(os.devnull, "w")
+
+        for rxn_node in tqdm(self.reaction_nodes.values(), desc='Calculating Reaction Scores'): 
             rxn_node.calc_conditions_and_score(
                 context_recommender,
                 evaluator,
             )
-        
+            
+        sys.stdout = old_stdout
+
         return
     
     def set_targets(self, targets: Iterable[str]):
