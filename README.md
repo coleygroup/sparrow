@@ -68,3 +68,12 @@ TODO: describe optimization problem, constraints, and objective function
 3. Add reaction conditions and incorporate into constraints/objective function 
 4. Update tree visualization to show compounds and conditions (not just IDs)
 5. Add CLI functionality 
+
+## Troubleshooting 
+
+**Recursion error during pickling** 
+For route_graphs with many (> ~1000) reactions, you may run into a an recursion error when trying to save the object. As stated [here](http://docs.python.org/library/pickle.html#what-can-be-pickled-and-unpickled), you fix this error by raising the recursion limit (default is 1000): 
+```
+import sys 
+sys.setrecursionlimit(2000)
+```
