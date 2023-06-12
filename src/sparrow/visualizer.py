@@ -7,6 +7,9 @@ from typing import List, Dict
 import pandas as pd 
 import networkx as nx
 import matplotlib.pyplot as plt
+from rdkit import Chem
+from rdkit.Chem import Draw
+import dataframe_image as dfi
 
 
 color_dict = {
@@ -39,9 +42,6 @@ class Visualizer:
 
         self.vis_graph = self.create_vis_graph()
 
-        self.plot_graph()
-
-        print('done')
 
 
 
@@ -139,10 +139,37 @@ class Visualizer:
 
         return vis_graph
     
+    def multipartite_from_digraph(self): 
+        layers = {}
+        for id in self.vis_graph.nodes: 
+            if id in self.target_verts: 
+                lay = 0
+            else: 
+                lay = self.max_distance_to_target(id)
+            layers[id] = lay
+        
+        nx.set_node_attributes(self.vis_graph, values = layers, name='layer')
+
+        return self.vis_graph
+
+    def max_distance_to_target(self, node_id): 
+        dists = []
+        for target in self.target_verts: 
+            try: 
+                long_path = max(nx.all_simple_paths(self.vis_graph, node_id, target), key=lambda x: len(x))
+            except: 
+                continue 
+            dists.append(len(long_path)-1)
+        
+        return max(dists)
+    
     def plot_graph(self, path: str = 'debug/graph_fig.png'): 
+        
+        self.multipartite_from_digraph()
 
         pos = nx.nx_pydot.graphviz_layout(self.vis_graph)
-                              
+        # pos = nx.multipartite_layout(self.vis_graph, subset_key = "layer")   
+
         options = {
             'nodelist': list(self.vis_graph),
             'node_color': [color_dict[self.vertices[id]["Compound Class"]] for id in list(self.vis_graph)],
@@ -187,14 +214,23 @@ class Visualizer:
 
         nx.draw_networkx_labels(self.vis_graph, pos)
 
-        lgnd = plt.legend()
+        handles, labels = plt.gca().get_legend_handles_labels()
+        by_label = dict(zip(labels, handles))
+        lgnd = plt.legend(by_label.values(), by_label.keys())
+
         for handle in lgnd.legendHandles: 
             handle._sizes = [30]
 
         plt.savefig(path)
+   
+        prefix = path.split('.png')[0]
 
+        ids = list(self.vis_graph.nodes)
+        smis = [self.route_graph.ids[id].smiles for id in ids]
+        df = pd.DataFrame({"ID": list(ids), "SMILES": smis})
+        df = df.set_index('ID').sort_values('ID')
+        df.to_csv(f'{prefix}_key.csv')
 
-        
         return 
 
 
