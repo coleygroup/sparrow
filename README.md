@@ -53,7 +53,8 @@ Otherwise, use correct link from [Mambaforge installation page](https://github.c
 A publically available version is available [here](https://github.com/ASKCOS). Members of the [MLPDS](https://mlpds.mit.edu/) Consortium have access to the most recent version of ASKCOS on GitLab. 
 
 ## Requirements 
-Currently requires ASKCOS to be downloaded in the directory. (TODO: allow ASKCOS to not be in directory if RouteGraph already defined with scores.)
+Currently requires ASKCOS to be downloaded in the directory. However, a quick tutorial on the optimization part is provided that does not require ASKCOS. A set of routes and reaction scores has already been calculated and saved. 
+
 
 ## Running optimization workflow 
 TODO: describe how to complete a run 
@@ -62,8 +63,8 @@ TODO: describe how to complete a run
 TODO: describe optimization problem, constraints, and objective function 
 
 ## TO DO list
-1. Complete tutorials, both that require ASKCOS and that do not require ASKCOS 
-2. Search for starting materials through ChemSpace API instead of naive definition 
-3. Get starting material cost from ChemSpace and include in objective function 
-4. Add reaction conditions and incorporate into constraints/objective function 
-5. Update tree visualization to show compounds and conditions (not just IDs)
+1. Search for starting materials through ChemSpace API instead of naive definition 
+2. Get starting material cost from ChemSpace and include in objective function 
+3. Add reaction conditions and incorporate into constraints/objective function 
+4. Update tree visualization to show compounds and conditions (not just IDs)
+5. Add CLI functionality 
