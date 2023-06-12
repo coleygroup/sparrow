@@ -14,6 +14,7 @@ tf.config.set_visible_devices([], 'GPU')
 MyLogger.initialize_logFile()
 celery = False 
 
+
 def build_rxn_graph(
         target_smis: List[str],
         n_cpus: int = 5,
@@ -22,14 +23,19 @@ def build_rxn_graph(
     
     Tree = MCTS(nproc=n_cpus)
 
-    is_first_target = True
+    route_graph = RouteGraph()
 
     mols = [Chem.MolFromSmiles(smi) for smi in target_smis]
-
+    
+    is_first_target = True
     for mol in mols:
         
-        soft_reset = True
-        soft_stop = True 
+        if is_first_target:
+            soft_reset = False 
+            is_first_target = False
+        else:
+            soft_reset = True
+
 
         # if is_first_target:
         #     soft_reset = True # False
@@ -41,25 +47,21 @@ def build_rxn_graph(
 
         smiles = Chem.MolToSmiles(mol, isomericSmiles=False)   
         print('expanding target {}'.format(smiles)) 
-        paths, stats, graph = Tree.get_buyable_paths(
+        Tree.get_buyable_paths(
             smiles,
             nproc=n_cpus,
             expansion_time=time_per_target, 
             termination_logic={'or': ['buyable']},
             # min_chemical_history_dict={'as_reactant':1, 'as_product':1,'logic':'and'},
             soft_reset=soft_reset,
-            soft_stop=soft_stop
+            soft_stop=True
         )
-
-        with open('paths.pickle', 'wb') as f:
-            pickle.dump(paths, f)
 
         print('done for target {}'.format(smiles))
 
-        Tree.stop()
-
-    
-    route_graph = RouteGraph(askcos_MCTS_tree=Tree)
+        route_graph.add_from_MCTS(MCTS_tree=Tree)
+        
+    Tree.stop()
 
     return route_graph
 
