@@ -50,8 +50,8 @@ class RouteSelector:
         self.add_dummy_starting_rxn_nodes()
 
         self.graph.id_nodes()
-        self.targets = [self.graph.compound_nodes[tar].id for tar in target_dict.keys()]
-        self.target_dict = {self.graph.compound_nodes[tar].id: score for tar, score in target_dict.items()}
+        self.targets = [self.graph.compound_nodes[tar].id for tar in self.target_dict.keys()]
+        self.target_dict = {self.graph.compound_nodes[tar].id: score for tar, score in self.target_dict.items()}
 
         self.problem = LpProblem("Route_Selection", LpMinimize)
 
@@ -110,6 +110,7 @@ class RouteSelector:
 
         self.set_intermediate_flow_constraint()
         self.set_starting_material_constraint()
+        self.set_reaction_used_constraint()
         self.set_overall_flow_constraint()
 
         return 
@@ -165,12 +166,12 @@ class RouteSelector:
         """ Sets constraint on 'r' abd 'f' variables, so if f_rxn > 0, r_rxn = 1"""
 
         N = len(self.targets)
-        for rxn_smi, node in enumerate(self.graph.reaction_nodes): 
+        for rxn_smi, node in self.graph.reaction_nodes.items(): 
             # parent_ids, _ = self.get_compound_child_and_parent_ids(rxn_smi) 
             # ^ parent_smis should only have one dummy rxn node if this is done correctly 
             self.problem += (
-                N*self.r[node.id] >= self.f[rxn_smi],
-                f"Rxnused-flow_{node.id}"
+                N*self.r[node.id] >= self.f[node.id],
+                f"Rxnused_flow_{node.id}"
             )
 
         return 
@@ -233,17 +234,21 @@ class RouteSelector:
                 # reaction penalties 
         return 
     
-    def optimize(self):
+    def optimize(self, solver=None):
 
-        self.problem.writeLP("RouteSelector.lp", max_length=300)
-        self.problem.solve(GUROBI(timeLimit=86400))
+        # self.problem.writeLP("RouteSelector.lp", max_length=300)
+
+        if solver == 'GUROBI': 
+            self.problem.solve(GUROBI(timeLimit=86400))
+        else: 
+            self.problem.solve()
+
         print("Optimization problem completed...")
 
         return 
     
     def optimal_variables(self):
         """ Takes optimal variables from problem solution and converts it to a set of routes """
-        # TODO: implement this 
         nonzero_vars = [
             var for var in self.problem.variables() if var.varValue > 0.01
         ]
@@ -254,7 +259,7 @@ class RouteSelector:
 
         print('Selected targets: ')
         for tar in selected_targets: 
-            print(tar)
+            print(self.graph.ids[tar].smiles)
 
         return nonzero_vars
 
