@@ -12,7 +12,7 @@ This repository performs the following steps:
 6. Solves optimization problem with Gurobi.  
 7. Visualizes the resulting selected routes and target molecules. 
 
-## Install 
+## Installation 
 Create conda environment using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. 
 
 ```
@@ -53,7 +53,7 @@ Otherwise, use correct link from [Mambaforge installation page](https://github.c
 A publically available version is available [here](https://github.com/ASKCOS). Members of the [MLPDS](https://mlpds.mit.edu/) Consortium have access to the most recent version of ASKCOS on GitLab. 
 
 ## Requirements 
-Currently requires ASKCOS to be downloaded in the directory. However, a quick tutorial on the optimization part is provided that does not require ASKCOS. A set of routes and reaction scores has already been calculated and saved. 
+Currently requires ASKCOS to be downloaded in the directory. However, a quick tutorial on the optimization part is provided [in tutorials](tutorials/optimization_only/) that does not require ASKCOS. A set of routes and reaction scores has already been calculated and saved. 
 
 
 ## Running optimization workflow 
