@@ -50,7 +50,7 @@ bash Mambaforge-Linux-x86_64.sh
 Otherwise, use correct link from [Mambaforge installation page](https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh)
 
 ### ASKCOS Location 
-Members of the [MLPDS](https://mlpds.mit.edu/) Consortium have access to the most recent version of ASKCOS on GitLab. A publically available version is available [here](https://github.com/ASKCOS).
+A publically available version is available [here](https://github.com/ASKCOS). Members of the [MLPDS](https://mlpds.mit.edu/) Consortium have access to the most recent version of ASKCOS on GitLab. 
 
 ## Requirements 
 Currently requires ASKCOS to be downloaded in the directory. (TODO: allow ASKCOS to not be in directory if RouteGraph already defined with scores.)
@@ -61,3 +61,9 @@ TODO: describe how to complete a run
 ##  Optimization Problem Formulation 
 TODO: describe optimization problem, constraints, and objective function 
 
+## TO DO list
+1. Complete tutorials, both that require ASKCOS and that do not require ASKCOS 
+2. Search for starting materials through ChemSpace API instead of naive definition 
+3. Get starting material cost from ChemSpace and include in objective function 
+4. Add reaction conditions and incorporate into constraints/objective function 
+5. Update tree visualization to show compounds and conditions (not just IDs)
