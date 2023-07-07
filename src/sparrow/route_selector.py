@@ -1,5 +1,6 @@
 from sparrow.route_graph import RouteGraph
-from typing import Dict, Union, List, Optional
+from sparrow import Scorer, Recommender
+from typing import Dict, Union, List
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
 from rdkit import Chem
 
@@ -13,49 +14,62 @@ class RouteSelector:
     """
     def __init__(self, 
                  route_graph: RouteGraph, 
-                 target_dict: Dict[str, reward_type],
+                 target_dict: Dict[str, reward_type],                 
+                 rxn_scorer: Scorer = None, 
+                 condition_recommender: Recommender = None,
                  constrain_all_targets: bool = False, 
                  weights: List = [1,1,1,1],
-                 calc_reaction_scores: Optional[bool] = True,
                  ) -> None:
         
-        self.graph = route_graph        
-        self.target_dict = {
-            Chem.MolToSmiles(Chem.MolFromSmiles(smi), isomericSmiles=False):score 
-            for smi, score in target_dict.items()
-            }
+        self.graph = route_graph  
+        self.graph.id_nodes()
 
-        self.rewards = list(self.target_dict.values())
+        self.target_dict = self.clean_target_dict(target_dict)
+        self.targets = list(target_dict.keys())
+        self.rewards = list(self.target_dict.values())        
 
+        self.rxn_scorer = rxn_scorer
+        self.condition_recommender = condition_recommender
+              
         self.constrain_all_targets = constrain_all_targets
+        self.weights = weights
+
+        if self.condition_recommender is not None: 
+            self.get_recommendations()
+
+        if self.rxn_scorer is not None: 
+            self.get_rxn_scores()
 
         self.graph.set_compound_types(self.target_dict)
-
-        if calc_reaction_scores: 
-            from askcos.synthetic.evaluation.evaluator import Evaluator
-            from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
-            import askcos.global_config as gc
-
-            context_recommender = NeuralNetContextRecommender()
-            context_recommender.load_nn_model(
-                model_path=gc.NEURALNET_CONTEXT_REC['model_path'], 
-                info_path=gc.NEURALNET_CONTEXT_REC['info_path'], 
-                weights_path=gc.NEURALNET_CONTEXT_REC['weights_path']
-            )
-            self.graph.calc_reaction_scores(
-                context_recommender,
-                evaluator=Evaluator(),
-            )
-        
         self.add_dummy_starting_rxn_nodes()
-
-        self.graph.id_nodes()
-        self.targets = [self.graph.compound_nodes[tar].id for tar in self.target_dict.keys()]
-        self.target_dict = {self.graph.compound_nodes[tar].id: score for tar, score in self.target_dict.items()}
 
         self.problem = LpProblem("Route_Selection", LpMinimize)
 
-        self.weights = weights
+    def clean_target_dict(self, target_dict: Dict[str, float]) -> Dict[str, float]:
+        """ Converts target dict from Dict[smiles, reward] to Dict[id, reward] """
+        new_target_dict = {
+            Chem.MolToSmiles(Chem.MolFromSmiles(old_smi), isomericSmiles=False) : reward
+            for old_smi, reward in target_dict
+        }
+
+        return new_target_dict
+
+    def get_recommendations(self): 
+        """ Completes condition recommendation for any reaction node that does not have conditions """
+        for node in self.graph.reaction_nodes_only():
+            if node.conditions_set: 
+                continue
+            
+            conditions = self.condition_recommender(node.smiles)
+            node.update_conditions(conditions)
+    
+    def get_rxn_scores(self): 
+        """ Scores all reactions in the graph that are not already scored """
+        for node in self.graph.reaction_nodes_only(): 
+            if node.score_set: 
+                continue 
+                
+            score = self.rxn_scorer(rxn_smi=node.smiles, conditions=node.conditions)
 
     def define_variables(self): 
         """ 

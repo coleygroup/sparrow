@@ -1,6 +1,5 @@
-from sparrow.reaction_node import ReactionNode
-from sparrow.compound_node import CompoundNode
-from sparrow.node import Node
+from sparrow import ReactionNode, CompoundNode, Node
+from sparrow.scorer import Scorer, AskcosScorer
 
 from typing import Iterable, Dict, Union, Optional, List
 from pathlib import Path
@@ -172,26 +171,6 @@ class RouteGraph:
             self.add_path(path)
 
         return 
-
-    def calc_reaction_scores(self, 
-            context_recommender = None,
-            evaluator = None, 
-        ):
-        """ TODO: insert description """ 
-
-        # disable printing 
-        old_stdout = sys.stdout # backup current stdout
-        sys.stdout = open(os.devnull, "w")
-
-        for rxn_node in tqdm(self.reaction_nodes.values(), desc='Calculating Reaction Scores'): 
-            rxn_node.calc_conditions_and_score(
-                context_recommender,
-                evaluator,
-            )
-            
-        sys.stdout = old_stdout
-
-        return
     
     def set_targets(self, targets: Iterable[str]):
         """ defines CompoundNode.is_target = 1 for specified targets, where 
@@ -271,6 +250,9 @@ class RouteGraph:
 
         return self.ids
 
+    def reaction_nodes_only(self) -> List[ReactionNode]
+        """ Returns a list of ReactionNodes in this graph """
+        return self.reaction_nodes.values()
 
 
 
