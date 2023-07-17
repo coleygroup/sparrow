@@ -58,7 +58,8 @@ class AskcosRecommender():
         Takes an 'uncleaned' condition that has temperatures and empty entries
         and returns a 'cleaned' context with only chemical 
         """
-        conditions = self.cleaner.clean_context(condition[:4])
+        condition = self.cleaner.clean_context(condition[:4])
+        return condition
 
     def __call__(self, rxn_smi: str, n_c: int = 1): 
         

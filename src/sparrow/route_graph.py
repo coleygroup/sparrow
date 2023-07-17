@@ -5,6 +5,7 @@ from typing import Iterable, Dict, Union, Optional, List
 from pathlib import Path
 from tqdm import tqdm
 import sys, os 
+import json 
 
 import pickle 
 
@@ -116,7 +117,7 @@ class RouteGraph:
         # go back to child nodes and add this new node as a parent 
         if children: 
             for child in children: 
-                self.reaction_nodes[parent].update(parents=[self.compound_nodes[smiles]])
+                self.reaction_nodes[child].update(parents=[self.compound_nodes[smiles]])
 
         return self.compound_nodes[smiles]
     
@@ -250,9 +251,50 @@ class RouteGraph:
 
         return self.ids
 
-    def reaction_nodes_only(self) -> List[ReactionNode]
+    def reaction_nodes_only(self) -> List[ReactionNode]:
         """ Returns a list of ReactionNodes in this graph """
         return self.reaction_nodes.values()
+
+    def compound_nodes_only(self) -> List[CompoundNode]:
+        """ Returns a list of ReactionNodes in this graph """
+        return self.compound_nodes.values()
+
+    def to_json(self, filename) -> None: 
+        compound_nodes = [node.to_dict() for node in self.compound_nodes_only()]
+        reaction_nodes = [node.to_dict() for node in self.reaction_nodes_only()]
+        storage = {
+            'Compound Nodes': compound_nodes, 
+            'Reaction Nodes': reaction_nodes
+        }
+        with open(filename, 'w') as f: 
+            json.dump(storage, f, indent="\t")
+
+        return 
+
+    def add_from_json(self, filename) -> None:
+        """ Adds node information from a json file """
+        with open(filename, 'r') as f: 
+            storage = json.load(f)
+        
+        if 'Compound Nodes' in storage.keys(): 
+            for node_info in storage['Compound Nodes']: 
+                self.add_compound_node(
+                    smiles=node_info.pop('smiles'),
+                    parents=node_info.pop('parents') if 'parents' in node_info else [],
+                    children=node_info.pop('children') if 'children' in node_info else [],
+                    **node_info,
+                )
+        
+        if 'Reaction Nodes' in storage.keys(): 
+            for node_info in storage['Reaction Nodes']: 
+                self.add_reaction_node(
+                    smiles=node_info.pop('smiles'),
+                    parents=node_info.pop('parents') if 'parents' in node_info else [],
+                    children=node_info.pop('children') if 'children' in node_info else [], 
+                    **node_info,
+                )
+        
+        return
 
 
 
