@@ -19,11 +19,16 @@ celery = False
 
 def build_rxn_graph(
         target_smis: List[str],
+        filename: Union[str, Path] = 'debug/askcos_paths.json',        
         n_cpus: int = 5,
         time_per_target: int = 15,
-        filename: Union[str, Path] = 'debug/askcos_paths.json'
-        ) -> RouteGraph: 
-    
+        ) -> Dict: 
+    """ 
+    Builds retrosynthesis trees for the targets 
+    and outputs a json file with path information 
+    to the specified filename. Returns the storage dictionary 
+    that was saved to the json file 
+    """
     Tree = MCTS(nproc=n_cpus)
     mols = [Chem.MolFromSmiles(smi) for smi in target_smis]
     
@@ -51,9 +56,9 @@ def build_rxn_graph(
 
         storage = storage_from_paths(paths, storage)
 
-        for p in Tree.workers:
-            if p and p.is_alive():
-                p.terminate()
+    for p in Tree.workers:
+        if p and p.is_alive():
+            p.terminate()
     
     with open(filename, 'w') as f:
         json.dump(make_dict_jsonable(storage), f, indent="\t")
