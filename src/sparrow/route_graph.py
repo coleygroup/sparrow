@@ -1,6 +1,6 @@
 from sparrow import ReactionNode, CompoundNode, Node
 from sparrow.scorer import Scorer, AskcosScorer
-
+from sparrow.coster import Coster, NaiveCoster
 from typing import Iterable, Dict, Union, Optional, List
 from pathlib import Path
 from tqdm import tqdm
@@ -194,15 +194,18 @@ class RouteGraph:
         
         return 
     
-    def set_buyable_compounds(self):
+    def set_buyable_compounds_and_costs(self, coster: Coster = None):
         """ sets CompoundNode.buyable for starting materials listed in ****insert**** 
         (for now using arbitrary definition based on number of carbons, nitrogens, oxygens) """
-        for smiles, node in self.compound_nodes.items():
-            nc = smiles.count("c") + smiles.count("C")
-            nn = smiles.count("N") + smiles.count("n")
-            no = smiles.count("O") + smiles.count("o")
-            if nc<=12 and nn<=3 and no<=5:
-                node.set_as_buyable()
+        if coster is None: 
+            coster = NaiveCoster()
+        
+        for node in self.compound_nodes_only(): 
+            buyable, cost = coster.get_buyable_and_cost(node.smiles)
+            node.update(
+                buyable=buyable, 
+                cost_per_g=cost,
+            )
 
         return 
 
@@ -214,10 +217,10 @@ class RouteGraph:
         
         return 
 
-    def set_compound_types(self, target_dict):
+    def set_compound_types(self, target_dict, coster=None):
         """ TODO: insert description """
 
-        self.set_buyable_compounds()
+        self.set_buyable_compounds_and_costs(coster)
         self.set_targets(target_dict.keys())
         self.set_target_rewards(target_dict)
         self.set_intermediates()
