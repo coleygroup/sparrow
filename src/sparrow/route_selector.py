@@ -1,8 +1,10 @@
-from sparrow.route_graph import RouteGraph
 from sparrow import Scorer, Recommender
+from sparrow.route_graph import RouteGraph
+from sparrow.coster import Coster
 from typing import Dict, Union, List
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
 from rdkit import Chem
+from tqdm import tqdm
 
 reward_type = Union[int, float]
 
@@ -18,6 +20,7 @@ class RouteSelector:
                  rxn_scorer: Scorer = None, 
                  condition_recommender: Recommender = None,
                  constrain_all_targets: bool = False, 
+                 coster: Coster = None, 
                  weights: List = [1,1,1,1],
                  ) -> None:
         
@@ -33,6 +36,8 @@ class RouteSelector:
               
         self.constrain_all_targets = constrain_all_targets
         self.weights = weights
+        
+        self.graph.set_compound_types(self.target_dict, coster=coster)
 
         if self.condition_recommender is not None: 
             self.get_recommendations()
@@ -40,7 +45,6 @@ class RouteSelector:
         if self.rxn_scorer is not None: 
             self.get_rxn_scores()
 
-        self.graph.set_compound_types(self.target_dict)
         self.add_dummy_starting_rxn_nodes()
 
         self.problem = LpProblem("Route_Selection", LpMinimize)
@@ -49,27 +53,28 @@ class RouteSelector:
         """ Converts target dict from Dict[smiles, reward] to Dict[id, reward] """
         new_target_dict = {
             Chem.MolToSmiles(Chem.MolFromSmiles(old_smi), isomericSmiles=False) : reward
-            for old_smi, reward in target_dict
+            for old_smi, reward in target_dict.items()
         }
 
         return new_target_dict
 
     def get_recommendations(self): 
         """ Completes condition recommendation for any reaction node that does not have conditions """
-        for node in self.graph.reaction_nodes_only():
-            if node.conditions_set: 
+        for node in tqdm(self.graph.reaction_nodes_only(), 'Recommending Conditions'):
+            if node.condition_set: 
                 continue
             
-            conditions = self.condition_recommender(node.smiles)
-            node.update_conditions(conditions)
+            condition = self.condition_recommender(node.smiles)
+            node.update_condition(condition)
     
     def get_rxn_scores(self): 
         """ Scores all reactions in the graph that are not already scored """
-        for node in self.graph.reaction_nodes_only(): 
+        for node in tqdm(self.graph.reaction_nodes_only(), 'Scoring reactions'): 
             if node.score_set: 
                 continue 
                 
-            score = self.rxn_scorer(rxn_smi=node.smiles, conditions=node.conditions)
+            score = self.rxn_scorer(rxn_smi=node.smiles, condition=node.condition)
+            node.update(score=score)
 
     def define_variables(self): 
         """ 

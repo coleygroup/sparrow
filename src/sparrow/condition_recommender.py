@@ -34,7 +34,7 @@ class AskcosRecommender():
     def recommend_conditions(self, rxn_smi: str, n_c: int = 1) -> List: 
         
         conditions = self.get_conditions(rxn_smi, n_c)
-        clean_conditions = [self.clean_condition[cond] for cond in conditions]
+        clean_conditions = [self.clean_condition(cond) for cond in conditions]
 
         return clean_conditions
     

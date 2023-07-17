@@ -120,7 +120,7 @@ class CompoundNode(Node):
         if buyable: 
             self.buyable = buyable
         
-        if cost_per_g: 
+        if cost_per_g is not None: 
             self.cost_per_g = cost_per_g
 
         if reward: 

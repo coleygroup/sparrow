@@ -13,15 +13,11 @@ class Scorer(ABC):
 
     """
     @abstractmethod
-    def score_rxn(rxn_smi: str, conditions: List = None) -> Union[float, int]:
+    def score_rxn(rxn_smi: str, condition: List = None) -> Union[float, int]:
         """ Calculates a reaction score """
 
-    @abstractproperty
-    def requires_contexts() -> bool:
-        """ Whether the scorer needs contexts (i.e., conditions) to score a reaction """
-
-    def __call__(self, rxn_smi, conditions: List = None) -> float: 
-        self.score_rxn(rxn_smi, conditions)
+    def __call__(self, rxn_smi, condition: List = None) -> float: 
+        self.score_rxn(rxn_smi, condition)
     
 
 class AskcosScorer(Scorer): 
@@ -44,12 +40,13 @@ class AskcosScorer(Scorer):
         evaluation_results = self.scorer.evaluate(
             reactant_smiles=reactant_smi, 
             target=product_smi, 
-            contexts=[condition],
+            contexts=condition,
         )
 
         score = evaluation_results[0]['target']['prob']
 
         return score 
+
     
 
 class LookupScorer(Scorer): 
