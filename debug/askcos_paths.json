@@ -1,0 +1,2357 @@
+{
+	"Compound Nodes": [
+		{
+			"smiles": "CCOC(=O)CN",
+			"parents": []
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": []
+		},
+		{
+			"smiles": "O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+				"O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+				"O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+				"CCOC(=O)CN.Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Br)CBr>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+				"O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+				"NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1"
+			]
+		},
+		{
+			"smiles": "O=C(Br)CBr",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(Cl)CCl",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(O)CCl>>O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"CCCC(=O)OC(=O)CCl.Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Cl)CCl>>O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Br)CCl>>O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)NCC(=O)O",
+			"parents": []
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"CC(C)(C)OC(=O)NCC(=O)Cl.Nc1ccc(Br)cc1C(=O)c1ccccn1>>CC(C)(C)OC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"CC(C)(C)OC(=O)NCC(=O)O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>CC(C)(C)OC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"CC(C)(C)OC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(CNC(=O)OCc1ccccc1)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"NCC(=O)Cl.Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"[N-]=[N+]=NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"NCC(=O)O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(C[N+](=O)[O-])Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"C=CCOC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(CI)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(Cl)CBr",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(O)CBr>>O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"CCOC(=O)OC(=O)CBr.Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Cl)CBr>>O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Br)CBr>>O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(O)CBr",
+			"parents": []
+		},
+		{
+			"smiles": "[N-]=[N+]=NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1>>[N-]=[N+]=NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1>>[N-]=[N+]=NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(O)CCl",
+			"parents": []
+		},
+		{
+			"smiles": "C=CCOC(=O)Cl",
+			"parents": []
+		},
+		{
+			"smiles": "NCC(=O)O",
+			"parents": []
+		},
+		{
+			"smiles": "C=CCOC(=O)NCC(=O)O",
+			"parents": [
+				"C=CCOC(=O)NCC(=O)OC>>C=CCOC(=O)NCC(=O)O",
+				"C=CCOC(=O)Cl.NCC(=O)O>>C=CCOC(=O)NCC(=O)O"
+			]
+		},
+		{
+			"smiles": "C=CCOC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"C=CCOC(=O)NCC(=O)O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>C=CCOC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(Cl)CN1C(=O)c2ccccc2C1=O",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Cl)CN1C(=O)c2ccccc2C1=O>>O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(O)CN1C(=O)c2ccccc2C1=O>>O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"CCOC(=O)OC(=O)CN1C(=O)c2ccccc2C1=O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN1C(=O)c2ccccc2C1=O",
+			"parents": []
+		},
+		{
+			"smiles": "CCOC(=O)Cl",
+			"parents": []
+		},
+		{
+			"smiles": "CCOC(=O)OC(=O)CBr",
+			"parents": [
+				"CCOC(=O)Cl.O=C(O)CBr>>CCOC(=O)OC(=O)CBr"
+			]
+		},
+		{
+			"smiles": "CC(=O)Cl",
+			"parents": []
+		},
+		{
+			"smiles": "CC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"CC(=O)Cl.Nc1ccc(Br)cc1C(=O)c1ccccn1>>CC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"CC(=O)OC(C)=O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>CC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1.NCC(=O)O>>CC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O>>CC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=NCC(=O)OCc1ccccc1)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"O=CNc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"NCC(=O)O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"[N-]=[N+]=Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CC1CCC(C(C)C)C(OC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2N)C1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=NCC(=O)OC(c1ccccc1)c1ccccc1)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=NCCO)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(=O)OC(C)=O",
+			"parents": []
+		},
+		{
+			"smiles": "CCOC(=O)OC(=O)CN1C(=O)c2ccccc2C1=O",
+			"parents": [
+				"CCOC(=O)Cl.O=C(O)CN1C(=O)c2ccccc2C1=O>>CCOC(=O)OC(=O)CN1C(=O)c2ccccc2C1=O"
+			]
+		},
+		{
+			"smiles": "O=C(O)CNC(=O)OCc1ccccc1",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(CNC(=O)OCc1ccccc1)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(O)CNC(=O)OCc1ccccc1>>O=C(CNC(=O)OCc1ccccc1)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Cl)CNC(=O)OCc1ccccc1>>O=C(CNC(=O)OCc1ccccc1)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCCC(=O)Cl",
+			"parents": []
+		},
+		{
+			"smiles": "CCCC(=O)OC(=O)CCl",
+			"parents": [
+				"CCCC(=O)Cl.O=C(O)CCl>>CCCC(=O)OC(=O)CCl",
+				"CCCC(=O)[O-].O=C(Cl)CCl>>CCCC(=O)OC(=O)CCl",
+				"CCCC(=O)O.O=C(Cl)CCl>>CCCC(=O)OC(=O)CCl",
+				"CCCC(=O)Cl.O=C([O-])CCl>>CCCC(=O)OC(=O)CCl"
+			]
+		},
+		{
+			"smiles": "CCCC(=O)O",
+			"parents": []
+		},
+		{
+			"smiles": "O=C([O-])CCl",
+			"parents": []
+		},
+		{
+			"smiles": "Br[Zn]c1ccccn1",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(Cl)c1cccc(Br)c1",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(c1cccc(Br)c1)c1ccccn1",
+			"parents": [
+				"Br[Zn]c1ccccn1.O=C(Cl)c1cccc(Br)c1>>O=C(c1cccc(Br)c1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1cccc(Br)c1)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN.O=C(c1cccc(Br)c1)c1ccccn1>>CCOC(=O)CN=C(c1cccc(Br)c1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "NC(=O)C(F)(F)F",
+			"parents": []
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N.O=C(OC(=O)C(F)(F)F)C(F)(F)F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+				"CCOC(=O)CN=C(c1cccc(Br)c1)c1ccccn1.NC(=O)C(F)(F)F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F"
+			]
+		},
+		{
+			"smiles": "Fc1ccc(Br)cc1Br",
+			"parents": []
+		},
+		{
+			"smiles": "N#Cc1ccccn1",
+			"parents": []
+		},
+		{
+			"smiles": "N=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"Fc1ccc(Br)cc1Br.N#Cc1ccccn1>>N=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"CCO.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+				"CCOC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "O=C(CI)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CI)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CI)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "C[N+](=O)[O-]",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(OC(Cl)(Cl)Cl)OC(Cl)(Cl)Cl",
+			"parents": []
+		},
+		{
+			"smiles": "O=C=Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(OC(Cl)(Cl)Cl)OC(Cl)(Cl)Cl>>O=C=Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(C[N+](=O)[O-])Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"C[N+](=O)[O-].O=C=Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(C[N+](=O)[O-])Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1.O=[N+]([O-])C=C(Cl)Cl>>O=C(C[N+](=O)[O-])Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "C=C(Cl)Cl",
+			"parents": []
+		},
+		{
+			"smiles": "O=[N+]([O-])C=C(Cl)Cl",
+			"parents": [
+				"C=C(Cl)Cl>>O=[N+]([O-])C=C(Cl)Cl"
+			]
+		},
+		{
+			"smiles": "CCCC(=O)[O-]",
+			"parents": []
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"Brc1ccccn1.O=C(O)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"Brc1ccccn1.COC(=O)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"Br[Zn]c1ccccn1.O=C(Cl)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"O=C(c1cccc(Br)c1)c1ccccn1>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"O=[N+]([O-])c1ccc(Br)cc1C(O)c1ccccn1>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CC(C)(C)OC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CC(C)(C)O.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CC(C)(C)OC(=O)CN.O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"COc1ccc(COC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2[N+](=O)[O-])cc1>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"NC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CCO.COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CCBr.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CCO.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CCI.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CCOC(=O)CN.O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "O=C(O)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(Cl)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"O=C(O)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(Cl)c1cc(Br)ccc1[N+](=O)[O-]",
+				"O=C(Cl)C(=O)Cl.O=C(O)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(Cl)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "Brc1ccccn1",
+			"parents": []
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"CCO.COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "O=C(OC(=O)C(F)(F)F)C(F)(F)F",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(Cl)C(=O)Cl",
+			"parents": []
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "O=Cc1ccccn1",
+			"parents": []
+		},
+		{
+			"smiles": "O=[N+]([O-])c1ccc(Br)cc1I",
+			"parents": []
+		},
+		{
+			"smiles": "O=[N+]([O-])c1ccc(Br)cc1C(O)c1ccccn1",
+			"parents": [
+				"O=Cc1ccccn1.O=[N+]([O-])c1ccc(Br)cc1I>>O=[N+]([O-])c1ccc(Br)cc1C(O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "NCCO",
+			"parents": []
+		},
+		{
+			"smiles": "O=[N+]([O-])c1ccc(Br)cc1C(=NCCO)c1ccccn1",
+			"parents": [
+				"NCCO.O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=[N+]([O-])c1ccc(Br)cc1C(=NCCO)c1ccccn1",
+				"CC(C)(C)[Si](C)(C)OCCN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=[N+]([O-])c1ccc(Br)cc1C(=NCCO)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=NCCO)c1ccccn1",
+			"parents": [
+				"O=[N+]([O-])c1ccc(Br)cc1C(=NCCO)c1ccccn1>>Nc1ccc(Br)cc1C(=NCCO)c1ccccn1",
+				"N=C(c1ccccn1)c1cc(Br)ccc1N.NCCO>>Nc1ccc(Br)cc1C(=NCCO)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCI",
+			"parents": []
+		},
+		{
+			"smiles": "CCO",
+			"parents": []
+		},
+		{
+			"smiles": "CCBr",
+			"parents": []
+		},
+		{
+			"smiles": "COC(=O)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": []
+		},
+		{
+			"smiles": "COC(=O)CN",
+			"parents": []
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"COC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1F>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)O",
+			"parents": []
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C",
+			"parents": []
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+			"parents": [
+				"CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1.CCO>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+				"CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C>>CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C>>CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CN(N=O)C(N)=O",
+			"parents": []
+		},
+		{
+			"smiles": "C=[N+]=[N-]",
+			"parents": [
+				"CN(N=O)C(=N)N[N+](=O)[O-]>>C=[N+]=[N-]",
+				"C=NNS(=O)(=O)c1ccc(C)cc1>>C=[N+]=[N-]",
+				"CN(N=O)C(N)=O>>C=[N+]=[N-]"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"C=[N+]=[N-].O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"COC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CO.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N.O=C(OC(=O)C(F)(F)F)C(F)(F)F>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F"
+			]
+		},
+		{
+			"smiles": "CN(N=O)C(=N)N[N+](=O)[O-]",
+			"parents": []
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+			"parents": [
+				"CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+				"C=[N+]=[N-].CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+				"CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1.C[Si](C)(C)C=[N+]=[N-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "CO",
+			"parents": []
+		},
+		{
+			"smiles": "C=CCOC(=O)NCC(=O)OC",
+			"parents": [
+				"C=CCOC(=O)Cl.COC(=O)CN>>C=CCOC(=O)NCC(=O)OC"
+			]
+		},
+		{
+			"smiles": "[N-]=[N+]=C(c1ccccc1)c1ccccc1",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OC(c1ccccc1)c1ccccc1",
+			"parents": [
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-].[N-]=[N+]=C(c1ccccc1)c1ccccc1>>O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OC(c1ccccc1)c1ccccc1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=NCC(=O)OC(c1ccccc1)c1ccccc1)c1ccccn1",
+			"parents": [
+				"O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OC(c1ccccc1)c1ccccc1>>Nc1ccc(Br)cc1C(=NCC(=O)OC(c1ccccc1)c1ccccc1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Br[Mg]c1cccc(Br)c1",
+			"parents": []
+		},
+		{
+			"smiles": "N=C(c1cccc(Br)c1)c1ccccn1",
+			"parents": [
+				"Br[Mg]c1cccc(Br)c1.N#Cc1ccccn1>>N=C(c1cccc(Br)c1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1N>>N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"N=C(c1cccc(Br)c1)c1ccccn1>>N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "NCC(=O)Cl",
+			"parents": [
+				"NCC(=O)O>>NCC(=O)Cl"
+			]
+		},
+		{
+			"smiles": "CC1CCC(C(C)C)C(O)C1",
+			"parents": []
+		},
+		{
+			"smiles": "CC1CCC(C(C)C)C(OC(=O)CN)C1",
+			"parents": [
+				"CC1CCC(C(C)C)C(O)C1.NCC(=O)O>>CC1CCC(C(C)C)C(OC(=O)CN)C1"
+			]
+		},
+		{
+			"smiles": "N=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>N=C(c1ccccn1)c1cc(Br)ccc1N",
+				"N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>N=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CC1CCC(C(C)C)C(OC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2N)C1",
+			"parents": [
+				"CC1CCC(C(C)C)C(OC(=O)CN)C1.N=C(c1ccccn1)c1cc(Br)ccc1N>>CC1CCC(C(C)C)C(OC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2N)C1"
+			]
+		},
+		{
+			"smiles": "C[Si](C)(C)C=[N+]=[N-]",
+			"parents": []
+		},
+		{
+			"smiles": "O=CO",
+			"parents": []
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N.O=CO>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O"
+			]
+		},
+		{
+			"smiles": "O=CNc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O>>O=CNc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O>>O=CNc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "C=CCO",
+			"parents": []
+		},
+		{
+			"smiles": "C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"C=CCO.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N.O=CO>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]",
+			"parents": [
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]"
+			]
+		},
+		{
+			"smiles": "[N-]=[N+]=Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]>>[N-]=[N+]=Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]>>[N-]=[N+]=Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "COc1ccc(CO)cc1",
+			"parents": []
+		},
+		{
+			"smiles": "COc1ccc(COC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2[N+](=O)[O-])cc1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-].COc1ccc(CO)cc1>>COc1ccc(COC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2[N+](=O)[O-])cc1"
+			]
+		},
+		{
+			"smiles": "OCc1ccccc1",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OCc1ccccc1",
+			"parents": [
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-].OCc1ccccc1>>O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OCc1ccccc1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=NCC(=O)OCc1ccccc1)c1ccccn1",
+			"parents": [
+				"O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OCc1ccccc1>>Nc1ccc(Br)cc1C(=NCC(=O)OCc1ccccc1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(Cl)CNC(=O)OCc1ccccc1",
+			"parents": [
+				"O=C(O)CNC(=O)OCc1ccccc1>>O=C(Cl)CNC(=O)OCc1ccccc1"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)[Si](C)(C)OCCN",
+			"parents": []
+		},
+		{
+			"smiles": "CC(C)(C)[Si](C)(C)OCCN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CC(C)(C)[Si](C)(C)OCCN.O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)[Si](C)(C)OCCN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "O=C(O)CO",
+			"parents": []
+		},
+		{
+			"smiles": "O=C(Br)CO",
+			"parents": [
+				"O=C(O)CO>>O=C(Br)CO"
+			]
+		},
+		{
+			"smiles": "O=C(Br)CCl",
+			"parents": [
+				"O=C(Br)CO>>O=C(Br)CCl",
+				"CC(=O)Br>>O=C(Br)CCl"
+			]
+		},
+		{
+			"smiles": "NC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>NC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN",
+			"parents": []
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CC(C)OC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CC(=O)Br",
+			"parents": []
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O",
+				"CC(=O)OC(C)=O.CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O",
+				"CC(=O)Cl.CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)NCC(=O)Cl",
+			"parents": [
+				"CC(C)(C)OC(=O)NCC(=O)O>>CC(C)(C)OC(=O)NCC(=O)Cl",
+				"CC(C)(C)OC(=O)NCC(=O)O.O=S(Cl)Cl>>CC(C)(C)OC(=O)NCC(=O)Cl"
+			]
+		},
+		{
+			"smiles": "C=O",
+			"parents": []
+		},
+		{
+			"smiles": "Cc1ccc(S(=O)(=O)NN)cc1",
+			"parents": []
+		},
+		{
+			"smiles": "C=NNS(=O)(=O)c1ccc(C)cc1",
+			"parents": [
+				"C=O.Cc1ccc(S(=O)(=O)NN)cc1>>C=NNS(=O)(=O)c1ccc(C)cc1"
+			]
+		},
+		{
+			"smiles": "O=C=O",
+			"parents": []
+		},
+		{
+			"smiles": "[C]=O",
+			"parents": [
+				"O=C=O>>[C]=O",
+				"O=CO>>[C]=O",
+				"C=O>>[C]=O",
+				"CO>>[C]=O"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+			"parents": [
+				"CCO.N=C(c1cccc(Br)c1)c1ccccn1.[C]=O>>CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1",
+			"parents": [
+				"CC(C)(C)OC(=O)CN.CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CC(C)(C)OC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OCC>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC)c1ccccn1>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]"
+			]
+		},
+		{
+			"smiles": "COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1",
+			"parents": [
+				"C=[N+]=[N-].CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)C)c1ccccn1>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CN(C)C(OC(C)(C)C)OC(C)(C)C",
+			"parents": []
+		},
+		{
+			"smiles": "N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+			"parents": [
+				"CN(C)C(OC(C)(C)C)OC(C)(C)C.N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>CC(C)(C)OC(=O)c1ccc(Br)cc1C(=N)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C",
+			"parents": [
+				"CC(C)(C)OC(=O)c1ccc(Br)cc1C(=N)c1ccccn1.CCOC(=O)CN>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C>>CC(C)(C)OC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OCC>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+			"parents": [
+				"CI.N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+				"C[Si](C)(C)C=[N+]=[N-].N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+				"N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+				"C=[N+]=[N-].N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC",
+			"parents": [
+				"CCOC(=O)CN.COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC"
+			]
+		},
+		{
+			"smiles": "CI",
+			"parents": []
+		},
+		{
+			"smiles": "O=S(Cl)Cl",
+			"parents": []
+		},
+		{
+			"smiles": "COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)C)c1ccccn1",
+			"parents": [
+				"CC(C)OC(=O)CN.COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)C)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)C)c1ccccn1>>CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C",
+			"parents": [
+				"CC(C)(C)OC(=O)c1ccc(Br)cc1C(=N)c1ccccn1.COC(=O)CN>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC)c1ccccn1>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC)c1ccccn1",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1.COC(=O)CN>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OCC",
+			"parents": [
+				"CCOC(=O)CN.CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OCC"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC",
+			"parents": [
+				"COC(=O)CN.COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC"
+			]
+		}
+	],
+	"Reaction Nodes": [
+		{
+			"smiles": "CCOC(=O)CN.Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"CCOC(=O)CN"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Br)CBr>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(Br)CBr"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Cl)CCl>>O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(Cl)CCl"
+			]
+		},
+		{
+			"smiles": "O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+			"parents": [
+				"O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)NCC(=O)O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>CC(C)(C)OC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"CC(C)(C)OC(=O)NCC(=O)O"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"CC(C)(C)OC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+			"parents": [
+				"NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Cl)CBr>>O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(Cl)CBr"
+			]
+		},
+		{
+			"smiles": "O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+			"parents": [
+				"O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(O)CBr>>O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(O)CBr",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1>>[N-]=[N+]=NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "[N-]=[N+]=NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"[N-]=[N+]=NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Br)CBr>>O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(Br)CBr"
+			]
+		},
+		{
+			"smiles": "O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1>>[N-]=[N+]=NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(O)CCl>>O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(O)CCl",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "C=CCOC(=O)Cl.NCC(=O)O>>C=CCOC(=O)NCC(=O)O",
+			"parents": [
+				"C=CCOC(=O)Cl",
+				"NCC(=O)O"
+			]
+		},
+		{
+			"smiles": "C=CCOC(=O)NCC(=O)O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>C=CCOC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"C=CCOC(=O)NCC(=O)O",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "C=CCOC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"C=CCOC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Cl)CN1C(=O)c2ccccc2C1=O>>O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(Cl)CN1C(=O)c2ccccc2C1=O",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(O)CN1C(=O)c2ccccc2C1=O>>O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(O)CN1C(=O)c2ccccc2C1=O",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)Cl.O=C(O)CBr>>CCOC(=O)OC(=O)CBr",
+			"parents": [
+				"O=C(O)CBr",
+				"CCOC(=O)Cl"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)OC(=O)CBr.Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)OC(=O)CBr",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(=O)Cl.Nc1ccc(Br)cc1C(=O)c1ccccn1>>CC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"CC(=O)Cl"
+			]
+		},
+		{
+			"smiles": "CC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1.NCC(=O)O>>CC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"NCC(=O)O"
+			]
+		},
+		{
+			"smiles": "CC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(=O)OC(C)=O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>CC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"CC(=O)OC(C)=O",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "NCC(=O)O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"NCC(=O)O"
+			]
+		},
+		{
+			"smiles": "NCC(=O)O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"NCC(=O)O"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)Cl.O=C(O)CN1C(=O)c2ccccc2C1=O>>CCOC(=O)OC(=O)CN1C(=O)c2ccccc2C1=O",
+			"parents": [
+				"O=C(O)CN1C(=O)c2ccccc2C1=O",
+				"CCOC(=O)Cl"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)OC(=O)CN1C(=O)c2ccccc2C1=O.Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)OC(=O)CN1C(=O)c2ccccc2C1=O",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(O)CNC(=O)OCc1ccccc1>>O=C(CNC(=O)OCc1ccccc1)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(O)CNC(=O)OCc1ccccc1",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(CNC(=O)OCc1ccccc1)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CNC(=O)OCc1ccccc1)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C1CN=C(c2ccccn2)c2cc(Br)ccc2N1",
+			"parents": [
+				"O=C(CN1C(=O)c2ccccc2C1=O)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCCC(=O)Cl.O=C(O)CCl>>CCCC(=O)OC(=O)CCl",
+			"parents": [
+				"CCCC(=O)Cl",
+				"O=C(O)CCl"
+			]
+		},
+		{
+			"smiles": "CCCC(=O)OC(=O)CCl.Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"CCCC(=O)OC(=O)CCl",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCCC(=O)O.O=C(Cl)CCl>>CCCC(=O)OC(=O)CCl",
+			"parents": [
+				"CCCC(=O)O",
+				"O=C(Cl)CCl"
+			]
+		},
+		{
+			"smiles": "CCCC(=O)Cl.O=C([O-])CCl>>CCCC(=O)OC(=O)CCl",
+			"parents": [
+				"O=C([O-])CCl",
+				"CCCC(=O)Cl"
+			]
+		},
+		{
+			"smiles": "Br[Zn]c1ccccn1.O=C(Cl)c1cccc(Br)c1>>O=C(c1cccc(Br)c1)c1ccccn1",
+			"parents": [
+				"Br[Zn]c1ccccn1",
+				"O=C(Cl)c1cccc(Br)c1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN.O=C(c1cccc(Br)c1)c1ccccn1>>CCOC(=O)CN=C(c1cccc(Br)c1)c1ccccn1",
+			"parents": [
+				"O=C(c1cccc(Br)c1)c1ccccn1",
+				"CCOC(=O)CN"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1cccc(Br)c1)c1ccccn1.NC(=O)C(F)(F)F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+			"parents": [
+				"NC(=O)C(F)(F)F",
+				"CCOC(=O)CN=C(c1cccc(Br)c1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F"
+			]
+		},
+		{
+			"smiles": "Fc1ccc(Br)cc1Br.N#Cc1ccccn1>>N=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"N#Cc1ccccn1",
+				"Fc1ccc(Br)cc1Br"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1F",
+				"CCOC(=O)CN"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CI)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(CI)Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CI)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(OC(Cl)(Cl)Cl)OC(Cl)(Cl)Cl>>O=C=Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(OC(Cl)(Cl)Cl)OC(Cl)(Cl)Cl"
+			]
+		},
+		{
+			"smiles": "C[N+](=O)[O-].O=C=Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(C[N+](=O)[O-])Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C=Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"C[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "O=C(C[N+](=O)[O-])Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(C[N+](=O)[O-])Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "C=C(Cl)Cl>>O=[N+]([O-])C=C(Cl)Cl",
+			"parents": [
+				"C=C(Cl)Cl"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=[N+]([O-])C=C(Cl)Cl>>O=C(C[N+](=O)[O-])Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=[N+]([O-])C=C(Cl)Cl",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1>>O=C(CI)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(CBr)Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCCC(=O)[O-].O=C(Cl)CCl>>CCCC(=O)OC(=O)CCl",
+			"parents": [
+				"CCCC(=O)[O-]",
+				"O=C(Cl)CCl"
+			]
+		},
+		{
+			"smiles": "O=C(c1cccc(Br)c1)c1ccccn1>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"O=C(c1cccc(Br)c1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN.O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CC(C)(C)OC(=O)CN",
+				"O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN.O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CCOC(=O)CN"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "O=C(O)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(Cl)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"O=C(O)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "Br[Zn]c1ccccn1.O=C(Cl)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"Br[Zn]c1ccccn1",
+				"O=C(Cl)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "Brc1ccccn1.O=C(O)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"Brc1ccccn1",
+				"O=C(O)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N.O=C(OC(=O)C(F)(F)F)C(F)(F)F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+			"parents": [
+				"O=C(OC(=O)C(F)(F)F)C(F)(F)F",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "O=C(Cl)C(=O)Cl.O=C(O)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(Cl)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"O=C(O)c1cc(Br)ccc1[N+](=O)[O-]",
+				"O=C(Cl)C(=O)Cl"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "O=Cc1ccccn1.O=[N+]([O-])c1ccc(Br)cc1I>>O=[N+]([O-])c1ccc(Br)cc1C(O)c1ccccn1",
+			"parents": [
+				"O=[N+]([O-])c1ccc(Br)cc1I",
+				"O=Cc1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=[N+]([O-])c1ccc(Br)cc1C(O)c1ccccn1>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"O=[N+]([O-])c1ccc(Br)cc1C(O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "NCCO.O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=[N+]([O-])c1ccc(Br)cc1C(=NCCO)c1ccccn1",
+			"parents": [
+				"O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"NCCO"
+			]
+		},
+		{
+			"smiles": "O=[N+]([O-])c1ccc(Br)cc1C(=NCCO)c1ccccn1>>Nc1ccc(Br)cc1C(=NCCO)c1ccccn1",
+			"parents": [
+				"O=[N+]([O-])c1ccc(Br)cc1C(=NCCO)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=NCCO)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=NCCO)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCI.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CCI",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CCO.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CCO",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CCBr.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CCBr",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "Brc1ccccn1.COC(=O)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"Brc1ccccn1",
+				"COC(=O)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1F>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"COC(=O)CN",
+				"N=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)O.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CC(C)(C)O",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+			"parents": [
+				"CC(C)(C)OC(=O)OC(=O)OC(C)(C)C",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C>>CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CN(N=O)C(N)=O>>C=[N+]=[N-]",
+			"parents": [
+				"CN(N=O)C(N)=O"
+			]
+		},
+		{
+			"smiles": "C=[N+]=[N-].O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"C=[N+]=[N-]",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N.O=C(OC(=O)C(F)(F)F)C(F)(F)F>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"O=C(OC(=O)C(F)(F)F)C(F)(F)F"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)C(F)(F)F"
+			]
+		},
+		{
+			"smiles": "CN(N=O)C(=N)N[N+](=O)[O-]>>C=[N+]=[N-]",
+			"parents": [
+				"CN(N=O)C(=N)N[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)OC(=O)OC(C)(C)C.COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"CC(C)(C)OC(=O)OC(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C>>CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "CO.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CO",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "C=CCOC(=O)Cl.COC(=O)CN>>C=CCOC(=O)NCC(=O)OC",
+			"parents": [
+				"C=CCOC(=O)Cl",
+				"COC(=O)CN"
+			]
+		},
+		{
+			"smiles": "C=CCOC(=O)NCC(=O)OC>>C=CCOC(=O)NCC(=O)O",
+			"parents": [
+				"C=CCOC(=O)NCC(=O)OC"
+			]
+		},
+		{
+			"smiles": "CCO.COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CCO",
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CCO.COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"CCO"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-].[N-]=[N+]=C(c1ccccc1)c1ccccc1>>O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OC(c1ccccc1)c1ccccc1",
+			"parents": [
+				"[N-]=[N+]=C(c1ccccc1)c1ccccc1",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OC(c1ccccc1)c1ccccc1>>Nc1ccc(Br)cc1C(=NCC(=O)OC(c1ccccc1)c1ccccc1)c1ccccn1",
+			"parents": [
+				"O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OC(c1ccccc1)c1ccccc1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=NCC(=O)OC(c1ccccc1)c1ccccc1)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=NCC(=O)OC(c1ccccc1)c1ccccc1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "Br[Mg]c1cccc(Br)c1.N#Cc1ccccn1>>N=C(c1cccc(Br)c1)c1ccccn1",
+			"parents": [
+				"N#Cc1ccccn1",
+				"Br[Mg]c1cccc(Br)c1"
+			]
+		},
+		{
+			"smiles": "N=C(c1cccc(Br)c1)c1ccccn1>>N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"N=C(c1cccc(Br)c1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CC(C)(C)OC(=O)CN",
+				"N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "NCC(=O)O>>NCC(=O)Cl",
+			"parents": [
+				"NCC(=O)O"
+			]
+		},
+		{
+			"smiles": "NCC(=O)Cl.Nc1ccc(Br)cc1C(=O)c1ccccn1>>NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"NCC(=O)Cl",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"COC(=O)CN"
+			]
+		},
+		{
+			"smiles": "CC1CCC(C(C)C)C(O)C1.NCC(=O)O>>CC1CCC(C(C)C)C(OC(=O)CN)C1",
+			"parents": [
+				"NCC(=O)O",
+				"CC1CCC(C(C)C)C(O)C1"
+			]
+		},
+		{
+			"smiles": "N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>N=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC1CCC(C(C)C)C(OC(=O)CN)C1.N=C(c1ccccn1)c1cc(Br)ccc1N>>CC1CCC(C(C)C)C(OC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2N)C1",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1N",
+				"CC1CCC(C(C)C)C(OC(=O)CN)C1"
+			]
+		},
+		{
+			"smiles": "CC1CCC(C(C)C)C(OC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2N)C1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CC1CCC(C(C)C)C(OC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2N)C1"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1.C[Si](C)(C)C=[N+]=[N-]>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+			"parents": [
+				"C[Si](C)(C)C=[N+]=[N-]",
+				"CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N.O=CO>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"O=CO"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O>>O=CNc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O"
+			]
+		},
+		{
+			"smiles": "O=CNc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"O=CNc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "C=[N+]=[N-].CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+			"parents": [
+				"CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+				"C=[N+]=[N-]"
+			]
+		},
+		{
+			"smiles": "C=CCO.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"C=CCO",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"C=CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N.O=CO>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"O=CO"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O>>O=CNc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC=O"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]",
+			"parents": [
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]>>[N-]=[N+]=Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]"
+			]
+		},
+		{
+			"smiles": "[N-]=[N+]=Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"[N-]=[N+]=Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-].COc1ccc(CO)cc1>>COc1ccc(COC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2[N+](=O)[O-])cc1",
+			"parents": [
+				"COc1ccc(CO)cc1",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "COc1ccc(COC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2[N+](=O)[O-])cc1>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"COc1ccc(COC(=O)CN=C(c2ccccn2)c2cc(Br)ccc2[N+](=O)[O-])cc1"
+			]
+		},
+		{
+			"smiles": "N=C(c1ccccn1)c1cc(Br)ccc1N.NCCO>>Nc1ccc(Br)cc1C(=NCCO)c1ccccn1",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1N",
+				"NCCO"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1.CCO>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C",
+			"parents": [
+				"CCO",
+				"CC(C)(C)OC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-].OCc1ccccc1>>O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OCc1ccccc1",
+			"parents": [
+				"OCc1ccccc1",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OCc1ccccc1>>Nc1ccc(Br)cc1C(=NCC(=O)OCc1ccccc1)c1ccccn1",
+			"parents": [
+				"O=C(CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-])OCc1ccccc1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=NCC(=O)OCc1ccccc1)c1ccccn1>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=NCC(=O)OCc1ccccc1)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "O=C(O)CNC(=O)OCc1ccccc1>>O=C(Cl)CNC(=O)OCc1ccccc1",
+			"parents": [
+				"O=C(O)CNC(=O)OCc1ccccc1"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Cl)CNC(=O)OCc1ccccc1>>O=C(CNC(=O)OCc1ccccc1)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"O=C(Cl)CNC(=O)OCc1ccccc1"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)[Si](C)(C)OCCN.O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)(C)[Si](C)(C)OCCN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"O=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CC(C)(C)[Si](C)(C)OCCN"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)[Si](C)(C)OCCN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=[N+]([O-])c1ccc(Br)cc1C(=NCCO)c1ccccn1",
+			"parents": [
+				"CC(C)(C)[Si](C)(C)OCCN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "O=C(O)CO>>O=C(Br)CO",
+			"parents": [
+				"O=C(O)CO"
+			]
+		},
+		{
+			"smiles": "O=C(Br)CO>>O=C(Br)CCl",
+			"parents": [
+				"O=C(Br)CO"
+			]
+		},
+		{
+			"smiles": "Nc1ccc(Br)cc1C(=O)c1ccccn1.O=C(Br)CCl>>O=C(CCl)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"O=C(Br)CCl",
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>NC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "NC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"NC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN.N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+				"CC(C)OC(=O)CN"
+			]
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "CC(=O)Br>>O=C(Br)CCl",
+			"parents": [
+				"CC(=O)Br"
+			]
+		},
+		{
+			"smiles": "CC(=O)Cl.CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+				"CC(=O)Cl"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O>>CC(=O)Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O"
+			]
+		},
+		{
+			"smiles": "CC(=O)OC(C)=O.CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O",
+			"parents": [
+				"CC(=O)OC(C)=O",
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1NC(C)=O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)NCC(=O)O>>CC(C)(C)OC(=O)NCC(=O)Cl",
+			"parents": [
+				"CC(C)(C)OC(=O)NCC(=O)O"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)NCC(=O)Cl.Nc1ccc(Br)cc1C(=O)c1ccccn1>>CC(C)(C)OC(=O)NCC(=O)Nc1ccc(Br)cc1C(=O)c1ccccn1",
+			"parents": [
+				"Nc1ccc(Br)cc1C(=O)c1ccccn1",
+				"CC(C)(C)OC(=O)NCC(=O)Cl"
+			]
+		},
+		{
+			"smiles": "C=O.Cc1ccc(S(=O)(=O)NN)cc1>>C=NNS(=O)(=O)c1ccc(C)cc1",
+			"parents": [
+				"C=O",
+				"Cc1ccc(S(=O)(=O)NN)cc1"
+			]
+		},
+		{
+			"smiles": "C=NNS(=O)(=O)c1ccc(C)cc1>>C=[N+]=[N-]",
+			"parents": [
+				"C=NNS(=O)(=O)c1ccc(C)cc1"
+			]
+		},
+		{
+			"smiles": "O=C=O>>[C]=O",
+			"parents": [
+				"O=C=O"
+			]
+		},
+		{
+			"smiles": "CCO.N=C(c1cccc(Br)c1)c1ccccn1.[C]=O>>CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+			"parents": [
+				"CCO",
+				"N=C(c1cccc(Br)c1)c1ccccn1",
+				"[C]=O"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN.CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1",
+			"parents": [
+				"CC(C)(C)OC(=O)CN",
+				"CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1>>CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "C=O>>[C]=O",
+			"parents": [
+				"C=O"
+			]
+		},
+		{
+			"smiles": "CO>>[C]=O",
+			"parents": [
+				"CO"
+			]
+		},
+		{
+			"smiles": "O=CO>>[C]=O",
+			"parents": [
+				"O=CO"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]>>[N-]=[N+]=Nc1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]"
+			]
+		},
+		{
+			"smiles": "C=[N+]=[N-].CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1",
+			"parents": [
+				"C=[N+]=[N-]",
+				"CC(C)(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)(C)C)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CN(C)C(OC(C)(C)C)OC(C)(C)C.N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>CC(C)(C)OC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CN(C)C(OC(C)(C)C)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)c1ccc(Br)cc1C(=N)c1ccccn1.CCOC(=O)CN>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C",
+			"parents": [
+				"CC(C)(C)OC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+				"CCOC(=O)CN"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C>>CC(C)(C)OC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CC(C)(C)OC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]"
+			]
+		},
+		{
+			"smiles": "C[Si](C)(C)C=[N+]=[N-].N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+			"parents": [
+				"C[Si](C)(C)C=[N+]=[N-]",
+				"N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN.COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC",
+			"parents": [
+				"COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+				"CCOC(=O)CN"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC"
+			]
+		},
+		{
+			"smiles": "CI.N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+				"CI"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)NCC(=O)O.O=S(Cl)Cl>>CC(C)(C)OC(=O)NCC(=O)Cl",
+			"parents": [
+				"O=S(Cl)Cl",
+				"CC(C)(C)OC(=O)NCC(=O)O"
+			]
+		},
+		{
+			"smiles": "C=[N+]=[N-].N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+			"parents": [
+				"C=[N+]=[N-]",
+				"N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN.COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)C)c1ccccn1",
+			"parents": [
+				"COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+				"CC(C)OC(=O)CN"
+			]
+		},
+		{
+			"smiles": "COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)C)c1ccccn1>>CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)C)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CC(C)OC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "CCO.O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1F",
+			"parents": [
+				"CCO",
+				"O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1F"
+			]
+		},
+		{
+			"smiles": "N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>N=C(c1ccccn1)c1cc(Br)ccc1N",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "N=C(c1ccccn1)c1cc(Br)ccc1N>>N=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]",
+			"parents": [
+				"N=C(c1ccccn1)c1cc(Br)ccc1N"
+			]
+		},
+		{
+			"smiles": "CC(C)(C)OC(=O)c1ccc(Br)cc1C(=N)c1ccccn1.COC(=O)CN>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C",
+			"parents": [
+				"COC(=O)CN",
+				"CC(C)(C)OC(=O)c1ccc(Br)cc1C(=N)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC(C)(C)C"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O>>O=C(O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1.COC(=O)CN>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC)c1ccccn1",
+			"parents": [
+				"COC(=O)CN",
+				"CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC)c1ccccn1>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC"
+			]
+		},
+		{
+			"smiles": "COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)C)c1ccccn1>>COC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"COC(=O)c1ccc(Br)cc1C(=NCC(=O)OC(C)C)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN.CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OCC",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=N)c1ccccn1",
+				"CCOC(=O)CN"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OCC>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OCC"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC)c1ccccn1>>CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)O)c1ccccn1",
+			"parents": [
+				"CCOC(=O)c1ccc(Br)cc1C(=NCC(=O)OC)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OCC>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OCC"
+			]
+		},
+		{
+			"smiles": "CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]>>CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1N=[N+]=[N-]",
+			"parents": [
+				"CCOC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1[N+](=O)[O-]"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN.COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC",
+			"parents": [
+				"COC(=O)CN",
+				"COC(=O)c1ccc(Br)cc1C(=N)c1ccccn1"
+			]
+		},
+		{
+			"smiles": "COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC>>COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)O",
+			"parents": [
+				"COC(=O)CN=C(c1ccccn1)c1cc(Br)ccc1C(=O)OC"
+			]
+		}
+	]
+}
