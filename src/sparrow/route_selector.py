@@ -28,8 +28,7 @@ class RouteSelector:
         self.graph.id_nodes()
 
         self.target_dict = self.clean_target_dict(target_dict)
-        self.targets = list(target_dict.keys())
-        self.rewards = list(self.target_dict.values())        
+        self.targets = list(self.target_dict.keys())
 
         self.rxn_scorer = rxn_scorer
         self.condition_recommender = condition_recommender
@@ -52,7 +51,9 @@ class RouteSelector:
     def clean_target_dict(self, target_dict: Dict[str, float]) -> Dict[str, float]:
         """ Converts target dict from Dict[smiles, reward] to Dict[id, reward] """
         new_target_dict = {
-            Chem.MolToSmiles(Chem.MolFromSmiles(old_smi), isomericSmiles=False) : reward
+            self.graph.id_from_smiles(
+                Chem.MolToSmiles(Chem.MolFromSmiles(old_smi), isomericSmiles=False)
+            ) : reward
             for old_smi, reward in target_dict.items()
         }
 
@@ -96,7 +97,7 @@ class RouteSelector:
             cat="Binary",
         ) # whether each starting material is used in the selected routes 
         
-        rxn_ids = [node.id for node in self.graph.reaction_nodes.values()]
+        rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
         self.o = LpVariable.dicts(
             "rxnfortarget",
             (rxn_ids, self.targets),
@@ -139,8 +140,7 @@ class RouteSelector:
         # flow into target node - flow out of target node = 0 (target not selected)
         # or 1 (target is selected )
         for target in self.targets: 
-            target_smi = self.graph.ids[target].smiles
-            parent_ids, child_ids = self.get_compound_child_and_parent_ids(target_smi)
+            parent_ids, child_ids = self.get_child_and_parent_ids(id=target)
             self.problem += (
                 lpSum([self.f[parent_id] for parent_id in parent_ids])
                     - lpSum([self.f[child_id] for child_id in child_ids])  
@@ -153,15 +153,14 @@ class RouteSelector:
     def set_intermediate_flow_constraint(self): 
         """ Sets constraint on flow through intermediate nodes: net flow must be zero """
         intermediate_nodes = [*self.graph.intermediate_nodes(), *self.graph.buyable_nodes()]
-        inter_smiles = [node.smiles for node in intermediate_nodes]
         
-        for inter in inter_smiles: 
-            parent_ids, child_ids = self.get_compound_child_and_parent_ids(inter)
+        for inter in intermediate_nodes: 
+            parent_ids, child_ids = self.get_child_and_parent_ids(id=inter.id)
             self.problem += (
                 lpSum([self.f[parent_id] for parent_id in parent_ids])
                     - lpSum([self.f[child_id] for child_id in child_ids])  
                     == 0,
-                f"Flow_Through_Inter_{self.graph.compound_nodes[inter].id}"
+                f"Flow_Through_Inter_{inter.id}"
             )
            
         return 
@@ -169,14 +168,14 @@ class RouteSelector:
     def set_starting_material_constraint(self):
         """ Sets constraint on 's' variables and dummy reaction nodes """
 
-        starting_smis = [node.smiles for node in self.graph.buyable_nodes()]
         N = len(self.targets)
-        for start in starting_smis: 
-            parent_ids, _ = self.get_compound_child_and_parent_ids(start) 
+
+        for start in self.graph.buyable_nodes(): 
+            parent_ids, _ = self.get_child_and_parent_ids(id=start.id) 
             # ^ parent_smis should only have one dummy rxn node if this is done correctly 
             self.problem += (
-                N*self.s[self.graph.compound_nodes[start].id] >= lpSum([self.f[rxn] for rxn in parent_ids]),
-                f"Start_{self.graph.compound_nodes[start].id}_from_dummy_flow"
+                N*self.s[start.id] >= lpSum([self.f[rxn] for rxn in parent_ids]),
+                f"Start_{start.id}_from_dummy_flow"
             )
 
         return 
@@ -186,7 +185,6 @@ class RouteSelector:
 
         N = len(self.targets)
         for rxn_smi, node in self.graph.reaction_nodes.items(): 
-            # parent_ids, _ = self.get_compound_child_and_parent_ids(rxn_smi) 
             # ^ parent_smis should only have one dummy rxn node if this is done correctly 
             self.problem += (
                 N*self.r[node.id] >= self.f[node.id],
@@ -198,11 +196,10 @@ class RouteSelector:
     def set_overall_flow_constraint(self):
         """ Sets constraint between o_mn and f_m for reaction node m """
 
-        rxn_ids = [node.id for node in self.graph.reaction_nodes.values()]
-        for rxn in rxn_ids: 
+        for rxn in self.graph.reaction_nodes_only(): 
             self.problem += (
-                self.f[rxn] == lpSum([self.o[rxn][target] for target in self.targets]),
-                f"Total_flow_through_{rxn}"
+                self.f[rxn.id] == lpSum([self.o[rxn.id][target] for target in self.targets]),
+                f"Total_flow_through_{rxn.id}"
             )
         
         return 
@@ -210,8 +207,7 @@ class RouteSelector:
     def set_all_targets_selected_constraint(self):
         """ Sets constraint that all targets are selected """
         for target in self.targets: 
-            target_smi = self.graph.ids[target].smiles
-            parent_ids, child_ids = self.get_compound_child_and_parent_ids(target_smi)
+            parent_ids, child_ids = self.get_child_and_parent_ids(target)
             self.problem += (
                 lpSum([self.f[parent_id] for parent_id in parent_ids])
                     - lpSum([self.f[child_id] for child_id in child_ids])  
@@ -221,11 +217,19 @@ class RouteSelector:
 
         return 
     
-    def get_compound_child_and_parent_ids(self, node_smis: str): 
+    def get_child_and_parent_ids(self, smi: str = None, id: str = None): 
         """ Returns list of child node smiles and parent node smiles for a given
         compound smiles """
-        child_ids = [child.id for child in self.graph.compound_nodes[node_smis].children.values()] 
-        parent_ids = [parent.id for parent in self.graph.compound_nodes[node_smis].parents.values()]
+        if smi is None and id is None: 
+            print('No node information given')
+            return None 
+        
+        if id is not None: 
+            child_ids = [child.id for child in self.graph.node_from_id(id).children.values()] 
+            parent_ids = [parent.id for parent in self.graph.node_from_id(id).parents.values()]
+        elif smi is not None: 
+            child_ids = [child.id for child in self.graph.node_from_smiles(smi).children.values()] 
+            parent_ids = [parent.id for parent in self.graph.node_from_smiles(smi).parents.values()]
 
         return parent_ids, child_ids
     
@@ -234,14 +238,16 @@ class RouteSelector:
         TODO: describe this in README """
         for start_node in self.graph.buyable_nodes(): 
             dummy_rxn_smiles = f">>{start_node.smiles}"
-            self.graph.add_reaction_node(dummy_rxn_smiles, children=[start_node.smiles], dummy=True)
-
-            # make penalty of dummy reactions zero 
-            self.graph.reaction_nodes[dummy_rxn_smiles].penalty = 0
+            self.graph.add_reaction_node(
+                dummy_rxn_smiles, 
+                children=[start_node.smiles], 
+                dummy=True, 
+                penalty=0
+            )
     
     def set_objective(self): 
         # FIX THIS 
-        rxn_ids = [node.id for node in self.graph.reaction_nodes.values()]
+        rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
 
         if self.constrain_all_targets: #TODO: fix this 
             self.problem += self.weights[0]
@@ -249,7 +255,7 @@ class RouteSelector:
             self.problem += -1*self.weights[0]*lpSum([self.target_dict[target]*self.a[target] for target in self.targets]) # reward
             self.problem += self.problem.objective + self.weights[1]*lpSum([s for s in self.s.values()]) # starting materials 
             self.problem += self.problem.objective + self.weights[2]*0 # not considering conditions yet 
-            self.problem += self.problem.objective + self.weights[3]*lpSum([self.r[rxn]*self.graph.id_nodes()[rxn].penalty for rxn in rxn_ids])
+            self.problem += self.problem.objective + self.weights[3]*lpSum([self.r[rxn]*self.graph.node_from_id(rxn).penalty for rxn in rxn_ids])
                 # reaction penalties 
         return 
     
@@ -267,18 +273,10 @@ class RouteSelector:
         return 
     
     def optimal_variables(self):
-        """ Takes optimal variables from problem solution and converts it to a set of routes """
+        """ Returns nonzero variables """
         nonzero_vars = [
             var for var in self.problem.variables() if var.varValue > 0.01
         ]
-        selected_targets = { var.name.split("target_")[1]: self.graph.ids[var.name.split("target_")[1]]
-            for var in nonzero_vars
-            if var.name.find("target_") == 0 
-        } # dict {id: smiles} for selected targets 
-
-        print('Selected targets: ')
-        for tar in selected_targets: 
-            print(self.graph.ids[tar].smiles)
 
         return nonzero_vars
 

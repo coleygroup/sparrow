@@ -117,19 +117,19 @@ class CompoundNode(Node):
         
         super().update(parents, children)
 
-        if buyable: 
+        if buyable is not None: 
             self.buyable = buyable
         
         if cost_per_g is not None: 
             self.cost_per_g = cost_per_g
 
-        if reward: 
+        if reward is not None: 
             self.reward = reward
         
-        if is_target: 
+        if is_target is not None: 
             self.is_target = is_target
         
-        if is_intermediate: 
+        if is_intermediate is not None: 
             self.is_intermediate = is_intermediate
 
         return 
@@ -146,10 +146,13 @@ class ReactionNode(Node):
                  score: Optional[float] = None, 
                  condition: Optional[List] = None,
                  dummy: Optional[bool] = False,
+                 max_penalty: Optional[float] = 20, 
                  **kwargs) -> None:
         
         super().__init__(smiles, parents, children, **kwargs)
         
+        self.max_penalty = max_penalty
+
         if condition is not None: # so that later conditions can be added through json route graph file 
             self.condition = condition
             self.condition_set = True 
@@ -177,6 +180,10 @@ class ReactionNode(Node):
         
         self.score = score
         self.score_set = True 
+        if score == 0: 
+            self.penalty = self.max_penalty
+        else: 
+            self.penalty = min(self.max_penalty, 1/score)
     
     def update_condition(self, condition): 
         """ 
@@ -205,24 +212,30 @@ class ReactionNode(Node):
                score = None, 
                score_set = None, 
                dummy = None,
+               penalty = None, 
                **kwargs) -> None: 
         
         super().update(parents, children)
 
-        if condition: 
+        if condition is not None: 
             self.update_condition(condition)
         
-        if condition_set: 
+        if condition_set is not None: 
             self.condition_set = condition_set
         
-        if score: 
+        if score is not None: 
             self.update_score(score)
         
-        if score_set: 
+        if score_set is not None: 
             self.score_set = score_set
         
-        if dummy: 
+        if dummy is not None: 
             self.dummy = dummy 
+        
+        if penalty is not None: 
+            self.penalty = 0
+            self.score = None 
+            self.score_set = True 
         
         return 
         

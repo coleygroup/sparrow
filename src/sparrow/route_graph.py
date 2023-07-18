@@ -227,12 +227,12 @@ class RouteGraph:
 
         return 
     
-    def intermediate_nodes(self): 
+    def intermediate_nodes(self) -> List[CompoundNode]: 
         """ Returns a list of CompoundNodes that have is_intermediate==1 """
         inter_nodes = [node for node in self.compound_nodes.values() if node.is_intermediate==1 ]
         return inter_nodes
     
-    def buyable_nodes(self):
+    def buyable_nodes(self) -> List[CompoundNode]:
         """ Returns a list of CompoundNodes that have buyable==1 """
         buyable_nodes = [node for node in self.compound_nodes.values() if node.buyable==1]
         return buyable_nodes
@@ -256,11 +256,23 @@ class RouteGraph:
 
     def reaction_nodes_only(self) -> List[ReactionNode]:
         """ Returns a list of ReactionNodes in this graph """
-        return self.reaction_nodes.values()
+        return list(self.reaction_nodes.values())
 
     def compound_nodes_only(self) -> List[CompoundNode]:
         """ Returns a list of ReactionNodes in this graph """
-        return self.compound_nodes.values()
+        return list(self.compound_nodes.values())
+
+    def node_from_id(self, id) -> Node: 
+        return self.ids[id]
+    
+    def node_from_smiles(self, smiles) -> Node: 
+        return self.nodes()[smiles]
+    
+    def id_from_smiles(self, smiles) -> str: 
+        return self.nodes()[smiles].id
+
+    def smiles_from_id(self, id) -> str: 
+        return self.node_from_id(id).smiles
 
     def to_json(self, filename) -> None: 
         compound_nodes = [node.to_dict() for node in self.compound_nodes_only()]

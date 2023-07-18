@@ -17,7 +17,8 @@ class Scorer(ABC):
         """ Calculates a reaction score """
 
     def __call__(self, rxn_smi, condition: List = None) -> float: 
-        self.score_rxn(rxn_smi, condition)
+        score = self.score_rxn(rxn_smi, condition)
+        return score
     
 
 class AskcosScorer(Scorer): 
