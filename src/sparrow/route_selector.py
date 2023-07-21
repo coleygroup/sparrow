@@ -5,6 +5,8 @@ from typing import Dict, Union, List
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
 from rdkit import Chem
 from tqdm import tqdm
+from pathlib import Path
+import csv 
 
 reward_type = Union[int, float]
 
@@ -22,10 +24,12 @@ class RouteSelector:
                  constrain_all_targets: bool = False, 
                  coster: Coster = None, 
                  weights: List = [1,1,1,1],
+                 output_dir: str = 'debug'
                  ) -> None:
         
         self.graph = route_graph  
         self.graph.id_nodes()
+        self.dir = Path(output_dir)
 
         self.target_dict = self.clean_target_dict(target_dict)
         self.targets = list(self.target_dict.keys())
@@ -36,7 +40,7 @@ class RouteSelector:
         self.constrain_all_targets = constrain_all_targets
         self.weights = weights
         
-        self.graph.set_compound_types(self.target_dict, coster=coster)
+        self.target_dict = self.graph.set_compound_types(self.target_dict, coster=coster)
 
         if self.condition_recommender is not None: 
             self.get_recommendations()
@@ -50,12 +54,30 @@ class RouteSelector:
 
     def clean_target_dict(self, target_dict: Dict[str, float]) -> Dict[str, float]:
         """ Converts target dict from Dict[smiles, reward] to Dict[id, reward] """
-        new_target_dict = {
-            self.graph.id_from_smiles(
-                Chem.MolToSmiles(Chem.MolFromSmiles(old_smi), isomericSmiles=False)
-            ) : reward
-            for old_smi, reward in target_dict.items()
-        }
+        new_target_dict = {}
+        
+        c=0
+        for old_smi, reward in target_dict.items():
+            clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi), isomericSmiles=False)
+            if clean_smi in self.graph.compound_nodes.keys():
+                id = self.graph.id_from_smiles(clean_smi)
+                new_target_dict[id] = reward
+            else: 
+                print(f'Target {old_smi} not in routes! Being removed from target set!!!')
+                c+=1
+
+        p = self.dir / 'cleaned_tar_dict.csv'
+        print(f'Saving remaining targets, ids, and rewards to {p}')
+
+        save_list = [
+            {'SMILES': self.graph.smiles_from_id(id), 'ID': id, 'Reward': reward,}
+            for id, reward in new_target_dict.items()
+        ]
+        
+        with open(p, 'w') as csvfile: 
+            writer = csv.DictWriter(csvfile, fieldnames=['SMILES', 'ID', 'Reward'])
+            writer.writeheader()
+            writer.writerows(save_list)
 
         return new_target_dict
 
@@ -242,7 +264,8 @@ class RouteSelector:
                 dummy_rxn_smiles, 
                 children=[start_node.smiles], 
                 dummy=True, 
-                penalty=0
+                penalty=0, 
+                score = 10**6,
             )
     
     def set_objective(self): 
