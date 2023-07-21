@@ -147,32 +147,41 @@ class ReactionNode(Node):
                  condition: Optional[List] = None,
                  dummy: Optional[bool] = False,
                  max_penalty: Optional[float] = 20, 
+                 penalty: Optional[float] = None,
                  **kwargs) -> None:
         
         super().__init__(smiles, parents, children, **kwargs)
         
         self.max_penalty = max_penalty
+        self.score = None
+        self.score_set = False
+        self.penalty = None
+        self.condition = None
+        self.condition_set = False
+        self.dummy = 0
 
-        if condition is not None: # so that later conditions can be added through json route graph file 
-            self.condition = condition
-            self.condition_set = True 
-        else:
-            self.condition = [] #TODO: add conditions 
-            self.condition_set = False
+        self.update(condition=condition, score=score, dummy=dummy, penalty=penalty)
+
+        # if condition is not None: # so that later conditions can be added through json route graph file 
+        #     self.condition = condition
+        #     self.condition_set = True 
+        # else:
+        #     self.condition = [] #TODO: add conditions 
+        #     self.condition_set = False
         
-        if score is not None: 
-            self.score = score 
-            self.score_set = True 
-            if score is not 0: 
-                self.penalty = 1/score
-            else: 
-                self.penalty = None
-        else: 
-            self.score = 0
-            self.score_set = False 
-            self.penalty = None
+        # if score is not None: 
+        #     self.score = score 
+        #     self.score_set = True 
+        #     if score is not 0: 
+        #         self.penalty = 1/score
+        #     else: 
+        #         self.penalty = None
+        # else: 
+        #     self.score = 0
+        #     self.score_set = False 
+        #     self.penalty = None
 
-        self.dummy = dummy # if it is a dummy reaction (no reactants, produces a starting material)
+        # self.dummy = dummy # if it is a dummy reaction (no reactants, produces a starting material)
 
         return 
     
@@ -233,9 +242,7 @@ class ReactionNode(Node):
             self.dummy = dummy 
         
         if penalty is not None: 
-            self.penalty = 0
-            self.score = None 
-            self.score_set = True 
+            self.penalty = penalty
         
         return 
         
