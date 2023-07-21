@@ -65,13 +65,15 @@ def build_rxn_graph(
 
     return storage
 
-def storage_from_paths(paths, storage=None) -> Dict:
+def storage_from_api_response(response, storage=None) -> Dict: 
+    tree = response['result']['output']
+    storage = storage_from_paths(tree, storage)
+    return storage 
 
+def storage_from_paths(paths, storage=None) -> Dict:
     for path in paths: 
         storage=update_storage_from_path(path, storage)
-    
     return storage 
-    
 
 def update_storage_from_path(path, storage=None) -> Dict:
     if storage is None: 
@@ -119,5 +121,8 @@ def make_dict_jsonable(storage):
     
     return storage 
 
-
+def save_storage_dict(storage, filename): 
+    with open(filename, 'w') as f:
+        json.dump(make_dict_jsonable(storage), f, indent="\t")
+    return 
 
