@@ -24,7 +24,7 @@
 			"selected": 0,
 			"id": "C0",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -44,7 +44,7 @@
 			"selected": 0,
 			"id": "C1",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 10.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -82,11 +82,11 @@
 			],
 			"selected": 0,
 			"id": "C2",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cccc(N)c1",
@@ -103,7 +103,7 @@
 			"selected": 0,
 			"id": "C3",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -154,11 +154,11 @@
 			],
 			"selected": 0,
 			"id": "C5",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Cl)c2cc1OC",
@@ -196,7 +196,7 @@
 			"selected": 0,
 			"id": "C6",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.9,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -219,11 +219,11 @@
 			],
 			"selected": 0,
 			"id": "C7",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2nc[nH]c(=O)c2cc1OC",
@@ -245,7 +245,7 @@
 			"selected": 0,
 			"id": "C8",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -265,15 +265,17 @@
 			],
 			"selected": 0,
 			"id": "C9",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "Nc1ccc(OCc2ccccc2)cc1",
-			"parents": [],
+			"parents": [
+				">>Nc1ccc(OCc2ccccc2)cc1"
+			],
 			"children": [
 				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(OCc2ccccc2)cc1>>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC",
 				"COc1cc(C#N)c(N=CN(C)C)cc1OC.Nc1ccc(OCc2ccccc2)cc1>>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC",
@@ -307,8 +309,8 @@
 			],
 			"selected": 0,
 			"id": "C10",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -327,13 +329,14 @@
 				"COc1cc2ncnc(Nc3ccc(O)cc3)c2cc1OC.ClCc1ccccc1>>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC",
 				"CI.COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1O>>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC",
 				"COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1O>>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC",
-				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(OCc2ccccc2)cc1>>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC"
+				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(OCc2ccccc2)cc1>>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC",
+				">>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC"
 			],
 			"children": [],
 			"selected": 0,
 			"id": "C11",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 18390.0,
 			"reward": 4,
 			"is_target": true,
 			"is_intermediate": 0
@@ -355,7 +358,7 @@
 			"selected": 0,
 			"id": "C12",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -364,7 +367,8 @@
 			"smiles": "COc1cc2ncnc(Nc3ccc(O)cc3)c2cc1OC",
 			"parents": [
 				"COc1cc2ncnc(Nc3ccc(OC(C)=O)cc3)c2cc1OC>>COc1cc2ncnc(Nc3ccc(O)cc3)c2cc1OC",
-				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(O)cc1>>COc1cc2ncnc(Nc3ccc(O)cc3)c2cc1OC"
+				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(O)cc1>>COc1cc2ncnc(Nc3ccc(O)cc3)c2cc1OC",
+				">>COc1cc2ncnc(Nc3ccc(O)cc3)c2cc1OC"
 			],
 			"children": [
 				"COc1cc2ncnc(Nc3ccc(O)cc3)c2cc1OC.OCc1ccccc1>>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC",
@@ -373,8 +377,8 @@
 			],
 			"selected": 0,
 			"id": "C13",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 318.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -395,7 +399,7 @@
 			"selected": 0,
 			"id": "C14",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -440,11 +444,11 @@
 			],
 			"selected": 0,
 			"id": "C15",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Cl)ncnc2cc1O",
@@ -464,7 +468,7 @@
 			"selected": 0,
 			"id": "C16",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 199.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -515,7 +519,7 @@
 			"selected": 0,
 			"id": "C18",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 4.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -540,7 +544,7 @@
 			"selected": 0,
 			"id": "C19",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 132.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -561,7 +565,7 @@
 			"selected": 0,
 			"id": "C20",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 23.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -599,7 +603,7 @@
 			"selected": 0,
 			"id": "C22",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -621,7 +625,7 @@
 			"selected": 0,
 			"id": "C23",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 7.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -641,11 +645,11 @@
 			],
 			"selected": 0,
 			"id": "C24",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Cl)ncnc2cc1OC(C)=O",
@@ -671,11 +675,11 @@
 			],
 			"selected": 0,
 			"id": "C25",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Nc3ccc(OCc4ccccc4)cc3)ncnc2cc1OC(C)=O",
@@ -721,11 +725,11 @@
 			],
 			"selected": 0,
 			"id": "C27",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Cl)c2cc1O",
@@ -744,7 +748,7 @@
 			"selected": 0,
 			"id": "C28",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 143.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -798,7 +802,7 @@
 			"selected": 0,
 			"id": "C30",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 6.1,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -851,11 +855,11 @@
 			],
 			"selected": 0,
 			"id": "C32",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)C(=O)Cl",
@@ -877,7 +881,7 @@
 			"selected": 0,
 			"id": "C33",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -895,7 +899,7 @@
 			"selected": 0,
 			"id": "C34",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -974,7 +978,9 @@
 		},
 		{
 			"smiles": "COc1cc2c(Cl)ncnc2cc1OCc1ccccc1",
-			"parents": [],
+			"parents": [
+				">>COc1cc2c(Cl)ncnc2cc1OCc1ccccc1"
+			],
 			"children": [
 				"CC(=O)Oc1ccc(N)cc1.COc1cc2c(Cl)ncnc2cc1OCc1ccccc1>>COc1cc2c(Nc3ccc(OC(C)=O)cc3)ncnc2cc1OCc1ccccc1",
 				"COc1cc2c(Cl)ncnc2cc1OCc1ccccc1.Nc1ccc(O)cc1>>COc1cc2c(Nc3ccc(O)cc3)ncnc2cc1OCc1ccccc1",
@@ -994,8 +1000,8 @@
 			],
 			"selected": 0,
 			"id": "C39",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 5.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -1045,7 +1051,7 @@
 			"selected": 0,
 			"id": "C42",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1112,7 +1118,7 @@
 			"selected": 0,
 			"id": "C46",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 7.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1130,11 +1136,11 @@
 			],
 			"selected": 0,
 			"id": "C47",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "C=CCBr",
@@ -1149,7 +1155,7 @@
 			"selected": 0,
 			"id": "C48",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1202,11 +1208,11 @@
 			],
 			"selected": 0,
 			"id": "C51",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COC(=O)Oc1cc2c(Cl)ncnc2cc1OC",
@@ -1221,11 +1227,11 @@
 			],
 			"selected": 0,
 			"id": "C52",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COC(=O)Oc1cc2c(Nc3ccc(OCc4ccccc4)cc3)ncnc2cc1OC",
@@ -1264,7 +1270,7 @@
 			"selected": 0,
 			"id": "C54",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1282,7 +1288,7 @@
 			"selected": 0,
 			"id": "C55",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.1,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1299,11 +1305,11 @@
 			],
 			"selected": 0,
 			"id": "C56",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc([N+](=O)[O-])c(C#N)cc1OC(C)=O",
@@ -1317,11 +1323,11 @@
 			],
 			"selected": 0,
 			"id": "C57",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(N)c(C#N)cc1OC(C)=O",
@@ -1334,11 +1340,11 @@
 			],
 			"selected": 0,
 			"id": "C58",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(/N=C/N(C)C)c(C#N)cc1OC(C)=O",
@@ -1369,11 +1375,11 @@
 			],
 			"selected": 0,
 			"id": "C60",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(N)c(C(=O)O)cc1Br",
@@ -1387,7 +1393,7 @@
 			"selected": 0,
 			"id": "C61",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 33.5,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1411,7 +1417,7 @@
 			"selected": 0,
 			"id": "C62",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1429,7 +1435,7 @@
 			"selected": 0,
 			"id": "C63",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 392.9,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1446,11 +1452,11 @@
 			],
 			"selected": 0,
 			"id": "C64",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1Br",
@@ -1481,11 +1487,11 @@
 			],
 			"selected": 0,
 			"id": "C66",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(=O)[nH]cnc2cc1OC(=O)C(C)(C)C",
@@ -1555,7 +1561,7 @@
 			"selected": 0,
 			"id": "C70",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1571,11 +1577,11 @@
 			],
 			"selected": 0,
 			"id": "C71",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "C=CCOc1cc2c(Cl)ncnc2cc1OC",
@@ -1674,11 +1680,11 @@
 			],
 			"selected": 0,
 			"id": "C77",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COC(=O)Oc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC",
@@ -1708,11 +1714,11 @@
 			],
 			"selected": 0,
 			"id": "C79",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)C(=O)Br",
@@ -1727,11 +1733,11 @@
 			],
 			"selected": 0,
 			"id": "C80",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Nc3ccc(O)cc3)ncnc2cc1OC(C)=O",
@@ -1759,11 +1765,11 @@
 			],
 			"selected": 0,
 			"id": "C82",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(O)ncnc2cc1OC(C)C",
@@ -1777,11 +1783,11 @@
 			],
 			"selected": 0,
 			"id": "C83",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Cl)ncnc2cc1OC(C)C",
@@ -1865,7 +1871,7 @@
 			"selected": 0,
 			"id": "C88",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1898,11 +1904,11 @@
 			],
 			"selected": 0,
 			"id": "C90",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COC(=O)Oc1cc2ncnc(OC)c2cc1OC",
@@ -1915,22 +1921,24 @@
 			],
 			"selected": 0,
 			"id": "C91",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(=O)nc[nH]c2cc1OCc1ccccc1",
-			"parents": [],
+			"parents": [
+				">>COc1cc2c(=O)nc[nH]c2cc1OCc1ccccc1"
+			],
 			"children": [
 				"COc1cc2c(=O)nc[nH]c2cc1OCc1ccccc1>>COc1cc2c(=O)nc[nH]c2cc1O"
 			],
 			"selected": 0,
 			"id": "C92",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 1.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -1948,7 +1956,7 @@
 			"selected": 0,
 			"id": "C93",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 7.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -1965,11 +1973,11 @@
 			],
 			"selected": 0,
 			"id": "C94",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Cl)c2cc1OCc1ccccc1",
@@ -2039,7 +2047,7 @@
 			"selected": 0,
 			"id": "C98",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 50.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2087,11 +2095,11 @@
 			],
 			"selected": 0,
 			"id": "C101",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2nc[nH]c(=O)c2cc1OC(C)C",
@@ -2104,11 +2112,11 @@
 			],
 			"selected": 0,
 			"id": "C102",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Cl)c2cc1OC(C)C",
@@ -2190,7 +2198,7 @@
 			"selected": 0,
 			"id": "C107",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2206,7 +2214,7 @@
 			"selected": 0,
 			"id": "C108",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2222,11 +2230,11 @@
 			],
 			"selected": 0,
 			"id": "C109",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COC(=O)c1cc(OC(C)C)c(OC)cc1[N+](=O)[O-]",
@@ -2255,11 +2263,11 @@
 			],
 			"selected": 0,
 			"id": "C111",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(O)c2cc1OC(C)C",
@@ -2272,11 +2280,11 @@
 			],
 			"selected": 0,
 			"id": "C112",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "O=S(=O)(Cl)C(F)(F)F",
@@ -2289,7 +2297,7 @@
 			"selected": 0,
 			"id": "C113",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 12.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2310,7 +2318,7 @@
 			"selected": 0,
 			"id": "C114",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 9.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2328,11 +2336,11 @@
 			],
 			"selected": 0,
 			"id": "C115",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Cl)ncnc2cc1OC1CCCCO1",
@@ -2380,7 +2388,7 @@
 			"selected": 0,
 			"id": "C118",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 47.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2511,11 +2519,11 @@
 			],
 			"selected": 0,
 			"id": "C126",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "O=c1[nH]cnc2cc(O)c(O)cc12",
@@ -2529,7 +2537,7 @@
 			"selected": 0,
 			"id": "C127",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 571.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2562,11 +2570,11 @@
 			],
 			"selected": 0,
 			"id": "C129",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(N)c(C#N)cc1O",
@@ -2579,11 +2587,11 @@
 			],
 			"selected": 0,
 			"id": "C130",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(/N=C/N(C)C)c(C#N)cc1O",
@@ -2596,11 +2604,11 @@
 			],
 			"selected": 0,
 			"id": "C131",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "O=S(=O)(OS(=O)(=O)C(F)(F)F)C(F)(F)F",
@@ -2613,7 +2621,7 @@
 			"selected": 0,
 			"id": "C132",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.3,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2629,11 +2637,11 @@
 			],
 			"selected": 0,
 			"id": "C133",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)C=O",
@@ -2646,7 +2654,7 @@
 			"selected": 0,
 			"id": "C134",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 9.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2678,7 +2686,7 @@
 			"selected": 0,
 			"id": "C135",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.3,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2696,7 +2704,7 @@
 			"selected": 0,
 			"id": "C136",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 187.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -2820,14 +2828,16 @@
 		},
 		{
 			"smiles": "COc1cc(C#N)ccc1OCc1ccccc1",
-			"parents": [],
+			"parents": [
+				">>COc1cc(C#N)ccc1OCc1ccccc1"
+			],
 			"children": [
 				"COc1cc(C#N)ccc1OCc1ccccc1>>COc1cc(C#N)c([N+](=O)[O-])cc1OCc1ccccc1"
 			],
 			"selected": 0,
 			"id": "C144",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 272.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -2853,7 +2863,8 @@
 		{
 			"smiles": "COc1cc(C#N)c(N)cc1OCc1ccccc1",
 			"parents": [
-				"COc1cc(C#N)c([N+](=O)[O-])cc1OCc1ccccc1>>COc1cc(C#N)c(N)cc1OCc1ccccc1"
+				"COc1cc(C#N)c([N+](=O)[O-])cc1OCc1ccccc1>>COc1cc(C#N)c(N)cc1OCc1ccccc1",
+				">>COc1cc(C#N)c(N)cc1OCc1ccccc1"
 			],
 			"children": [
 				"COC(OC)N(C)C.COc1cc(C#N)c(N)cc1OCc1ccccc1>>COc1cc(C#N)c(/N=C/N(C)C)cc1OCc1ccccc1",
@@ -2862,8 +2873,8 @@
 			],
 			"selected": 0,
 			"id": "C146",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 717.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -3008,14 +3019,16 @@
 		},
 		{
 			"smiles": "COc1ccc(C#N)cc1OCc1ccccc1",
-			"parents": [],
+			"parents": [
+				">>COc1ccc(C#N)cc1OCc1ccccc1"
+			],
 			"children": [
 				"COc1ccc(C#N)cc1OCc1ccccc1>>COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1"
 			],
 			"selected": 0,
 			"id": "C155",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 49.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -3025,15 +3038,16 @@
 			"parents": [
 				"COc1cc([N+](=O)[O-])c(C=O)cc1OCc1ccccc1>>COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1",
 				"COc1cc([N+](=O)[O-])c(C=NO)cc1OCc1ccccc1>>COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1",
-				"COc1ccc(C#N)cc1OCc1ccccc1>>COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1"
+				"COc1ccc(C#N)cc1OCc1ccccc1>>COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1",
+				">>COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1"
 			],
 			"children": [
 				"COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1>>COc1cc(N)c(C#N)cc1OCc1ccccc1"
 			],
 			"selected": 0,
 			"id": "C156",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 496.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -3041,7 +3055,8 @@
 		{
 			"smiles": "COc1cc(N)c(C#N)cc1OCc1ccccc1",
 			"parents": [
-				"COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1>>COc1cc(N)c(C#N)cc1OCc1ccccc1"
+				"COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1>>COc1cc(N)c(C#N)cc1OCc1ccccc1",
+				">>COc1cc(N)c(C#N)cc1OCc1ccccc1"
 			],
 			"children": [
 				"COC(OC)N(C)C.COc1cc(N)c(C#N)cc1OCc1ccccc1>>COc1cc(/N=C/N(C)C)c(C#N)cc1OCc1ccccc1",
@@ -3050,8 +3065,8 @@
 			],
 			"selected": 0,
 			"id": "C157",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 650.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -3109,14 +3124,16 @@
 		},
 		{
 			"smiles": "COc1cc(C=O)ccc1OCc1ccccc1",
-			"parents": [],
+			"parents": [
+				">>COc1cc(C=O)ccc1OCc1ccccc1"
+			],
 			"children": [
 				"COc1cc(C=O)ccc1OCc1ccccc1>>COc1cc(C=O)c([N+](=O)[O-])cc1OCc1ccccc1"
 			],
 			"selected": 0,
 			"id": "C161",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 1.3,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -3125,29 +3142,32 @@
 			"smiles": "COc1cc(C=O)c([N+](=O)[O-])cc1OCc1ccccc1",
 			"parents": [
 				"COc1cc(C=O)ccc1OCc1ccccc1>>COc1cc(C=O)c([N+](=O)[O-])cc1OCc1ccccc1",
-				"COc1cc(CO)c([N+](=O)[O-])cc1OCc1ccccc1>>COc1cc(C=O)c([N+](=O)[O-])cc1OCc1ccccc1"
+				"COc1cc(CO)c([N+](=O)[O-])cc1OCc1ccccc1>>COc1cc(C=O)c([N+](=O)[O-])cc1OCc1ccccc1",
+				">>COc1cc(C=O)c([N+](=O)[O-])cc1OCc1ccccc1"
 			],
 			"children": [
 				"COc1cc(C=O)c([N+](=O)[O-])cc1OCc1ccccc1>>COc1cc(C#N)c([N+](=O)[O-])cc1OCc1ccccc1"
 			],
 			"selected": 0,
 			"id": "C162",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 79.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1ccc(C=O)cc1OCc1ccccc1",
-			"parents": [],
+			"parents": [
+				">>COc1ccc(C=O)cc1OCc1ccccc1"
+			],
 			"children": [
 				"COc1ccc(C=O)cc1OCc1ccccc1>>COc1cc([N+](=O)[O-])c(C=O)cc1OCc1ccccc1"
 			],
 			"selected": 0,
 			"id": "C163",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 1.5,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -3155,15 +3175,16 @@
 		{
 			"smiles": "COc1cc([N+](=O)[O-])c(C=O)cc1OCc1ccccc1",
 			"parents": [
-				"COc1ccc(C=O)cc1OCc1ccccc1>>COc1cc([N+](=O)[O-])c(C=O)cc1OCc1ccccc1"
+				"COc1ccc(C=O)cc1OCc1ccccc1>>COc1cc([N+](=O)[O-])c(C=O)cc1OCc1ccccc1",
+				">>COc1cc([N+](=O)[O-])c(C=O)cc1OCc1ccccc1"
 			],
 			"children": [
 				"COc1cc([N+](=O)[O-])c(C=O)cc1OCc1ccccc1>>COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1"
 			],
 			"selected": 0,
 			"id": "C164",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 299.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -3179,7 +3200,7 @@
 			"selected": 0,
 			"id": "C165",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 5.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -3196,11 +3217,11 @@
 			],
 			"selected": 0,
 			"id": "C166",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc([N+](=O)[O-])c(C)cc1OCc1ccccc1",
@@ -3237,14 +3258,16 @@
 		},
 		{
 			"smiles": "COc1cc(C)ccc1OCc1ccccc1",
-			"parents": [],
+			"parents": [
+				">>COc1cc(C)ccc1OCc1ccccc1"
+			],
 			"children": [
 				"COc1cc(C)ccc1OCc1ccccc1>>COc1cc(C)c([N+](=O)[O-])cc1OCc1ccccc1"
 			],
 			"selected": 0,
 			"id": "C169",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 153.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -3350,11 +3373,11 @@
 			],
 			"selected": 0,
 			"id": "C174",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC",
@@ -3366,13 +3389,14 @@
 				"COc1cc(C#N)c(/N=C/N(C)C)cc1OC.Nc1cccc(Cl)c1>>COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC",
 				"COc1cc(C#N)c(N=CN(C)C)cc1OC.Nc1cccc(Cl)c1>>COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC",
 				"COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1O>>COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC",
-				"COc1cc2nc[nH]c(=O)c2cc1OC.Nc1cccc(Cl)c1>>COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC"
+				"COc1cc2nc[nH]c(=O)c2cc1OC.Nc1cccc(Cl)c1>>COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC",
+				">>COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC"
 			],
 			"children": [],
 			"selected": 0,
 			"id": "C175",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 318.0,
 			"reward": 2,
 			"is_target": true,
 			"is_intermediate": 0
@@ -3814,7 +3838,7 @@
 			"selected": 0,
 			"id": "C200",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -3831,20 +3855,23 @@
 				"COc1cc2ncnc(Cl)c2cc1OC.Nc1cccc(O)c1>>COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC",
 				"COc1cc2ncnc(Nc3cccc(OCc4ccccc4)c3)c2cc1OC>>COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC",
 				"COc1cc(C#N)c(N=CN(C)C)cc1OC.Nc1cccc(O)c1>>COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC",
-				"COc1cc2ncnc(Nc3cccc(O[Si](C)(C)C(C)(C)C)c3)c2cc1OC>>COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC"
+				"COc1cc2ncnc(Nc3cccc(O[Si](C)(C)C(C)(C)C)c3)c2cc1OC>>COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC",
+				">>COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC"
 			],
 			"children": [],
 			"selected": 0,
 			"id": "C201",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 308.2,
 			"reward": 11,
 			"is_target": true,
 			"is_intermediate": 0
 		},
 		{
 			"smiles": "Nc1cccc(OCc2ccccc2)c1",
-			"parents": [],
+			"parents": [
+				">>Nc1cccc(OCc2ccccc2)c1"
+			],
 			"children": [
 				"COc1cc2ncnc(Cl)c2cc1OC.Nc1cccc(OCc2ccccc2)c1>>COc1cc2ncnc(Nc3cccc(OCc4ccccc4)c3)c2cc1OC",
 				"COc1cc(C#N)c(N=CN(C)C)cc1OC.Nc1cccc(OCc2ccccc2)c1>>COc1cc2ncnc(Nc3cccc(OCc4ccccc4)c3)c2cc1OC",
@@ -3864,8 +3891,8 @@
 			],
 			"selected": 0,
 			"id": "C202",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 0.9,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -3912,7 +3939,7 @@
 			"selected": 0,
 			"id": "C204",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -3949,7 +3976,7 @@
 			"selected": 0,
 			"id": "C206",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4060,7 +4087,7 @@
 			"selected": 0,
 			"id": "C212",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 13.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4092,7 +4119,7 @@
 			"selected": 0,
 			"id": "C213",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 231.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4110,11 +4137,11 @@
 			],
 			"selected": 0,
 			"id": "C214",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "[C-]#N",
@@ -4128,11 +4155,11 @@
 			],
 			"selected": 0,
 			"id": "C215",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COCOc1cccc(N)c1",
@@ -4153,7 +4180,7 @@
 			"selected": 0,
 			"id": "C216",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 86.5,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4192,11 +4219,11 @@
 			],
 			"selected": 0,
 			"id": "C218",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "C1=COCCC1",
@@ -4213,7 +4240,7 @@
 			"selected": 0,
 			"id": "C219",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4239,11 +4266,11 @@
 			],
 			"selected": 0,
 			"id": "C220",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Nc3cccc(OC4CCCCO4)c3)c2cc1OC",
@@ -4349,7 +4376,7 @@
 			"selected": 0,
 			"id": "C226",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 89.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4422,7 +4449,7 @@
 			"selected": 0,
 			"id": "C230",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.5,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4452,7 +4479,7 @@
 			"selected": 0,
 			"id": "C231",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4469,11 +4496,11 @@
 			],
 			"selected": 0,
 			"id": "C232",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)C(=O)Oc1cccc(N)c1",
@@ -4494,11 +4521,11 @@
 			],
 			"selected": 0,
 			"id": "C233",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Nc3cccc(OC(=O)C(C)(C)C)c3)c2cc1OC",
@@ -4530,7 +4557,7 @@
 			"selected": 0,
 			"id": "C235",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4539,7 +4566,8 @@
 			"smiles": "COc1cc2ncnc(Nc3cccc(I)c3)c2cc1OC",
 			"parents": [
 				"COc1cc2ncnc(Cl)c2cc1OC.Nc1cccc(I)c1>>COc1cc2ncnc(Nc3cccc(I)c3)c2cc1OC",
-				"COc1cc(C#N)c(/N=C/N(C)C)cc1OC.Nc1cccc(I)c1>>COc1cc2ncnc(Nc3cccc(I)c3)c2cc1OC"
+				"COc1cc(C#N)c(/N=C/N(C)C)cc1OC.Nc1cccc(I)c1>>COc1cc2ncnc(Nc3cccc(I)c3)c2cc1OC",
+				">>COc1cc2ncnc(Nc3cccc(I)c3)c2cc1OC"
 			],
 			"children": [
 				"COc1cc2ncnc(Nc3cccc(I)c3)c2cc1OC.OC1CCCCO1>>COc1cc2ncnc(Nc3cccc(OC4CCCCO4)c3)c2cc1OC",
@@ -4547,8 +4575,8 @@
 			],
 			"selected": 0,
 			"id": "C236",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 318.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -4564,7 +4592,7 @@
 			"selected": 0,
 			"id": "C237",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 39.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4586,7 +4614,7 @@
 			"selected": 0,
 			"id": "C238",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 111.5,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4605,7 +4633,7 @@
 			"selected": 0,
 			"id": "C239",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 235.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4629,7 +4657,7 @@
 			"selected": 0,
 			"id": "C240",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1058.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4664,7 +4692,7 @@
 			"selected": 0,
 			"id": "C242",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 235.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4696,7 +4724,7 @@
 			"selected": 0,
 			"id": "C244",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 37.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4717,7 +4745,7 @@
 			"selected": 0,
 			"id": "C245",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 213.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4734,7 +4762,7 @@
 			"selected": 0,
 			"id": "C246",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4752,11 +4780,11 @@
 			],
 			"selected": 0,
 			"id": "C247",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COC(=O)c1ccc(OC)c(F)c1",
@@ -4769,7 +4797,7 @@
 			"selected": 0,
 			"id": "C248",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 4.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4786,11 +4814,11 @@
 			],
 			"selected": 0,
 			"id": "C249",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COC(=O)c1cc(F)c(OC)cc1N",
@@ -4806,7 +4834,7 @@
 			"selected": 0,
 			"id": "C250",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 313.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -4822,11 +4850,11 @@
 			],
 			"selected": 0,
 			"id": "C251",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Cl)c2cc1F",
@@ -4846,11 +4874,11 @@
 			],
 			"selected": 0,
 			"id": "C252",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Nc3cccc(OC4CCCCO4)c3)c2cc1F",
@@ -4896,11 +4924,11 @@
 			],
 			"selected": 0,
 			"id": "C255",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COCOc1cccc(Nc2ncnc3cc(OC)c(F)cc23)c1",
@@ -4978,7 +5006,7 @@
 			"selected": 0,
 			"id": "C259",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 177.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5041,7 +5069,7 @@
 			"selected": 0,
 			"id": "C262",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 72.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5058,11 +5086,11 @@
 			],
 			"selected": 0,
 			"id": "C263",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)[Si](C)(C)Oc1cccc(Br)c1",
@@ -5078,21 +5106,23 @@
 			"selected": 0,
 			"id": "C264",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 9.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
 		},
 		{
 			"smiles": "N=C(c1ccccc1)c1ccccc1",
-			"parents": [],
+			"parents": [
+				">>N=C(c1ccccc1)c1ccccc1"
+			],
 			"children": [
 				"CC(C)(C)[Si](C)(C)Oc1cccc(Br)c1.N=C(c1ccccc1)c1ccccc1>>CC(C)(C)[Si](C)(C)Oc1cccc(N=C(c2ccccc2)c2ccccc2)c1"
 			],
 			"selected": 0,
 			"id": "C265",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 0.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -5156,7 +5186,7 @@
 			"selected": 0,
 			"id": "C269",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5173,11 +5203,11 @@
 			],
 			"selected": 0,
 			"id": "C270",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(N)c(C(=O)O)cc1F",
@@ -5192,7 +5222,7 @@
 			"selected": 0,
 			"id": "C271",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 293.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5208,7 +5238,7 @@
 			"selected": 0,
 			"id": "C272",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5227,7 +5257,7 @@
 			"selected": 0,
 			"id": "C273",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 289.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5245,11 +5275,11 @@
 			],
 			"selected": 0,
 			"id": "C274",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)[Si](C)(C)Oc1cccc(I)c1",
@@ -5262,7 +5292,7 @@
 			"selected": 0,
 			"id": "C275",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 146.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5278,7 +5308,7 @@
 			"selected": 0,
 			"id": "C276",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 15.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5294,7 +5324,7 @@
 			"selected": 0,
 			"id": "C277",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 28.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5312,11 +5342,11 @@
 			],
 			"selected": 0,
 			"id": "C278",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)[Si](C)(C)OS(=O)(=O)C(F)(F)F",
@@ -5328,11 +5358,11 @@
 			],
 			"selected": 0,
 			"id": "C279",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Nc3cccc(OCc4ccccc4)c3)ncnc2cc1OC(=O)C(C)(C)C",
@@ -5361,11 +5391,11 @@
 			],
 			"selected": 0,
 			"id": "C281",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "OB(O)c1cccc(O)c1",
@@ -5378,7 +5408,7 @@
 			"selected": 0,
 			"id": "C282",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5400,7 +5430,7 @@
 			"selected": 0,
 			"id": "C283",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5467,7 +5497,7 @@
 			"selected": 0,
 			"id": "C287",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 22.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5501,7 +5531,7 @@
 			"selected": 0,
 			"id": "C289",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 129.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5520,7 +5550,7 @@
 			"selected": 0,
 			"id": "C290",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5553,7 +5583,7 @@
 			"selected": 0,
 			"id": "C292",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.9,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5609,7 +5639,7 @@
 			"selected": 0,
 			"id": "C295",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 5.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5660,7 +5690,7 @@
 			"selected": 0,
 			"id": "C298",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5676,11 +5706,11 @@
 			],
 			"selected": 0,
 			"id": "C299",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(SC)c2cc1OC",
@@ -5693,11 +5723,11 @@
 			],
 			"selected": 0,
 			"id": "C300",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COCOc1cccc(Nc2ncnc3cc(OC(=O)C(C)(C)C)c(OC)cc23)c1",
@@ -5752,11 +5782,11 @@
 			],
 			"selected": 0,
 			"id": "C303",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Nc3cccc(OC(C)=O)c3)c2cc1OC",
@@ -5860,7 +5890,7 @@
 			"selected": 0,
 			"id": "C309",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5943,7 +5973,7 @@
 			"selected": 0,
 			"id": "C314",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 46.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -5982,11 +6012,11 @@
 			],
 			"selected": 0,
 			"id": "C316",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COS(=O)(=O)OC",
@@ -6002,7 +6032,7 @@
 			"selected": 0,
 			"id": "C317",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6130,7 +6160,7 @@
 			"selected": 0,
 			"id": "C324",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6146,7 +6176,7 @@
 			"selected": 0,
 			"id": "C325",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6167,7 +6197,7 @@
 			"selected": 0,
 			"id": "C326",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2720.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6184,11 +6214,11 @@
 			],
 			"selected": 0,
 			"id": "C327",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(N)c([N+](=O)[O-])cc1OC",
@@ -6208,7 +6238,7 @@
 			"selected": 0,
 			"id": "C328",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 10.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6224,7 +6254,7 @@
 			"selected": 0,
 			"id": "C329",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 40.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6275,11 +6305,11 @@
 			],
 			"selected": 0,
 			"id": "C332",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "Oc1cccc(N=Cc2ccccc2)c1",
@@ -6352,14 +6382,16 @@
 		},
 		{
 			"smiles": "COc1cc([N+](=O)[O-])c([N+](=O)[O-])cc1OC",
-			"parents": [],
+			"parents": [
+				">>COc1cc([N+](=O)[O-])c([N+](=O)[O-])cc1OC"
+			],
 			"children": [
 				"COc1cc([N+](=O)[O-])c([N+](=O)[O-])cc1OC>>COc1cc(N)c([N+](=O)[O-])cc1OC"
 			],
 			"selected": 0,
 			"id": "C337",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 14.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -6383,7 +6415,7 @@
 			"selected": 0,
 			"id": "C338",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6426,7 +6458,7 @@
 			"selected": 0,
 			"id": "C340",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6560,7 +6592,7 @@
 			"selected": 0,
 			"id": "C348",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6571,15 +6603,16 @@
 				"O=C(Cl)OCc1ccccc1.O=C(O)c1cccc(Br)c1>>O=C(Nc1cccc(Br)c1)OCc1ccccc1",
 				"Nc1cccc(Br)c1.O=C(Cl)OCc1ccccc1>>O=C(Nc1cccc(Br)c1)OCc1ccccc1",
 				"OB(O)c1cccc(Br)c1.[N-]=[N+]=NC(=O)OCc1ccccc1>>O=C(Nc1cccc(Br)c1)OCc1ccccc1",
-				"Brc1cccc(Br)c1.NC(=O)OCc1ccccc1>>O=C(Nc1cccc(Br)c1)OCc1ccccc1"
+				"Brc1cccc(Br)c1.NC(=O)OCc1ccccc1>>O=C(Nc1cccc(Br)c1)OCc1ccccc1",
+				">>O=C(Nc1cccc(Br)c1)OCc1ccccc1"
 			],
 			"children": [
 				"O=C(Nc1cccc(Br)c1)OCc1ccccc1>>O=C(Nc1cccc(O)c1)OCc1ccccc1"
 			],
 			"selected": 0,
 			"id": "C349",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 24.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -6595,7 +6628,7 @@
 			"selected": 0,
 			"id": "C350",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6643,7 +6676,7 @@
 			"selected": 0,
 			"id": "C353",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6660,11 +6693,11 @@
 			],
 			"selected": 0,
 			"id": "C354",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "NNC(=O)OCc1ccccc1",
@@ -6677,7 +6710,7 @@
 			"selected": 0,
 			"id": "C355",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.5,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6692,11 +6725,11 @@
 			],
 			"selected": 0,
 			"id": "C356",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Nc3cccc(OC(C)=O)c3)c2cc1OCc1ccccc1",
@@ -6726,11 +6759,11 @@
 			],
 			"selected": 0,
 			"id": "C358",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)C(=O)O[Si](C)(C)C",
@@ -6748,11 +6781,11 @@
 			],
 			"selected": 0,
 			"id": "C359",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "C[Si](C)(C)Oc1cccc([N+](=O)[O-])c1",
@@ -6769,11 +6802,11 @@
 			],
 			"selected": 0,
 			"id": "C360",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "C[Si](C)(C)Oc1cccc(Br)c1",
@@ -6786,11 +6819,11 @@
 			],
 			"selected": 0,
 			"id": "C361",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "ONc1cccc(O)c1",
@@ -6803,11 +6836,11 @@
 			],
 			"selected": 0,
 			"id": "C362",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "[O-][N+](=Cc1ccccc1)c1cccc(O)c1",
@@ -6836,7 +6869,7 @@
 			"selected": 0,
 			"id": "C364",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 4.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6855,22 +6888,24 @@
 			],
 			"selected": 0,
 			"id": "C365",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "O=P(Cl)(Oc1ccccc1)Oc1ccccc1",
-			"parents": [],
+			"parents": [
+				">>O=P(Cl)(Oc1ccccc1)Oc1ccccc1"
+			],
 			"children": [
 				"O=P(Cl)(Oc1ccccc1)Oc1ccccc1.O=[N+]([O-])c1cccc(O)c1>>O=[N+]([O-])c1cccc(OP(=O)(Oc2ccccc2)Oc2ccccc2)c1"
 			],
 			"selected": 0,
 			"id": "C366",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -6905,7 +6940,7 @@
 			"selected": 0,
 			"id": "C368",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6921,7 +6956,7 @@
 			"selected": 0,
 			"id": "C369",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6937,7 +6972,7 @@
 			"selected": 0,
 			"id": "C370",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6953,7 +6988,7 @@
 			"selected": 0,
 			"id": "C371",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -6985,7 +7020,7 @@
 			"selected": 0,
 			"id": "C373",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 6.9,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7003,7 +7038,7 @@
 			"selected": 0,
 			"id": "C374",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 33.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7019,11 +7054,11 @@
 			],
 			"selected": 0,
 			"id": "C375",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CS(=O)(=O)Cl",
@@ -7035,11 +7070,11 @@
 			],
 			"selected": 0,
 			"id": "C376",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CS(=O)(=O)Oc1cccc([N+](=O)[O-])c1",
@@ -7052,11 +7087,11 @@
 			],
 			"selected": 0,
 			"id": "C377",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Nc3cccc(O[Si](C)(C)C(C)(C)C)c3)ncnc2cc1OC(=O)C(C)(C)C",
@@ -7085,7 +7120,7 @@
 			"selected": 0,
 			"id": "C379",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 4.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7101,7 +7136,7 @@
 			"selected": 0,
 			"id": "C380",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 27.5,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7133,11 +7168,11 @@
 			],
 			"selected": 0,
 			"id": "C382",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)[Si](C)(C)Oc1cccc(N[Si](C)(C)C)c1",
@@ -7165,11 +7200,11 @@
 			],
 			"selected": 0,
 			"id": "C384",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "O=C(Cl)Cl",
@@ -7184,11 +7219,11 @@
 			],
 			"selected": 0,
 			"id": "C385",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CC(C)(C)[Si](C)(C)Oc1cccc(N=C=O)c1",
@@ -7217,7 +7252,7 @@
 			"selected": 0,
 			"id": "C387",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7249,7 +7284,7 @@
 			"selected": 0,
 			"id": "C389",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 20.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7315,7 +7350,7 @@
 			"selected": 0,
 			"id": "C393",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 22.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7330,11 +7365,11 @@
 			],
 			"selected": 0,
 			"id": "C394",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Nc3cccc(OC(C)=O)c3)ncnc2cc1O[Si](C)(C)C(C)(C)C",
@@ -7354,14 +7389,16 @@
 		},
 		{
 			"smiles": "Nc1ccc(NC(=O)c2ccccc2)cc1",
-			"parents": [],
+			"parents": [
+				">>Nc1ccc(NC(=O)c2ccccc2)cc1"
+			],
 			"children": [
 				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(NC(=O)c2ccccc2)cc1>>COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC"
 			],
 			"selected": 0,
 			"id": "C396",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 8.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -7371,13 +7408,14 @@
 			"parents": [
 				"COc1cc2ncnc(Nc3ccc(N)cc3)c2cc1OC.O=C(O)c1ccccc1>>COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC",
 				"COc1cc2ncnc(Nc3ccc(N)cc3)c2cc1OC.O=C(Cl)c1ccccc1>>COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC",
-				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(NC(=O)c2ccccc2)cc1>>COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC"
+				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(NC(=O)c2ccccc2)cc1>>COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC",
+				">>COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC"
 			],
 			"children": [],
 			"selected": 0,
 			"id": "C397",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 15215.0,
 			"reward": 14,
 			"is_target": true,
 			"is_intermediate": 0
@@ -7405,7 +7443,7 @@
 			"selected": 0,
 			"id": "C398",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7451,7 +7489,7 @@
 			"selected": 0,
 			"id": "C400",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7469,7 +7507,7 @@
 			"selected": 0,
 			"id": "C401",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7515,7 +7553,7 @@
 			"selected": 0,
 			"id": "C403",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7525,15 +7563,16 @@
 			"parents": [
 				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc([N+](=O)[O-])cc1>>COc1cc2ncnc(Nc3ccc([N+](=O)[O-])cc3)c2cc1OC",
 				"COc1cc2c(cc1OC)C(Cl)NC=N2.Nc1ccc([N+](=O)[O-])cc1>>COc1cc2ncnc(Nc3ccc([N+](=O)[O-])cc3)c2cc1OC",
-				"COc1cc(C#N)c(/N=C/N(C)C)cc1OC.Nc1ccc([N+](=O)[O-])cc1>>COc1cc2ncnc(Nc3ccc([N+](=O)[O-])cc3)c2cc1OC"
+				"COc1cc(C#N)c(/N=C/N(C)C)cc1OC.Nc1ccc([N+](=O)[O-])cc1>>COc1cc2ncnc(Nc3ccc([N+](=O)[O-])cc3)c2cc1OC",
+				">>COc1cc2ncnc(Nc3ccc([N+](=O)[O-])cc3)c2cc1OC"
 			],
 			"children": [
 				"COc1cc2ncnc(Nc3ccc([N+](=O)[O-])cc3)c2cc1OC>>COc1cc2ncnc(Nc3ccc(N)cc3)c2cc1OC"
 			],
 			"selected": 0,
 			"id": "C404",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 1800.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -7549,7 +7588,7 @@
 			"selected": 0,
 			"id": "C405",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7571,7 +7610,7 @@
 			"selected": 0,
 			"id": "C406",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 44.9,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7608,7 +7647,7 @@
 			"selected": 0,
 			"id": "C408",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7625,7 +7664,7 @@
 			"selected": 0,
 			"id": "C409",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 38.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7669,7 +7708,7 @@
 			"selected": 0,
 			"id": "C411",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7771,11 +7810,11 @@
 			],
 			"selected": 0,
 			"id": "C416",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Nc3ccc(NC(C)=O)cc3)c2cc1OC(C)=O",
@@ -7827,7 +7866,7 @@
 			"selected": 0,
 			"id": "C419",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -7838,15 +7877,16 @@
 				"O=C(Nc1ccc([N+](=O)[O-])cc1)OCc1ccccc1>>Nc1ccc(NC(=O)OCc2ccccc2)cc1",
 				"CC(C)(C)OC(=O)Nc1ccc(NC(=O)OCc2ccccc2)cc1>>Nc1ccc(NC(=O)OCc2ccccc2)cc1",
 				"Nc1ccc(N)cc1.O=C(Cl)OCc1ccccc1>>Nc1ccc(NC(=O)OCc2ccccc2)cc1",
-				"Nc1ccc(N)cc1.O=C(OCc1ccccc1)ON1C(=O)CCC1=O>>Nc1ccc(NC(=O)OCc2ccccc2)cc1"
+				"Nc1ccc(N)cc1.O=C(OCc1ccccc1)ON1C(=O)CCC1=O>>Nc1ccc(NC(=O)OCc2ccccc2)cc1",
+				">>Nc1ccc(NC(=O)OCc2ccccc2)cc1"
 			],
 			"children": [
 				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(NC(=O)OCc2ccccc2)cc1>>COc1cc2ncnc(Nc3ccc(NC(=O)OCc4ccccc4)cc3)c2cc1OC"
 			],
 			"selected": 0,
 			"id": "C420",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 90.1,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -7973,7 +8013,7 @@
 			"selected": 0,
 			"id": "C427",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.4,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8025,7 +8065,7 @@
 			"selected": 0,
 			"id": "C430",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8075,7 +8115,7 @@
 			"selected": 0,
 			"id": "C433",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8125,7 +8165,7 @@
 			"selected": 0,
 			"id": "C436",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 4.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8143,11 +8183,11 @@
 			],
 			"selected": 0,
 			"id": "C437",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(N)c(I)cc1OC",
@@ -8165,7 +8205,7 @@
 			"selected": 0,
 			"id": "C438",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 159.3,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8182,11 +8222,11 @@
 			],
 			"selected": 0,
 			"id": "C439",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "Nc1ccc(I)cc1",
@@ -8199,7 +8239,7 @@
 			"selected": 0,
 			"id": "C440",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8207,7 +8247,8 @@
 		{
 			"smiles": "[N-]=[N+]=Nc1ccc(N)cc1",
 			"parents": [
-				"Nc1ccc(I)cc1>>[N-]=[N+]=Nc1ccc(N)cc1"
+				"Nc1ccc(I)cc1>>[N-]=[N+]=Nc1ccc(N)cc1",
+				">>[N-]=[N+]=Nc1ccc(N)cc1"
 			],
 			"children": [
 				"COc1cc(C#N)c(N=CN(C)C)cc1OC.[N-]=[N+]=Nc1ccc(N)cc1>>COc1cc2ncnc(Nc3ccc(N=[N+]=[N-])cc3)c2cc1OC",
@@ -8218,8 +8259,8 @@
 			],
 			"selected": 0,
 			"id": "C441",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 190.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -8275,7 +8316,7 @@
 			"selected": 0,
 			"id": "C444",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8357,7 +8398,8 @@
 			"parents": [
 				"CC(=O)Nc1ccc(N2C(=O)c3ccccc3C2=O)cc1>>Nc1ccc(N2C(=O)c3ccccc3C2=O)cc1",
 				"O=C1c2ccccc2C(=O)N1c1ccc([N+](=O)[O-])cc1>>Nc1ccc(N2C(=O)c3ccccc3C2=O)cc1",
-				"Nc1ccc(N)cc1.O=C(O)c1ccccc1C(=O)O>>Nc1ccc(N2C(=O)c3ccccc3C2=O)cc1"
+				"Nc1ccc(N)cc1.O=C(O)c1ccccc1C(=O)O>>Nc1ccc(N2C(=O)c3ccccc3C2=O)cc1",
+				">>Nc1ccc(N2C(=O)c3ccccc3C2=O)cc1"
 			],
 			"children": [
 				"COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(N2C(=O)c3ccccc3C2=O)cc1>>COc1cc2ncnc(Nc3ccc(N4C(=O)c5ccccc5C4=O)cc3)c2cc1OC",
@@ -8365,8 +8407,8 @@
 			],
 			"selected": 0,
 			"id": "C449",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 133.3,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -8423,14 +8465,16 @@
 		},
 		{
 			"smiles": "COc1cc(C(=O)O)c([N+](=O)[O-])cc1OC",
-			"parents": [],
+			"parents": [
+				">>COc1cc(C(=O)O)c([N+](=O)[O-])cc1OC"
+			],
 			"children": [
 				"COc1cc(C(=O)O)c([N+](=O)[O-])cc1OC>>COc1cc(I)c([N+](=O)[O-])cc1OC"
 			],
 			"selected": 0,
 			"id": "C453",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 1.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -8459,11 +8503,11 @@
 			],
 			"selected": 0,
 			"id": "C455",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Nc3ccc([N+](=O)[O-])cc3)ncnc2cc1OC(C)=O",
@@ -8508,7 +8552,7 @@
 			"selected": 0,
 			"id": "C458",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8565,15 +8609,16 @@
 			"smiles": "COc1ccc(NS(=O)(=O)c2ccc(C)cc2)cc1OC",
 			"parents": [
 				"COc1ccc(I)cc1OC.Cc1ccc(S(N)(=O)=O)cc1>>COc1ccc(NS(=O)(=O)c2ccc(C)cc2)cc1OC",
-				"COc1ccc(N)cc1OC.Cc1ccc(S(=O)(=O)Cl)cc1>>COc1ccc(NS(=O)(=O)c2ccc(C)cc2)cc1OC"
+				"COc1ccc(N)cc1OC.Cc1ccc(S(=O)(=O)Cl)cc1>>COc1ccc(NS(=O)(=O)c2ccc(C)cc2)cc1OC",
+				">>COc1ccc(NS(=O)(=O)c2ccc(C)cc2)cc1OC"
 			],
 			"children": [
 				"COc1ccc(NS(=O)(=O)c2ccc(C)cc2)cc1OC>>COc1cc(Br)c(NS(=O)(=O)c2ccc(C)cc2)cc1OC"
 			],
 			"selected": 0,
 			"id": "C462",
-			"buyable": false,
-			"cost_per_g": null,
+			"buyable": true,
+			"cost_per_g": 155.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 1
@@ -8605,7 +8650,7 @@
 			"selected": 0,
 			"id": "C464",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8621,7 +8666,7 @@
 			"selected": 0,
 			"id": "C465",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8639,11 +8684,11 @@
 			],
 			"selected": 0,
 			"id": "C466",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(I)c(NC(=O)C(F)(F)F)cc1OC",
@@ -8656,11 +8701,11 @@
 			],
 			"selected": 0,
 			"id": "C467",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "O=C(O)C(F)(F)F",
@@ -8673,7 +8718,7 @@
 			"selected": 0,
 			"id": "C468",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.7,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8728,11 +8773,11 @@
 			],
 			"selected": 0,
 			"id": "C471",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(Br)c(N=[N+]=[N-])cc1OC",
@@ -8745,11 +8790,11 @@
 			],
 			"selected": 0,
 			"id": "C472",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2c(Nc3ccc(N=[N+]=[N-])cc3)ncnc2cc1O",
@@ -8782,7 +8827,7 @@
 			"selected": 0,
 			"id": "C474",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 156.2,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8882,7 +8927,7 @@
 			"selected": 0,
 			"id": "C480",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8915,7 +8960,7 @@
 			"selected": 0,
 			"id": "C482",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 74.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -8932,11 +8977,11 @@
 			],
 			"selected": 0,
 			"id": "C483",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc2ncnc(Nc3ccc(N=[N+]=[N-])cc3)c2cc1O",
@@ -8982,7 +9027,7 @@
 			"selected": 0,
 			"id": "C486",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -9012,7 +9057,7 @@
 			"selected": 0,
 			"id": "C488",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 1.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -9028,7 +9073,7 @@
 			"selected": 0,
 			"id": "C489",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 2.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -9044,11 +9089,11 @@
 			],
 			"selected": 0,
 			"id": "C490",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(I)c(NC(C)=O)cc1OC",
@@ -9062,11 +9107,11 @@
 			],
 			"selected": 0,
 			"id": "C491",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1ccccc1OC",
@@ -9079,7 +9124,7 @@
 			"selected": 0,
 			"id": "C492",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.6,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -9095,7 +9140,7 @@
 			"selected": 0,
 			"id": "C493",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 3.0,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -9177,11 +9222,11 @@
 			],
 			"selected": 0,
 			"id": "C498",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(C#N)ccc1O",
@@ -9194,7 +9239,7 @@
 			"selected": 0,
 			"id": "C499",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 0.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -9210,11 +9255,11 @@
 			],
 			"selected": 0,
 			"id": "C500",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(C#N)c(N)cc1O",
@@ -9229,11 +9274,11 @@
 			],
 			"selected": 0,
 			"id": "C501",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(C#N)c(/N=C/N(C)C)cc1O",
@@ -9247,11 +9292,11 @@
 			],
 			"selected": 0,
 			"id": "C502",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "COc1cc(C#N)c(N=CN(C)C)cc1O",
@@ -9264,11 +9309,11 @@
 			],
 			"selected": 0,
 			"id": "C503",
-			"buyable": true,
+			"buyable": false,
 			"cost_per_g": 0,
 			"reward": null,
 			"is_target": 0,
-			"is_intermediate": 0
+			"is_intermediate": 1
 		},
 		{
 			"smiles": "CCOC(=O)c1cc(OC)c(OC)cc1N",
@@ -9281,7 +9326,7 @@
 			"selected": 0,
 			"id": "C504",
 			"buyable": true,
-			"cost_per_g": 0,
+			"cost_per_g": 20.8,
 			"reward": null,
 			"is_target": 0,
 			"is_intermediate": 0
@@ -9314,7 +9359,7 @@
 			"id": "R0",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -9610,7 +9655,7 @@
 			"id": "R15",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -10139,7 +10184,7 @@
 			"id": "R41",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -10585,7 +10630,7 @@
 			"id": "R63",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -11285,7 +11330,7 @@
 			"id": "R97",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -12328,7 +12373,7 @@
 			"id": "R147",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -12489,7 +12534,7 @@
 			"id": "R155",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -13234,7 +13279,7 @@
 			"id": "R191",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -13631,7 +13676,7 @@
 			"id": "R210",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -13755,7 +13800,7 @@
 			"id": "R216",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -13944,7 +13989,7 @@
 			"id": "R225",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -14063,7 +14108,7 @@
 			"id": "R231",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -14230,7 +14275,7 @@
 			"id": "R239",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -15097,7 +15142,7 @@
 			"id": "R282",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -15427,7 +15472,7 @@
 			"id": "R298",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -16040,7 +16085,7 @@
 			"id": "R327",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -16250,7 +16295,7 @@
 			"id": "R337",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -16725,7 +16770,7 @@
 			"id": "R360",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -16781,7 +16826,7 @@
 			"id": "R363",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -16875,7 +16920,7 @@
 			"id": "R368",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -17043,7 +17088,7 @@
 			"id": "R377",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -17246,7 +17291,7 @@
 			"id": "R387",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -17418,7 +17463,7 @@
 			"id": "R397",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -17472,7 +17517,7 @@
 			"id": "R400",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -17640,7 +17685,7 @@
 			"id": "R409",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -17911,7 +17956,7 @@
 			"id": "R423",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -18235,7 +18280,7 @@
 			"id": "R441",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -18403,7 +18448,7 @@
 			"id": "R450",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -18660,7 +18705,7 @@
 			"id": "R463",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -18824,7 +18869,7 @@
 			"id": "R472",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -18860,7 +18905,7 @@
 			"id": "R474",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -18956,7 +19001,7 @@
 			"id": "R480",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -18992,7 +19037,7 @@
 			"id": "R482",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -19150,7 +19195,7 @@
 			"id": "R490",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -19241,7 +19286,7 @@
 			"id": "R495",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -19317,7 +19362,7 @@
 			"id": "R500",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -19345,7 +19390,7 @@
 			"id": "R502",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -19359,7 +19404,7 @@
 			"id": "R503",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -19703,7 +19748,7 @@
 			"id": "R519",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -20147,7 +20192,7 @@
 			"id": "R541",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -20814,7 +20859,7 @@
 			"id": "R574",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -21335,7 +21380,7 @@
 			"id": "R599",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -21349,7 +21394,7 @@
 			"id": "R600",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -21531,7 +21576,7 @@
 			"id": "R609",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -21788,7 +21833,7 @@
 			"id": "R622",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -21830,7 +21875,7 @@
 			"id": "R625",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -21900,7 +21945,7 @@
 			"id": "R629",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -22201,7 +22246,7 @@
 			"id": "R644",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -22258,7 +22303,7 @@
 			"id": "R647",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -22398,7 +22443,7 @@
 			"id": "R654",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -22771,7 +22816,7 @@
 			"id": "R673",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -22785,7 +22830,7 @@
 			"id": "R674",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -22841,7 +22886,7 @@
 			"id": "R677",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -22876,7 +22921,7 @@
 			"id": "R679",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -22930,7 +22975,7 @@
 			"id": "R682",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23028,7 +23073,7 @@
 			"id": "R687",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23042,7 +23087,7 @@
 			"id": "R688",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23077,7 +23122,7 @@
 			"id": "R690",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23091,7 +23136,7 @@
 			"id": "R691",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23181,7 +23226,7 @@
 			"id": "R696",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23250,7 +23295,7 @@
 			"id": "R700",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23596,7 +23641,7 @@
 			"id": "R718",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23717,7 +23762,7 @@
 			"id": "R724",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23867,7 +23912,7 @@
 			"id": "R732",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -23946,7 +23991,7 @@
 			"id": "R736",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24015,7 +24060,7 @@
 			"id": "R740",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24029,7 +24074,7 @@
 			"id": "R741",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24085,7 +24130,7 @@
 			"id": "R744",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24155,7 +24200,7 @@
 			"id": "R748",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24169,7 +24214,7 @@
 			"id": "R749",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24183,7 +24228,7 @@
 			"id": "R750",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24239,7 +24284,7 @@
 			"id": "R754",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24253,7 +24298,7 @@
 			"id": "R755",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24441,7 +24486,7 @@
 			"id": "R764",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24476,7 +24521,7 @@
 			"id": "R766",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24490,7 +24535,7 @@
 			"id": "R767",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24523,7 +24568,7 @@
 			"id": "R769",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24556,7 +24601,7 @@
 			"id": "R771",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24632,7 +24677,7 @@
 			"id": "R775",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24898,7 +24943,7 @@
 			"id": "R789",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24934,7 +24979,7 @@
 			"id": "R791",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -24983,7 +25028,7 @@
 			"id": "R794",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25146,7 +25191,7 @@
 			"id": "R802",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25160,7 +25205,7 @@
 			"id": "R803",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25194,7 +25239,7 @@
 			"id": "R805",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25322,7 +25367,7 @@
 			"id": "R812",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25356,7 +25401,7 @@
 			"id": "R814",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25425,7 +25470,7 @@
 			"id": "R818",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25460,7 +25505,7 @@
 			"id": "R820",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25556,7 +25601,7 @@
 			"id": "R825",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25613,7 +25658,7 @@
 			"id": "R828",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25627,7 +25672,7 @@
 			"id": "R829",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25675,7 +25720,7 @@
 			"id": "R832",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25816,7 +25861,7 @@
 			"id": "R841",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25887,7 +25932,7 @@
 			"id": "R845",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25901,7 +25946,7 @@
 			"id": "R846",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25915,7 +25960,7 @@
 			"id": "R847",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25929,7 +25974,7 @@
 			"id": "R848",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25943,7 +25988,7 @@
 			"id": "R849",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -25957,7 +26002,7 @@
 			"id": "R850",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26033,7 +26078,7 @@
 			"id": "R855",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26047,7 +26092,7 @@
 			"id": "R856",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26225,7 +26270,7 @@
 			"id": "R866",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26239,7 +26284,7 @@
 			"id": "R867",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26295,7 +26340,7 @@
 			"id": "R870",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26367,7 +26412,7 @@
 			"id": "R874",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26567,7 +26612,7 @@
 			"id": "R884",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26581,7 +26626,7 @@
 			"id": "R885",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26595,7 +26640,7 @@
 			"id": "R886",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26652,7 +26697,7 @@
 			"id": "R889",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26666,7 +26711,7 @@
 			"id": "R890",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26702,7 +26747,7 @@
 			"id": "R892",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26716,7 +26761,7 @@
 			"id": "R893",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -26730,7 +26775,7 @@
 			"id": "R894",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27050,7 +27095,7 @@
 			"id": "R910",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27269,7 +27314,7 @@
 			"id": "R921",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27325,7 +27370,7 @@
 			"id": "R924",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27382,7 +27427,7 @@
 			"id": "R927",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27440,7 +27485,7 @@
 			"id": "R930",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27590,7 +27635,7 @@
 			"id": "R938",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27618,7 +27663,7 @@
 			"id": "R940",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27694,7 +27739,7 @@
 			"id": "R944",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27930,7 +27975,7 @@
 			"id": "R956",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -27986,7 +28031,7 @@
 			"id": "R959",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28000,7 +28045,7 @@
 			"id": "R960",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28083,7 +28128,7 @@
 			"id": "R965",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28208,7 +28253,7 @@
 			"id": "R972",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28260,7 +28305,7 @@
 			"id": "R975",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28274,7 +28319,7 @@
 			"id": "R976",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28323,7 +28368,7 @@
 			"id": "R979",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28337,7 +28382,7 @@
 			"id": "R980",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28351,7 +28396,7 @@
 			"id": "R981",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28415,7 +28460,7 @@
 			"id": "R985",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28448,7 +28493,7 @@
 			"id": "R987",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28517,7 +28562,7 @@
 			"id": "R991",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
 		},
@@ -28627,9 +28672,443 @@
 			"id": "R998",
 			"condition": [],
 			"condition_set": false,
-			"score": null,
+			"score": 1000000,
 			"score_set": true,
 			"dummy": false
+		},
+		{
+			"smiles": ">>Nc1ccc(OCc2ccccc2)cc1",
+			"parents": [],
+			"children": [
+				"Nc1ccc(OCc2ccccc2)cc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC",
+			"parents": [],
+			"children": [
+				"COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc2ncnc(Nc3ccc(O)cc3)c2cc1OC",
+			"parents": [],
+			"children": [
+				"COc1cc2ncnc(Nc3ccc(O)cc3)c2cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc2c(Cl)ncnc2cc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc2c(Cl)ncnc2cc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc2c(=O)nc[nH]c2cc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc2c(=O)nc[nH]c2cc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc(C#N)ccc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc(C#N)ccc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc(C#N)c(N)cc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc(C#N)c(N)cc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1ccc(C#N)cc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1ccc(C#N)cc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc([N+](=O)[O-])c(C#N)cc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc(N)c(C#N)cc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc(N)c(C#N)cc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc(C=O)ccc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc(C=O)ccc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc(C=O)c([N+](=O)[O-])cc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc(C=O)c([N+](=O)[O-])cc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1ccc(C=O)cc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1ccc(C=O)cc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc([N+](=O)[O-])c(C=O)cc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc([N+](=O)[O-])c(C=O)cc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc(C)ccc1OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"COc1cc(C)ccc1OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC",
+			"parents": [],
+			"children": [
+				"COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC",
+			"parents": [],
+			"children": [
+				"COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>Nc1cccc(OCc2ccccc2)c1",
+			"parents": [],
+			"children": [
+				"Nc1cccc(OCc2ccccc2)c1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc2ncnc(Nc3cccc(I)c3)c2cc1OC",
+			"parents": [],
+			"children": [
+				"COc1cc2ncnc(Nc3cccc(I)c3)c2cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>N=C(c1ccccc1)c1ccccc1",
+			"parents": [],
+			"children": [
+				"N=C(c1ccccc1)c1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc([N+](=O)[O-])c([N+](=O)[O-])cc1OC",
+			"parents": [],
+			"children": [
+				"COc1cc([N+](=O)[O-])c([N+](=O)[O-])cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>O=C(Nc1cccc(Br)c1)OCc1ccccc1",
+			"parents": [],
+			"children": [
+				"O=C(Nc1cccc(Br)c1)OCc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>O=P(Cl)(Oc1ccccc1)Oc1ccccc1",
+			"parents": [],
+			"children": [
+				"O=P(Cl)(Oc1ccccc1)Oc1ccccc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>Nc1ccc(NC(=O)c2ccccc2)cc1",
+			"parents": [],
+			"children": [
+				"Nc1ccc(NC(=O)c2ccccc2)cc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC",
+			"parents": [],
+			"children": [
+				"COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc2ncnc(Nc3ccc([N+](=O)[O-])cc3)c2cc1OC",
+			"parents": [],
+			"children": [
+				"COc1cc2ncnc(Nc3ccc([N+](=O)[O-])cc3)c2cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>Nc1ccc(NC(=O)OCc2ccccc2)cc1",
+			"parents": [],
+			"children": [
+				"Nc1ccc(NC(=O)OCc2ccccc2)cc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>[N-]=[N+]=Nc1ccc(N)cc1",
+			"parents": [],
+			"children": [
+				"[N-]=[N+]=Nc1ccc(N)cc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>Nc1ccc(N2C(=O)c3ccccc3C2=O)cc1",
+			"parents": [],
+			"children": [
+				"Nc1ccc(N2C(=O)c3ccccc3C2=O)cc1"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1cc(C(=O)O)c([N+](=O)[O-])cc1OC",
+			"parents": [],
+			"children": [
+				"COc1cc(C(=O)O)c([N+](=O)[O-])cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
+		},
+		{
+			"smiles": ">>COc1ccc(NS(=O)(=O)c2ccc(C)cc2)cc1OC",
+			"parents": [],
+			"children": [
+				"COc1ccc(NS(=O)(=O)c2ccc(C)cc2)cc1OC"
+			],
+			"selected": 0,
+			"id": null,
+			"condition": null,
+			"condition_set": false,
+			"score": 1000000,
+			"score_set": true,
+			"dummy": true
 		}
 	]
 }
