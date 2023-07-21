@@ -25,9 +25,7 @@ class AskcosScorer(Scorer):
     """ 
     Scores reactions using ASKCOS 
     """
-    def __init__(self, 
-                 context_recommender = None, 
-                 ): 
+    def __init__(self): 
         
         from askcos.synthetic.evaluation.evaluator import Evaluator
 
