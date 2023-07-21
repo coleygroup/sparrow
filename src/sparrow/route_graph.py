@@ -155,24 +155,19 @@ class RouteGraph:
     def set_targets(self, targets: Iterable[str]):
         """ defines CompoundNode.is_target = 1 for specified targets, where 
         targets is a list of smiles strings of target molecules """
-        invalid_targets = []
-        for target in targets: 
-            if target not in self.compound_nodes: 
-                print(f"Target {target} not tagged in route graph because it is not already a node")
-                print(f"Target will not be considered!!!!")
-                invalid_targets.append(target)
-            else: 
-                self.compound_nodes[target].set_as_target()
 
-        return invalid_targets
+        for target in targets: 
+            self.node_from_id(target).set_as_target()
+
+        return
     
     def set_target_rewards(self, target_dict: Dict[str, Union[int, float]]):
         """ sets CompoundNode.reward to specified value for each key in target_dict """
-        for target, reward in target_dict.items(): 
-            if target not in self.compound_nodes: 
-                print(f"Reward not set for target {target} because it is not already a node")
+        for target_id, reward in target_dict.items(): 
+            if self.smiles_from_id(target_id) not in self.compound_nodes: 
+                print(f"Reward not set for target {self.smiles_from_id(target_dict)} because it is not already a node")
             else:
-                self.compound_nodes[target].set_reward(reward)
+                self.node_from_id(target_id).set_reward(reward)
         
         return 
     
@@ -182,7 +177,7 @@ class RouteGraph:
         if coster is None: 
             coster = NaiveCoster()
         
-        for node in tqdm(self.compound_nodes_only(), 'Searching ChemSpace'): 
+        for node in tqdm(self.compound_nodes_only(), 'Searching for price/buyability'): 
             buyable, cost = coster.get_buyable_and_cost(node.smiles)
             node.update(
                 buyable=buyable, 
@@ -203,9 +198,7 @@ class RouteGraph:
         """ TODO: insert description """
 
         self.set_buyable_compounds_and_costs(coster)
-        invalid_targets = self.set_targets(target_dict.keys())
-        for invalid_tar in invalid_targets: 
-            target_dict.pop(invalid_tar)
+        self.set_targets(target_dict.keys())
         self.set_target_rewards(target_dict)
         self.set_intermediates()
 

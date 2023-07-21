@@ -58,10 +58,13 @@ class RouteSelector:
         
         c=0
         for old_smi, reward in target_dict.items():
-            clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi), isomericSmiles=False)
+            clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
             if clean_smi in self.graph.compound_nodes.keys():
                 id = self.graph.id_from_smiles(clean_smi)
                 new_target_dict[id] = reward
+            elif old_smi in self.graph.compound_nodes.keys(): 
+                id = self.graph.id_from_smiles(old_smi)
+                new_target_dict[id] = reward                
             else: 
                 print(f'Target {old_smi} not in routes! Being removed from target set!!!')
                 c+=1
