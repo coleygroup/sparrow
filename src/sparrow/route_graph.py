@@ -16,16 +16,18 @@ class RouteGraph:
     and compounds (CompoundNodes).
     """
     def __init__(self, 
-                 askcos_MCTS_tree = None, 
-                 paths: List = None, 
+                 node_filename: str = None, 
                 ) -> None:
+        """
+        node_filename: filename of a json with information about reaction and compound nodes 
+        """
         
         self.compound_nodes = {}
         self.reaction_nodes = {}
         
-        if askcos_MCTS_tree or paths:
+        if node_filename:
 
-            self.add_from_MCTS(MCTS_tree=askcos_MCTS_tree, paths=paths)
+            self.add_from_json(node_filename)
 
         self.ids = {}
         
@@ -149,40 +151,20 @@ class RouteGraph:
             self.add_compound_node(smiles=path['smiles'], parents=parents)
 
         return 
-
-    def add_from_MCTS(self, MCTS_tree = None, paths: List = None): 
-        """ 
-        Builds RouteGraph from Monte Carlo Tree Search output from 
-        ASKCOS or paths output from MCTS.get_buyable_paths
-        """
-        from askcos.retrosynthetic.mcts.tree_builder import MCTS
-        import askcos.utilities.contexts as context_cleaner
-        from askcos.synthetic.evaluation.evaluator import Evaluator
-        from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
-        import askcos.global_config as gc
-
-        if paths is None: 
-            if MCTS_tree is None: 
-                print("Must provide at least one of MCTS_tree or paths")
-                return 
-            
-            paths = MCTS_tree.enumerate_paths()
-
-        for path in paths: 
-            self.add_path(path)
-
-        return 
     
     def set_targets(self, targets: Iterable[str]):
         """ defines CompoundNode.is_target = 1 for specified targets, where 
         targets is a list of smiles strings of target molecules """
+        invalid_targets = []
         for target in targets: 
             if target not in self.compound_nodes: 
                 print(f"Target {target} not tagged in route graph because it is not already a node")
+                print(f"Target will not be considered!!!!")
+                invalid_targets.append(target)
             else: 
                 self.compound_nodes[target].set_as_target()
 
-        return 
+        return invalid_targets
     
     def set_target_rewards(self, target_dict: Dict[str, Union[int, float]]):
         """ sets CompoundNode.reward to specified value for each key in target_dict """
@@ -200,7 +182,7 @@ class RouteGraph:
         if coster is None: 
             coster = NaiveCoster()
         
-        for node in self.compound_nodes_only(): 
+        for node in tqdm(self.compound_nodes_only(), 'Searching ChemSpace'): 
             buyable, cost = coster.get_buyable_and_cost(node.smiles)
             node.update(
                 buyable=buyable, 
@@ -221,11 +203,13 @@ class RouteGraph:
         """ TODO: insert description """
 
         self.set_buyable_compounds_and_costs(coster)
-        self.set_targets(target_dict.keys())
+        invalid_targets = self.set_targets(target_dict.keys())
+        for invalid_tar in invalid_targets: 
+            target_dict.pop(invalid_tar)
         self.set_target_rewards(target_dict)
         self.set_intermediates()
 
-        return 
+        return target_dict
     
     def intermediate_nodes(self) -> List[CompoundNode]: 
         """ Returns a list of CompoundNodes that have is_intermediate==1 """
