@@ -6,6 +6,8 @@ from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
 from rdkit import Chem
 from tqdm import tqdm
 from pathlib import Path
+from datetime import datetime
+
 import csv 
 
 reward_type = Union[int, float]
@@ -95,12 +97,24 @@ class RouteSelector:
     
     def get_rxn_scores(self): 
         """ Scores all reactions in the graph that are not already scored """
+        count = 0
         for node in tqdm(self.graph.reaction_nodes_only(), 'Scoring reactions'): 
-            if node.score_set: 
+            if node.score_set or node.dummy: 
                 continue 
+
+            try:    
+                score = self.rxn_scorer(rxn_smi=node.smiles, condition=node.condition)
+            except: 
+                print(f'Reaction {node.smiles} could not be scored, setting score=0')
+                score = 0 
                 
-            score = self.rxn_scorer(rxn_smi=node.smiles, condition=node.condition)
             node.update(score=score)
+            count += 1
+            if count % 100 == 0: 
+                time = datetime.now().strftime("%H-%M-%S")
+                self.graph.to_json(self.dir / 'chkpts' / f'trees_w_scores_{time}.json')
+        
+
 
     def define_variables(self): 
         """ 
