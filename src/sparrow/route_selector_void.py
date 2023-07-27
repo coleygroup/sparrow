@@ -1,7 +1,6 @@
 from sparrow import Scorer, Recommender
 from sparrow.route_graph import RouteGraph
 from sparrow.coster import Coster
-from sparrow.nodes import ReactionNode
 from typing import Dict, Union, List
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
 from rdkit import Chem
@@ -129,53 +128,153 @@ class RouteSelector:
         TODO: include conditions 
         """
 
-        rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
-        self.r = LpVariable.dicts(
-            "rxn", 
-            indices=rxn_ids, 
+        self.a = LpVariable.dicts(
+            "target",
+            self.targets,
             cat="Binary",
-        )
+        ) # whether each target is selected for synthesis 
+        
+        starting_nodes = self.graph.buyable_nodes()
+        self.s = LpVariable.dicts(
+            "start",
+            [node.id for node in starting_nodes],
+            cat="Binary",
+        ) # whether each starting material is used in the selected routes 
+        
+        rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
+        self.o = LpVariable.dicts(
+            "rxnfortarget",
+            (rxn_ids, self.targets),
+            cat="Binary"
+        ) # whether each reaction is used to synthesize a given target 
 
-        mol_ids = [node.id for node in self.graph.compound_nodes_only()]
-        self.m = LpVariable.dicts(
-            "mol", 
-            mol_ids, 
+        self.f = LpVariable.dicts(
+            "rxnflow",
+            rxn_ids,
+            lowBound=0,
+            upBound=len(self.targets),
+            cat=LpInteger,
+        )  # flow through reaction node 
+
+        self.r = LpVariable.dicts(
+            "rxnused", 
+            rxn_ids, 
             cat="Binary",
         )
         
+        self.csr = LpVariable.dicts(
+            "csrused",
+            self.graph.unique_reagents(),
+            cat="Binary"
+        )
+
         return 
 
     def set_constraints(self):
         """ Sets constraints defined in TODO: write in README all constraints """
         print('Setting constraints')
-        # implement constrain_all_targets later
+        if self.constrain_all_targets: 
+            self.set_all_targets_selected_constraint()
+        else: 
+            self.set_target_flow_constraint()
 
-        self.set_rxn_constraints()
-        self.set_mol_constraints()
+        self.set_intermediate_flow_constraint()
+        self.set_starting_material_constraint()
+        self.set_reaction_used_constraint()
+        self.set_overall_flow_constraint()
+        self.set_csr_constraint()
 
         return 
     
-    def set_rxn_constraints(self): 
-
-        for node in self.graph.reaction_nodes_only(): 
-            if node.dummy: 
-                continue 
-            par_ids = [par.id for par in node.parents.values()]
-            for par_id in par_ids: 
-                self.problem += (
-                    self.m[par_id] >= self.r[node.id]
-                )
-        
-        return 
-    
-    def set_mol_constraints(self): 
-
-        for node in self.graph.compound_nodes_only(): 
-            parent_ids = [par.id for par in node.parents.values()]
+    def set_target_flow_constraint(self):
+        """ Sets constraint on flow through a target node """
+        # flow into target node - flow out of target node = 0 (target not selected)
+        # or 1 (target is selected )
+        for target in self.targets: 
+            parent_ids, child_ids = self.get_child_and_parent_ids(id=target)
             self.problem += (
-                self.m[node.id] <= lpSum(self.r[par_id] for par_id in parent_ids)
+                lpSum([self.f[parent_id] for parent_id in parent_ids])
+                    - lpSum([self.f[child_id] for child_id in child_ids])  
+                    == self.a[target],
+                f"Flow_Through_Target_{target}"
+            )
+
+        return 
+    
+    def set_intermediate_flow_constraint(self): 
+        """ Sets constraint on flow through intermediate nodes: net flow must be zero """
+        intermediate_nodes = [*self.graph.intermediate_nodes(), *self.graph.buyable_nodes()]
+        
+        for inter in intermediate_nodes: 
+            parent_ids, child_ids = self.get_child_and_parent_ids(id=inter.id)
+            self.problem += (
+                lpSum([self.f[parent_id] for parent_id in parent_ids])
+                    - lpSum([self.f[child_id] for child_id in child_ids])  
+                    == 0,
+                f"Flow_Through_Inter_{inter.id}"
+            )
+           
+        return 
+    
+    def set_starting_material_constraint(self):
+        """ Sets constraint on 's' variables and dummy reaction nodes """
+
+        N = len(self.targets)
+
+        for start in self.graph.buyable_nodes(): 
+            parent_ids, _ = self.get_child_and_parent_ids(id=start.id) 
+            # ^ parent_smis should only have one dummy rxn node if this is done correctly 
+            self.problem += (
+                N*self.s[start.id] >= lpSum([self.f[rxn] for rxn in parent_ids]),
+                f"Start_{start.id}_from_dummy_flow"
+            )
+
+        return 
+    
+    def set_reaction_used_constraint(self):
+        """ Sets constraint on 'r' abd 'f' variables, so if f_rxn > 0, r_rxn = 1"""
+
+        N = len(self.targets)
+        for rxn_smi, node in self.graph.reaction_nodes.items(): 
+            # ^ parent_smis should only have one dummy rxn node if this is done correctly 
+            self.problem += (
+                N*self.r[node.id] >= self.f[node.id],
+                f"Rxnused_flow_{node.id}"
+            )
+
+        return 
+
+    def set_overall_flow_constraint(self):
+        """ Sets constraint between o_mn and f_m for reaction node m """
+
+        for rxn in self.graph.reaction_nodes_only(): 
+            self.problem += (
+                self.f[rxn.id] == lpSum([self.o[rxn.id][target] for target in self.targets]),
+                f"Total_flow_through_{rxn.id}"
             )
         
+        return 
+    
+    def set_all_targets_selected_constraint(self):
+        """ Sets constraint that all targets are selected """
+        for target in self.targets: 
+            parent_ids, child_ids = self.get_child_and_parent_ids(target)
+            self.problem += (
+                lpSum([self.f[parent_id] for parent_id in parent_ids])
+                    - lpSum([self.f[child_id] for child_id in child_ids])  
+                    == 1,
+                f"Flow_Through_Target_{target}"
+            )
+
+        return 
+    
+    def set_csr_constraint(self): 
+        for rxn in self.graph.reaction_nodes_only():
+            for csr in rxn.get_condition(1)[0]: 
+                self.problem += (
+                    self.csr[csr] - self.r[rxn.id] >= 0,
+                    f"csr_{csr}_rxn_{rxn.id}"
+                )
         return 
     
     def get_child_and_parent_ids(self, smi: str = None, id: str = None): 
@@ -211,20 +310,22 @@ class RouteSelector:
         # TODO: Add consideration of conditions 
         print('Setting objective function')
 
-        reward_mult =  1 # / ( len(self.target_dict)) # *max(self.target_dict.values()) )
-        cost_mult = 1 # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
-        pen_mult = 1 # / (len(self.graph.non_dummy_nodes())) # * max([node.penalty for node in self.graph.non_dummy_nodes()]) )
+        rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
+        reward_mult =  1 / ( len(self.target_dict)*sum(self.target_dict.values()) )
+        cost_mult = 1 / (len(self.s) * sum([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
+        pen_mult = 1 / (len(rxn_ids) * sum([self.graph.node_from_id(rxn).penalty for rxn in rxn_ids]) )
+        csr_mult = 1 / (len(self.graph.unique_reagents()))
 
-        self.problem += -1*self.weights[0]*reward_mult*lpSum([self.target_dict[target]*self.m[target] for target in self.targets]) \
-        + self.weights[1]*cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
-        + self.weights[2]*pen_mult*lpSum([self.r[node.id]*node.penalty for node in self.graph.non_dummy_nodes()])
-            # reaction penalties, implement CSR later 
+        if self.constrain_all_targets: #TODO: fix this 
+            self.problem += self.weights[0]
+        else:
+            self.problem += -1*self.weights[0]*reward_mult*lpSum([self.target_dict[target]*self.a[target] for target in self.targets]) \
+            + self.weights[1]*cost_mult*lpSum([s*self.graph.node_from_id(id).cost_per_g for id, s in self.s.items()]) \
+            + self.weights[2]*csr_mult*lpSum([c for c in self.csr.values()]) \
+            + self.weights[3]*pen_mult*lpSum([self.r[rxn]*self.graph.node_from_id(rxn).penalty for rxn in rxn_ids])
+                # reaction penalties 
         return 
     
-    def cost_of_dummy(self, dummy: ReactionNode) -> float:
-        start_node = list(dummy.children.values())[0]
-        return start_node.cost_per_g 
-
     def optimize(self, solver=None):
 
         # self.problem.writeLP("RouteSelector.lp", max_length=300)

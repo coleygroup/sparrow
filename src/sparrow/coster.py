@@ -32,7 +32,7 @@ class Coster(ABC):
 
 class NaiveCoster(Coster): 
     """ Determines if a molecule is buyable based on the number of certain elements. 
-    Sets all costs to zero 
+    Sets all costs to 1
     """
     def __init__(self) -> None:
         return 
@@ -64,7 +64,7 @@ class NaiveCoster(Coster):
         for smiles in smis: 
             buyable = self.buyable(smiles)
             if buyable: 
-                costs[smiles] = 0
+                costs[smiles] = 1
                 buyables.add(smiles)
             else: 
                 costs[smiles] = None

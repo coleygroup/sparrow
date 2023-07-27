@@ -4,7 +4,7 @@ from sparrow.coster import Coster, NaiveCoster
 from typing import Iterable, Dict, Union, Optional, List
 from pathlib import Path
 from tqdm import tqdm
-import sys, os 
+from datetime import datetime
 import json 
 
 import pickle 
@@ -37,7 +37,7 @@ class RouteGraph:
                           smiles: str, 
                           parents: Optional[Iterable[str]] = None, 
                           children: Optional[Iterable[str]] = None,
-                          dummy: Optional[bool] = False,
+                          dummy: Optional[bool] = None,
                           **kwargs) -> ReactionNode:
         """ Adds reaction node to graph from reaction smiles. If parents/chidlren provided, first add them as 
         compound nodes  """ 
@@ -57,6 +57,7 @@ class RouteGraph:
             self.reaction_nodes[smiles].update(
                 parents=parent_nodes, 
                 children=child_nodes, 
+                dummy=dummy,
                 **kwargs)
         else:
             self.reaction_nodes[smiles] = ReactionNode(
@@ -127,6 +128,34 @@ class RouteGraph:
         """ Returns a  dictionary [smi, ReactionNode] of all nodes in the graph """
         return {**self.compound_nodes, **self.reaction_nodes}
     
+    def remove_dummy_rxns(self) -> None: 
+        for node in self.reaction_nodes_only(): 
+            if node.smiles.startswith('>>'): 
+                self.remove_rxn_node(node.smiles)
+        return 
+    
+    def remove_rxn_node(self, smi) -> None: 
+        self.reaction_nodes.pop(smi)
+
+        for node in self.compound_nodes_only(): 
+            if smi in node.parents: 
+                node.parents.pop(smi)
+            if smi in node.children: 
+                node.parents.pop(smi)
+
+        return 
+    
+    def remove_compound_node(self, smi) -> None: 
+        self.compound_nodes.pop(smi)
+
+        for node in self.reaction_nodes_only(): 
+            if smi in node.parents: 
+                node.parents.pop(smi)
+            if smi in node.children: 
+                node.parents.pop(smi)
+
+        return         
+    
     def save(self, filename: Union[str, Path] = None) -> None: 
         """ Saves route graph using as pickle file """
         if filename is None: 
@@ -171,33 +200,44 @@ class RouteGraph:
         
         return 
     
-    def set_buyable_compounds_and_costs(self, coster: Coster = None):
+    def set_buyable_compounds_and_costs(self, coster: Coster = None, save_json_dir: str = None):
         """ sets CompoundNode.buyable for starting materials listed in ****insert**** 
         (for now using arbitrary definition based on number of carbons, nitrogens, oxygens) """
         if coster is None: 
-            coster = NaiveCoster()
+            return 
         
+        c = 0
         for node in tqdm(self.compound_nodes_only(), 'Searching for price/buyability'): 
+            if node.cost_set and node.cost_per_g != 1: 
+                continue 
+            
             buyable, cost = coster.get_buyable_and_cost(node.smiles)
             node.update(
                 buyable=buyable, 
                 cost_per_g=cost,
             )
+            c += 1
 
+            if c % 500 == 0 and save_json_dir is not None: 
+                time = datetime.now().strftime("%H-%M-%S")
+                self.to_json(Path(save_json_dir) / f'trees_w_costs_{time}.json')
+        
+        self.to_json(Path(save_json_dir) / f'trees_w_costs.json')
         return 
 
     def set_intermediates(self):
         """ Run after targets and starting materials are set """
         for node in self.compound_nodes.values():
-            if (node.is_target==0) and (node.buyable==0):
+            if (not node.is_target) and (not node.buyable):
                 node.set_as_intermediate()
+            else: 
+                node.update(is_intermediate=False)
         
         return 
 
-    def set_compound_types(self, target_dict, coster=None):
+    def set_compound_types(self, target_dict, save_dir: str = None, coster=None):
         """ TODO: insert description """
 
-        self.set_buyable_compounds_and_costs(coster)
         self.set_targets(target_dict.keys())
         self.set_target_rewards(target_dict)
         self.set_intermediates()
@@ -218,12 +258,12 @@ class RouteGraph:
         """ Sets IDs for all nodes """
         
         self.rxn_ids = {}
-        for node, i in zip(self.reaction_nodes.values(), range(len(self.reaction_nodes))):
+        for i, node in enumerate(self.reaction_nodes_only()):
             self.rxn_ids[f"R{i}"] = node
             node.id = f"R{i}"
 
         self.compound_ids = {}
-        for node, i in zip(self.compound_nodes.values(), range(len(self.compound_nodes))):
+        for i, node in enumerate(self.compound_nodes_only()):
             self.compound_ids[f"C{i}"] = node
             node.id = f"C{i}"
         
@@ -239,6 +279,12 @@ class RouteGraph:
         """ Returns a list of ReactionNodes in this graph """
         return list(self.compound_nodes.values())
 
+    def dummy_nodes_only(self) -> List[ReactionNode]: 
+        return [node for node in self.reaction_nodes_only() if node.dummy]
+    
+    def non_dummy_nodes(self) -> List[ReactionNode]: 
+        return [node for node in self.reaction_nodes_only() if not node.dummy]
+
     def node_from_id(self, id) -> Node: 
         return self.ids[id]
     
@@ -251,6 +297,11 @@ class RouteGraph:
     def smiles_from_id(self, id) -> str: 
         return self.node_from_id(id).smiles
 
+    def unique_reagents(self) -> List[str]: 
+        conditions = [node.get_condition(1)[0] for node in self.reaction_nodes_only()]
+        reagents = set([i for cond in conditions for i in cond])
+        return reagents    
+    
     def to_json(self, filename) -> None: 
         compound_nodes = [node.to_dict() for node in self.compound_nodes_only()]
         reaction_nodes = [node.to_dict() for node in self.reaction_nodes_only()]
@@ -264,6 +315,7 @@ class RouteGraph:
         return 
 
     def add_from_json(self, filename) -> None:
+
         """ Adds node information from a json file """
         with open(filename, 'r') as f: 
             storage = json.load(f)

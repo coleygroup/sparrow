@@ -1,14 +1,12 @@
 """ Visualizes selected routes """
 from sparrow.route_graph import RouteGraph
-from sparrow import Node, ReactionNode
+from sparrow import ReactionNode
 from pulp import LpVariable
 from typing import List, Dict
-import pandas as pd 
 import networkx as nx
+import json 
+import pandas as pd 
 import matplotlib.pyplot as plt
-from rdkit import Chem
-from rdkit.Chem import Draw
-import dataframe_image as dfi
 
 
 color_dict = {
@@ -41,6 +39,25 @@ class Visualizer:
 
         self.vis_graph = self.create_vis_graph()
 
+    def reactions_from_vars(self, filename): 
+        rxnfortar = [var.name for var in self.vars if var.name.startswith('rxnfortarget')]
+        layers = self.multipartite_from_digraph()
+        target_ids = list(self.target_verts.keys())
+        storage = {}
+        for tar_id in target_ids:
+            rxns = [rxn.split('_')[1] for rxn in rxnfortar if rxn.endswith(tar_id)]
+            tar = self.route_graph.smiles_from_id(tar_id)
+            storage[tar] = [self.route_graph.smiles_from_id(rxn_id) for rxn_id in rxns]
+            # for rxn_id in rxns: 
+            #     c = 0
+            #     if self.route_graph.node_from_id(rxn_id).smiles.startswith('>>'):
+            #         storage[tar][f'starting_material_{c}'] = self.route_graph.smiles_from_id(rxn_id)
+            #         c+=1
+            #     else: 
+            #         storage[tar][layers[rxn_id]] = [self.route_graph.smiles_from_id(rxn_id), self.route_graph.node_from_id(rxn_id).get_condition(1)[0]]
+
+        with open(filename,'w') as f: 
+            json.dump(storage, f, indent="\t")
 
 
 
@@ -50,7 +67,7 @@ class Visualizer:
             
             if 'rxnflow' in var.name: 
                 id = var.name.split('_')[1]
-                node = self.route_graph.ids[id]
+                node = self.route_graph.node_from_id(id)
                 self.reaction_nodes.add(node)
                 if not node.dummy: 
                     self.add_compounds_from_rxn(node)
@@ -63,7 +80,6 @@ class Visualizer:
         return 
 
     def add_compounds_from_rxn(self, rxn_node: ReactionNode) -> None:
-        compounds = [*(rxn_node.parents.values()), *(rxn_node.children.values())]
 
         for child in rxn_node.children.values(): 
             if child.is_target: 
@@ -72,8 +88,8 @@ class Visualizer:
             self.intermediate_nodes.add(child)
 
         for parent in rxn_node.parents.values(): 
-            if parent.is_target: 
-                continue 
+            # if parent.is_target: 
+            #     continue 
 
             # figure out if the parent is a dummy starting reaction 
             dummy_parent_selected = False
@@ -149,7 +165,7 @@ class Visualizer:
         
         nx.set_node_attributes(self.vis_graph, values = layers, name='layer')
 
-        return self.vis_graph
+        return layers
 
     def max_distance_to_target(self, node_id): 
         dists = []
@@ -166,8 +182,8 @@ class Visualizer:
         
         self.multipartite_from_digraph()
 
-        pos = nx.nx_pydot.graphviz_layout(self.vis_graph)
-        # pos = nx.multipartite_layout(self.vis_graph, subset_key = "layer")   
+        # pos = nx.spring_layout(self.vis_graph)
+        pos = nx.multipartite_layout(self.vis_graph, subset_key = "layer")   
 
         options = {
             'nodelist': list(self.vis_graph),
@@ -177,6 +193,9 @@ class Visualizer:
             'arrowstyle': '-|>',
             'arrowsize': 12,
         }
+
+        plt.figure(1, figsize=(30,30)) 
+
 
         # targets 
         nx.draw_networkx_nodes(self.vis_graph, pos, 

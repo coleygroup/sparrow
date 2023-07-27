@@ -62,23 +62,27 @@ class CompoundNode(Node):
 
     def __init__(self, 
                 smiles: str,
-                parents: Optional[List[Node]] = None,
-                children: Optional[List[Node]] = None,
-                buyable: Optional[bool] = None, 
-                cost_per_g: Optional[float] = None, 
-                reward: Optional[float] = None,
-                is_target: Optional[int] = 0,  
-                is_intermediate: Optional[int] = 0,
+                parents: List[Node] = None,
+                children: List[Node] = None,
+                buyable: bool = None, 
+                cost_per_g: float = None, 
+                reward: float = None,
+                is_target: bool = False,  
+                is_intermediate: bool = False,
+                cost_set: int = False,
                 **kwargs) -> None:
     
         super().__init__(smiles, parents, children, **kwargs)
         
-        self.buyable = buyable #TODO: update CompoundNode to determine buyability 
-        self.cost_per_g = cost_per_g #TODO: update CompoundNode to determine cost if buyable  
-        self.reward = reward
+        self.cost_set = cost_set 
 
-        self.is_target = is_target
-        self.is_intermediate = is_intermediate
+        self.update(
+            buyable=buyable, 
+            cost_per_g=cost_per_g,
+            reward=reward,
+            is_target=is_target,
+            is_intermediate=is_intermediate
+        )
         
         return
 
@@ -89,10 +93,10 @@ class CompoundNode(Node):
         self.reward = reward
     
     def set_as_buyable(self):
-        self.buyable = 1
+        self.buyable = True
 
     def set_as_intermediate(self):
-        self.is_intermediate = 1
+        self.is_intermediate = True
     
     def to_dict(self):
         node_info = super().to_dict()
@@ -101,36 +105,53 @@ class CompoundNode(Node):
             'cost_per_g': self.cost_per_g, 
             'reward': self.reward, 
             'is_target': self.is_target, 
-            'is_intermediate': self.is_intermediate
+            'is_intermediate': self.is_intermediate,
+            'cost_set': self.cost_set
         }
         return {**node_info, **cmd_info}
     
+    def update_cost(self, cost_per_g = None):
+        if cost_per_g is not None: 
+            self.cost_per_g = cost_per_g
+            self.cost_set = True
+        else: 
+            self.cost_per_g = None
+        return self.cost_per_g
+    
     def update(self,
-               parents: Optional[List[Node]] = None, 
-               children: Optional[List[Node]] = None, 
-               buyable: Optional[bool] = None, 
-               cost_per_g: Optional[float] = None, 
-               reward: Optional[float] = None,
-               is_target: Optional[int] = None,  
-               is_intermediate: Optional[int] = None,
+               parents: List[Node] = None, 
+               children: List[Node] = None, 
+               buyable: bool = None, 
+               cost_per_g: float = None, 
+               reward: float = None,
+               is_target: bool = None,  
+               is_intermediate: bool = None,
                ) -> None:
         
         super().update(parents, children)
 
         if buyable is not None: 
             self.buyable = buyable
+            if buyable is False:
+                self.cost_per_g = None
         
         if cost_per_g is not None: 
-            self.cost_per_g = cost_per_g
+            self.update_cost(cost_per_g)
 
         if reward is not None: 
             self.reward = reward
         
         if is_target is not None: 
-            self.is_target = is_target
+            if isinstance(is_target, int): 
+                self.is_target = {0: False, 1: True}[is_target]
+            else: 
+                self.is_target = is_target
         
         if is_intermediate is not None: 
-            self.is_intermediate = is_intermediate
+            if isinstance(is_intermediate, int): 
+                self.is_intermediate = {0: False, 1: True}[is_intermediate]
+            else: 
+                self.is_intermediate = is_intermediate
 
         return 
 
@@ -162,27 +183,6 @@ class ReactionNode(Node):
 
         self.update(condition=condition, score=score, dummy=dummy, penalty=penalty)
 
-        # if condition is not None: # so that later conditions can be added through json route graph file 
-        #     self.condition = condition
-        #     self.condition_set = True 
-        # else:
-        #     self.condition = [] #TODO: add conditions 
-        #     self.condition_set = False
-        
-        # if score is not None: 
-        #     self.score = score 
-        #     self.score_set = True 
-        #     if score is not 0: 
-        #         self.penalty = 1/score
-        #     else: 
-        #         self.penalty = None
-        # else: 
-        #     self.score = 0
-        #     self.score_set = False 
-        #     self.penalty = None
-
-        # self.dummy = dummy # if it is a dummy reaction (no reactants, produces a starting material)
-
         return 
     
     def update_score(self, score): 
@@ -191,6 +191,8 @@ class ReactionNode(Node):
         self.score_set = True 
         if score == 0: 
             self.penalty = self.max_penalty
+        elif self.dummy is True: 
+            self.penalty = 0
         else: 
             self.penalty = min(self.max_penalty, 1/score)
     
@@ -245,4 +247,10 @@ class ReactionNode(Node):
             self.penalty = penalty
         
         return 
+    
+    def get_condition(self, n_c: int) -> List[str]:
+        if self.condition: 
+            return self.condition[:n_c]
+        else: 
+            return [[] for _ in range(n_c)]
         
