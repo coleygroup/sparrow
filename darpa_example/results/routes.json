@@ -1,0 +1,875 @@
+{
+	"CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)c1ccnc(CO)c1": {
+		"9": [
+			"CC(C)(C)[Si](C)(C)Cl.COC(=O)[C@H](C)O>>COC(=O)[C@H](C)O[Si](C)(C)C(C)(C)C",
+			[
+				"CN(C)C=O",
+				"c1c[nH]cn1"
+			]
+		],
+		"starting_material_0": ">>CC(C)(C)OC(=O)CO"
+	},
+	"CC(O)CN(C(=O)c1cnn(C)c1)C(=O)C(F)(F)F": {
+		"starting_material_0": ">>CC(C)(C)OC(=O)NCC(=O)O"
+	},
+	"CN(C(=O)C1CCCCC1)c1cc(Cl)ncn1": {
+		"starting_material_0": ">>Nn1cnnc1"
+	},
+	"CC(=O)N(C)CC(=O)Nn1cnnc1": {
+		"5": [
+			"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C>>CNCC(=O)Nn1cnnc1",
+			[
+				"ClCCl",
+				"O=C(O)C(F)(F)F"
+			]
+		],
+		"starting_material_0": ">>Nn1cnnc1",
+		"7": [
+			"Nn1cnnc1.O=C(O)CCl>>O=C(CCl)Nn1cnnc1",
+			[
+				"CC(=O)OC(C)=O"
+			]
+		]
+	},
+	"COc1ccc(O)c(CN(CC(=O)Nn2cnnc2)C(=O)CO)c1": {
+		"1": [
+			"COc1ccc(C(=O)O)cc1C(C)=O.Nn1cnnc1>>COc1ccc(C(=O)Nn2cnnc2)cc1C(C)=O",
+			[
+				"CN(C)C=O",
+				"C1=CC2=C(C=C1)N(O[P+](N1CCCC1)(N1CCCC1)N1CCCC1)N=N2.FP(F)(F)(F)(F)F.CCN(C(C)C)C(C)C"
+			]
+		],
+		"starting_material_0": ">>CN(CC(=O)O)C(=O)OC(C)(C)C"
+	},
+	"Cc1cc(C(=O)O)ccc1NS(C)(=O)=O": {
+		"7": [
+			"CCOC(=O)CNC(=O)OC(C)(C)C.O=C(Cl)C1CCCCC1>>CCOC(=O)CN(C(=O)OC(C)(C)C)C(=O)C1CCCCC1",
+			[
+				"C1CCOC1",
+				"C[Si](C)(C)[N-][Si](C)(C)C.[Li+]"
+			]
+		],
+		"1": [
+			"CC(=O)OCC(=O)N(CC(=O)Nn1cnnc1)c1cnc(Cl)nc1>>O=C(CN(C(=O)CO)c1cnc(Cl)nc1)Nn1cnnc1",
+			[
+				"CO",
+				"O.O=C([O-])[O-].[K+]"
+			]
+		],
+		"3": [
+			"CC(C)(C)OC(=O)N(CC(=O)O)C(=O)C1CCCCC1.Nn1cnnc1>>CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)C(=O)C1CCCCC1",
+			[
+				"C1CCOC1",
+				"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		],
+		"starting_material_0": ">>CC(Br)C#N"
+	},
+	"C[C@H](O)C(=O)N(Cc1nc2cc(Cl)ccc2[nH]1)S(C)(=O)=O": {
+		"3": [
+			"O=C(Oc1ccccc1)n1cnc(Br)c1>>O=C(O)n1cnc(Br)c1",
+			[
+				"CN(C)C=O",
+				"[H-].[Na+]"
+			]
+		],
+		"starting_material_0": ">>CN(CC(=O)O)C(=O)OC(C)(C)C"
+	},
+	"CC(C)NCC(=O)Nc1nc(Cl)nc2[nH]cnc12": {
+		"1": [
+			"CCOC(=O)CN.C[C@H](O)C(=O)O>>CCOC(=O)CNC(=O)[C@H](C)O",
+			[]
+		],
+		"starting_material_0": ">>CS(N)(=O)=O",
+		"7": [
+			"CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			[
+				"CN(C)C=O",
+				"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		]
+	},
+	"CCOc1ccc(-c2ccccc2)cc1": {
+		"3": [
+			"CC(C)NCC(N)=O.Clc1nc(Cl)c2nc[nH]c2n1>>CC(C)NCC(=O)Nc1nc(Cl)nc2[nH]cnc12",
+			[
+				"CC(C)O"
+			]
+		],
+		"1": [
+			"CNCCNn1cnnc1.O=C(Cl)C1CCCCC1>>CN(CCNn1cnnc1)C(=O)C1CCCCC1",
+			[
+				"ClCCl",
+				"CCN(CC)CC"
+			]
+		],
+		"starting_material_0": ">>Clc1nc(Cl)c2nc[nH]c2n1"
+	},
+	"C[C@H](O)C(=O)N(CC(=O)NNC(=O)c1cccnc1)S(C)(=O)=O": {},
+	"CNCC(=O)Nn1cnnc1": {
+		"1": [
+			"COc1ccc(C(=O)OCC(=O)NC(=O)OC(C)(C)C)cc1.O=C(CBr)Nn1cnnc1>>COc1ccc(C(=O)OCC(=O)N(CC(=O)Nn2cnnc2)C(=O)OC(C)(C)C)cc1",
+			[
+				"CN(C)C=O",
+				"[H-].[Na+]"
+			]
+		],
+		"starting_material_0": ">>NCCO"
+	},
+	"O=C(OCc1cc(F)cc(F)c1)n1cnc(Br)c1": {
+		"3": [
+			"NCC(=O)Nn1cnnc1.O=C(Br)CBr>>O=C(CBr)NCC(=O)Nn1cnnc1",
+			[
+				"CN(C)C=O"
+			]
+		],
+		"1": [
+			"CCOC(=O)CN(C(=O)OC(C)(C)C)C(=O)[C@H](C)O[Si](C)(C)C(C)(C)C>>CCOC(=O)CN(C(=O)OC(C)(C)C)C(=O)[C@H](C)O",
+			[
+				"C1CCOC1",
+				"CCCC[N+](CCCC)(CCCC)CCCC.[F-]"
+			]
+		],
+		"7": [
+			"CC(C)(C)OC(=O)CO.CC(C)(C)OC(=O)NS(C)(=O)=O>>CC(C)(C)OC(=O)CN(C(=O)OC(C)(C)C)S(C)(=O)=O",
+			[
+				"C1CCOC1",
+				"c1ccc(P(c2ccccc2)c2ccccc2)cc1.CCOC(=O)N=NC(=O)OCC"
+			]
+		],
+		"starting_material_0": ">>COc1ccc(CC#N)cc1"
+	},
+	"CC(C)NCC(=O)Nc1nc(N(C(=O)OC(C)(C)C)[C@H](CO)C(C)C)nc2[nH]cnc12": {
+		"1": [
+			"CC(C)(C)OC(=O)N(CC(=O)Nc1ccc(Cl)cc1N)S(C)(=O)=O>>CC(C)(C)OC(=O)N(Cc1nc2cc(Cl)ccc2[nH]1)S(C)(=O)=O",
+			[
+				"CC(=O)O"
+			]
+		],
+		"starting_material_0": ">>CCOC(=O)CNC(=O)OC(C)(C)C"
+	},
+	"CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)S(C)(=O)=O": {
+		"starting_material_0": ">>CC(C)NCC(N)=O"
+	},
+	"CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)C(=O)C1CCCCC1": {
+		"1": [
+			"CNC(C)=O.O=[N+]([O-])c1c(Cl)ncnc1Cl>>CC(=O)N(C)c1ncnc(Cl)c1[N+](=O)[O-]",
+			[
+				"ClCCl",
+				"CCN(CC)CC"
+			]
+		],
+		"7": [
+			"CC(C)(C)OC(=O)CO.CC(C)(C)OC(=O)NS(C)(=O)=O>>CC(C)(C)OC(=O)CN(C(=O)OC(C)(C)C)S(C)(=O)=O",
+			[
+				"C1CCOC1",
+				"c1ccc(P(c2ccccc2)c2ccccc2)cc1.CCOC(=O)N=NC(=O)OCC"
+			]
+		],
+		"starting_material_0": ">>O=C(Cl)C1CCCCC1"
+	},
+	"CC(C)(C)OC(=O)N(CCO)C(=O)C1CCCCC1": {
+		"5": [
+			"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C>>CNCC(=O)Nn1cnnc1",
+			[
+				"ClCCl",
+				"O=C(O)C(F)(F)F"
+			]
+		],
+		"starting_material_0": ">>Nn1cnnc1"
+	},
+	"COc1ccc(C(=O)OCC(=O)N(CC(=O)Nn2cnnc2)C(=O)OC(C)(C)C)cc1": {
+		"7": [
+			"CCOC(=O)CNC(=O)OC(C)(C)C.O=C(Cl)C1CCCCC1>>CCOC(=O)CN(C(=O)OC(C)(C)C)C(=O)C1CCCCC1",
+			[
+				"C1CCOC1",
+				"C[Si](C)(C)[N-][Si](C)(C)C.[Li+]"
+			]
+		],
+		"starting_material_0": ">>O=C(O)CCl",
+		"5": [
+			"C=CCBr.CC(C)(C)OC(=O)NC(=O)C1CCCCC1>>C=CCN(C(=O)OC(C)(C)C)C(=O)C1CCCCC1",
+			[
+				"CN(C)C=O",
+				"[H-].[Na+]"
+			]
+		]
+	},
+	"CC(=O)N(CC(=O)Nn1cnnc1)C(=O)O": {},
+	"COc1ccc(C(=O)OC(C)CNC(=O)C(F)(F)F)cc1C(C)=O": {
+		"1": [
+			"CCOC(=O)CN.CN(CC(=O)O)C(=O)C1CCCCC1>>CCOC(=O)CNC(=O)CN(C)C(=O)C1CCCCC1",
+			[
+				"C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		],
+		"5": [
+			"CNCC(=O)Cl.Nc1nc(Cl)nc2[nH]cnc12>>CNCC(=O)Nc1nc(Cl)nc2[nH]cnc12",
+			[
+				"CN(C)C=O"
+			]
+		],
+		"3": [
+			"COc1ccc(C(=O)O)cc1C(C)=O>>COc1ccc(C(=O)Cl)cc1C(C)=O",
+			[
+				"O=S(Cl)Cl"
+			]
+		],
+		"starting_material_0": ">>CN(CC(=O)O)C(=O)OC(C)(C)C",
+		"7": [
+			"Nn1cnnc1.O=C(O)CCl>>O=C(CCl)Nn1cnnc1",
+			[
+				"CC(=O)OC(C)=O"
+			]
+		]
+	},
+	"CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)C(=O)CBr": {
+		"starting_material_0": ">>O=C(O)CCl"
+	},
+	"CC(C)(C)OC(=O)N(CCNn1cnnc1)C(=O)C1CCCCC1": {
+		"1": [
+			"CC(N)=O.CC(O)CNc1nc(Cl)c2nc[nH]c2n1>>CC(=O)Nc1nc(NCC(C)O)nc2[nH]cnc12",
+			[]
+		],
+		"5": [
+			"CC(C)(C)OC(=O)CN(C(=O)OC(C)(C)C)S(C)(=O)=O>>CC(C)(C)OC(=O)N(CC(=O)O)S(C)(=O)=O",
+			[
+				"[K+].[OH-]"
+			]
+		],
+		"starting_material_0": ">>CCOC(=O)Cl"
+	},
+	"CN(CC(=O)Nn1cnnc1)C(=O)CO": {
+		"7": [
+			"CNc1cc(Cl)ncn1.O=C(Cl)CCc1ccccc1>>CNc1ncnc(Cl)c1C(=O)CCc1ccccc1",
+			[
+				"C1CCOC1",
+				"[Li]CCCC"
+			]
+		],
+		"starting_material_0": ">>O=C(O)CNC(=O)OCc1ccccc1",
+		"5": [
+			"Nc1cnc(Cl)nc1.O=C(CCl)Nn1cnnc1>>O=C(CNc1cnc(Cl)nc1)Nn1cnnc1",
+			[
+				"CCO",
+				"O=C([O-])[O-].[K+]"
+			]
+		]
+	},
+	"CCOC(=O)CNC(=O)CN(C)C(=O)C1CCCCC1": {
+		"starting_material_0": ">>CC(C)(C)[Si](C)(C)Cl"
+	},
+	"CCOC(=O)CN(C(=O)OC(C)(C)C)C(=O)C1CCCCC1": {
+		"5": [
+			"CC(Br)C#N.Oc1ccc(-c2ccccc2)cc1>>CC(C#N)Oc1ccc(-c2ccccc2)cc1",
+			[
+				"CC(C)=O",
+				"O=C([O-])[O-].[K+]"
+			]
+		],
+		"1": [
+			"CC(C)NCC(=O)Nc1nc(Cl)nc2[nH]cnc12.CC(C)[C@@H](CO)NC(=O)OC(C)(C)C>>CC(C)NCC(=O)Nc1nc(N(C(=O)OC(C)(C)C)[C@H](CO)C(C)C)nc2[nH]cnc12",
+			[
+				"CN1CCCC1=O",
+				"[H-].[Na+]"
+			]
+		],
+		"starting_material_0": ">>CC(=O)OCC(=O)O"
+	},
+	"Cc1cc(C(=O)NNC(=O)c2cccnc2)ccc1NS(C)(=O)=O": {
+		"starting_material_0": ">>Nc1ccc(Cl)cc1N"
+	},
+	"CC(=O)OCC(=O)NCC(=O)Nn1cnnc1": {
+		"5": [
+			"C[C@H](O[Si](C)(C)C(C)(C)C)C(=O)O>>C[C@H](O[Si](C)(C)C(C)(C)C)C(=O)Cl",
+			[
+				"O=S(Cl)Cl"
+			]
+		],
+		"3": [
+			"CCOC(=O)c1cc(N(CC(=O)Nn2cnnc2)C(=O)OC(C)(C)C)ccn1>>CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)c1ccnc(C=O)c1",
+			[
+				"Cc1ccccc1",
+				"CC(C)C[AlH4]CC(C)C"
+			]
+		],
+		"starting_material_0": ">>Cn1cc(C(=O)O)cn1"
+	},
+	"CCOC(=O)CNC(=O)[C@H](C)O": {
+		"3": [
+			"Nn1cnnc1.O=C(O)CBr>>O=C(CBr)Nn1cnnc1",
+			[
+				"C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		],
+		"starting_material_0": ">>COc1ccc(C(=O)[O-])cc1Br"
+	},
+	"CC(C)(C)OC(=O)NCC(=O)Nc1nc(Cl)nc2[nH]cnc12": {
+		"starting_material_0": ">>CC(C)(C)OC(=O)NS(C)(=O)=O"
+	},
+	"O=C(CO)NCC(=O)Nn1cnnc1": {
+		"5": [
+			"Brc1c[nH]cn1.O=C(Cl)Oc1ccccc1>>O=C(Oc1ccccc1)n1cnc(Br)c1",
+			[
+				"C1CCOC1",
+				"CCN(CC)CC"
+			]
+		],
+		"starting_material_0": ">>Cn1cc(C(=O)O)cn1",
+		"7": [
+			"CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			[
+				"CN(C)C=O",
+				"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		]
+	},
+	"O=C(O)NCC(=O)Nc1nc(Cl)nc2[nH]cnc12": {
+		"1": [
+			"CNC(C)=O.O=C(CCl)Nn1cnnc1>>CC(=O)N(C)CC(=O)Nn1cnnc1",
+			[
+				"c1ccccc1"
+			]
+		],
+		"9": [
+			"CC(C)(C)[Si](C)(C)Cl.COC(=O)[C@H](C)O>>COC(=O)[C@H](C)O[Si](C)(C)C(C)(C)C",
+			[
+				"CN(C)C=O",
+				"c1c[nH]cn1"
+			]
+		],
+		"7": [
+			"CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			[
+				"CN(C)C=O",
+				"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		],
+		"3": [
+			"COC(=O)CN(C)C(C)=O>>CC(=O)N(C)CC(N)=O",
+			[
+				"CO",
+				"N"
+			]
+		],
+		"starting_material_0": ">>O=C(Br)CBr"
+	},
+	"CC(O)CNC(=O)c1cnc(C(=O)O)cn1": {
+		"starting_material_0": ">>COC(=O)c1cnc(C(=O)O)cn1"
+	},
+	"O=C(O)n1cnc(Br)c1": {
+		"7": [
+			"CCOC(=O)[C@H](C)O.CS(N)(=O)=O>>C[C@H](O)C(=O)NS(C)(=O)=O",
+			[
+				"C1CCOC1",
+				"[H-].[Na+]"
+			]
+		]
+	},
+	"CC(C)(C)OC(=O)N(Cc1nc2cc(Cl)ccc2[nH]1)S(C)(=O)=O": {
+		"1": [
+			"CNCCO.O=C(Cl)C1CCCCC1>>CN(CCO)C(=O)C1CCCCC1",
+			[
+				"ClCCl",
+				"CCN(CC)CC"
+			]
+		]
+	},
+	"COc1ccc(C(=O)N(CC(=O)Nn2cnnc2)C(=O)CO)cc1": {
+		"9": [
+			"O=C(O)C(F)(F)F>>O=C(Cl)C(F)(F)F",
+			[
+				"O=S(Cl)Cl"
+			]
+		],
+		"starting_material_0": ">>Nn1cnnc1"
+	},
+	"O=C(CN(C(=O)O)C(=O)C1CCCCC1)Nn1cnnc1": {
+		"5": [
+			"COC(=O)c1ccc(N)c(C)c1>>COC(=O)c1ccc(NS(C)(=O)=O)c(C)c1",
+			[
+				"c1ccncc1.O=S(=O)(Cl)C1=CC=CC=C1"
+			]
+		],
+		"starting_material_0": ">>NNC(=O)c1cccnc1",
+		"7": [
+			"CC(C)(C)OC(=O)NCC(=O)O.Nn1cnnc1>>CC(C)(C)OC(=O)NCC(=O)Nn1cnnc1",
+			[
+				"C1CCOC1",
+				"O=C(N1C=CN=C1)N1C=CN=C1"
+			]
+		]
+	},
+	"O=C(CN(C(=O)CO)c1cnc(Cl)nc1)Nn1cnnc1": {
+		"5": [
+			"CC(C)(C)OC(=O)NCC(=O)Nn1cnnc1>>NCC(=O)Nn1cnnc1",
+			[
+				"ClCCl",
+				"O=C(O)C(F)(F)F"
+			]
+		],
+		"3": [
+			"COC(=O)c1ccc(NS(C)(=O)=O)c(C)c1>>Cc1cc(C(=O)O)ccc1NS(C)(=O)=O",
+			[
+				"C1CCOC1",
+				"[Li+].O.[OH-].O"
+			]
+		]
+	},
+	"CCOC(=O)CN(C)C(=O)C1CCCCC1": {
+		"1": [
+			"CNCC(=O)Nn1cnnc1.O=C(O)C1CCCCC1>>CN(CC(=O)Nn1cnnc1)C(=O)C1CCCCC1",
+			[
+				"CN(C)C=O",
+				"CN(C)[C+](ON1N=NC2=CC=CC=C21)N(C)C.FP(F)(F)(F)(F)F.CCN(C(C)C)C(C)C"
+			]
+		],
+		"7": [
+			"COC(=O)[C@H](C)O[Si](C)(C)C(C)(C)C>>C[C@H](O[Si](C)(C)C(C)(C)C)C(=O)O",
+			[
+				"CO",
+				"[K+].[OH-]"
+			]
+		],
+		"starting_material_0": ">>CC(C)(C)OC(=O)CO"
+	},
+	"O=C(CN(C(=O)CO)C(=O)C1CCCCC1)Nn1cnnc1": {
+		"5": [
+			"COC(=O)c1ccc(N)c(C)c1>>COC(=O)c1ccc(NS(C)(=O)=O)c(C)c1",
+			[
+				"c1ccncc1.O=S(=O)(Cl)C1=CC=CC=C1"
+			]
+		],
+		"1": [
+			"CN(CC(=O)N(C)c1ncnc(Cl)c1C(=O)CCc1ccccc1)C(=O)OC(C)(C)C>>CNCC(=O)N(C)c1ncnc(Cl)c1C(=O)CCc1ccccc1",
+			[
+				"ClCCl",
+				"O=C(O)C(F)(F)F"
+			]
+		]
+	},
+	"CCOC(=O)CN(C(=O)OC(C)(C)C)C(=O)[C@H](C)O": {
+		"3": [
+			"O=C(O)NCCO>>O=C(Cl)CNC(=O)O",
+			[
+				"ClP(Cl)Cl"
+			]
+		]
+	},
+	"CNCC(=O)N(C)c1ncnc(Cl)c1C(=O)CCc1ccccc1": {
+		"5": [
+			"CC(C)(C)[Si](C)(C)Cl.CC(O)CNC(=O)C(F)(F)F>>CC(CNC(=O)C(F)(F)F)O[Si](C)(C)C(C)(C)C",
+			[
+				"CN(C)C=O",
+				"c1c[nH]cn1"
+			]
+		],
+		"7": [
+			"CC(C)(C)OC(=O)CO.CC(C)(C)OC(=O)NS(C)(=O)=O>>CC(C)(C)OC(=O)CN(C(=O)OC(C)(C)C)S(C)(=O)=O",
+			[
+				"C1CCOC1",
+				"c1ccc(P(c2ccccc2)c2ccccc2)cc1.CCOC(=O)N=NC(=O)OCC"
+			]
+		],
+		"starting_material_0": ">>NNC(=O)c1cccnc1"
+	},
+	"COC(=O)c1ccc(NS(C)(=O)=O)c(C)c1": {
+		"starting_material_0": ">>Nc1ccc(Cl)cc1N"
+	},
+	"COc1ccc(C(=O)[O-])cc1C(C)O": {
+		"starting_material_0": ">>COC(=O)[C@H](C)O"
+	},
+	"CC(CNC(=O)C(F)(F)F)Oc1ccc(-c2ccccc2)cc1": {
+		"5": [
+			"CC(=O)CN1C(=O)c2ccccc2C1=O.Nn1cnnc1>>CC(CN1C(=O)c2ccccc2C1=O)=Nn1cnnc1",
+			[]
+		],
+		"7": [
+			"CNc1cc(Cl)ncn1.O=C(Cl)CCc1ccccc1>>CNc1ncnc(Cl)c1C(=O)CCc1ccccc1",
+			[
+				"C1CCOC1",
+				"[Li]CCCC"
+			]
+		],
+		"starting_material_0": ">>CC(C)NCC(N)=O"
+	},
+	"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C": {
+		"starting_material_0": ">>CC(C)[C@@H](CO)NC(=O)OC(C)(C)C"
+	},
+	"COc1ccc(C(=O)OCC(=O)NCC(=O)Nn2cnnc2)cc1": {
+		"5": [
+			"CC(C)(C)OC(=O)CN(C(=O)OC(C)(C)C)S(C)(=O)=O>>CC(C)(C)OC(=O)N(CC(=O)O)S(C)(=O)=O",
+			[
+				"[K+].[OH-]"
+			]
+		],
+		"1": [
+			"C[C@H](O)C(=O)N(CC(=O)O)S(C)(=O)=O.NNC(=O)c1cccnc1>>C[C@H](O)C(=O)N(CC(=O)NNC(=O)c1cccnc1)S(C)(=O)=O",
+			[
+				"CN(C)C=O",
+				"C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		],
+		"starting_material_0": ">>CCOC(=O)CNC"
+	},
+	"CC(=O)N(C)c1ncnc(Cl)c1[N+](=O)[O-]": {
+		"3": [
+			"CC(=O)OCC(=O)O.O=C(CNc1cnc(Cl)nc1)Nn1cnnc1>>CC(=O)OCC(=O)N(CC(=O)Nn1cnnc1)c1cnc(Cl)nc1",
+			[
+				"CCN=C=NCCCN(C)C.Cl"
+			]
+		],
+		"1": [
+			"CC(C)(C)OC(=O)N(CC=O)C(=O)C1CCCCC1>>CC(C)(C)OC(=O)N(CCO)C(=O)C1CCCCC1",
+			[
+				"CO",
+				"[BH4-].[Na+]"
+			]
+		],
+		"starting_material_0": ">>Nc1nc(Cl)nc2[nH]cnc12"
+	},
+	"CC(=O)Nc1nc(NCC(C)O)nc2[nH]cnc12": {
+		"3": [
+			"CC(C)(C)OC(=O)NC(=O)CBr.COc1ccc(C(=O)O)cc1>>COc1ccc(C(=O)OCC(=O)NC(=O)OC(C)(C)C)cc1",
+			[
+				"CC#N"
+			]
+		],
+		"7": [
+			"CC=O>>O=C=O",
+			[]
+		],
+		"starting_material_0": ">>COC(=O)[C@H](C)O"
+	},
+	"C[C@H](O)C(=O)N(C)CC(=O)Nn1cnnc1": {
+		"1": [
+			"CCOS(=O)(=O)OCC.Oc1ccc(-c2ccccc2)cc1>>CCOc1ccc(-c2ccccc2)cc1",
+			[
+				"[Na+].[OH-]"
+			]
+		],
+		"starting_material_0": ">>CCOS(=O)(=O)OCC"
+	},
+	"CCOC(=O)N(CC(=O)Nn1cnnc1)S(C)(=O)=O": {
+		"7": [
+			"CNCC(=O)O>>CNCC(=O)Cl",
+			[
+				"O=S(Cl)Cl"
+			]
+		],
+		"5": [
+			"NC(=O)C1CCCCC1.O=C(O)COCc1ccccc1>>O=C(COCc1ccccc1)NC(=O)C1CCCCC1",
+			[
+				"ClCCl",
+				"CN(C)c1ccncc1.C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		]
+	},
+	"CC(C)(C)OC(=O)N(CC(=O)O)S(C)(=O)=O": {
+		"5": [
+			"COC(=O)c1ccc(OC)c(C(C)=O)c1>>COc1ccc(C(=O)O)cc1C(C)=O",
+			[
+				"CCO",
+				"[Na+].[OH-]"
+			]
+		],
+		"1": [
+			"COC(=O)c1cnc(C(=O)NCC(C)O)cn1>>CC(O)CNC(=O)c1cnc(C(=O)O)cn1",
+			[
+				"CO",
+				"[Na+].[OH-]"
+			]
+		],
+		"3": [
+			"CC(C)(C)OC(=O)N(CC(=O)O)C(=O)C1CCCCC1.Nn1cnnc1>>CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)C(=O)C1CCCCC1",
+			[
+				"C1CCOC1",
+				"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		],
+		"starting_material_0": ">>Fc1cc(F)cc(CBr)c1"
+	},
+	"CNCC(=O)Nc1nc(Cl)nc2[nH]cnc12": {
+		"1": [
+			"CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)c1ccnc(C=O)c1>>CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)c1ccnc(CO)c1",
+			[
+				"CO",
+				"[BH4-].[Na+]"
+			]
+		]
+	},
+	"COc1ccc(C(=O)c2cccnc2)cc1C(C)=O": {
+		"5": [
+			"Brc1c[nH]cn1.O=C(Cl)Oc1ccccc1>>O=C(Oc1ccccc1)n1cnc(Br)c1",
+			[
+				"C1CCOC1",
+				"CCN(CC)CC"
+			]
+		],
+		"7": [
+			"CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			[
+				"CN(C)C=O",
+				"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		]
+	},
+	"CC(O)CNC(=O)c1cnn(C)c1": {
+		"1": [
+			"CN(CC(N)=O)C(=O)C1CCCCC1.Clc1nc(Cl)c2nc[nH]c2n1>>CN(CC(=O)Nc1nc(Cl)nc2[nH]cnc12)C(=O)C1CCCCC1",
+			[
+				"CCCCO",
+				"CCN(CC)CC"
+			]
+		],
+		"9": [
+			"CC(C)(C)[Si](C)(C)Cl.COC(=O)[C@H](C)O>>COC(=O)[C@H](C)O[Si](C)(C)C(C)(C)C",
+			[
+				"CN(C)C=O",
+				"c1c[nH]cn1"
+			]
+		],
+		"5": [
+			"CCOC(=O)CN(C(=O)OC(C)(C)C)C(=O)C1CCCCC1>>CC(C)(C)OC(=O)N(CC(=O)O)C(=O)C1CCCCC1",
+			[
+				"C1CCOC1",
+				"[Li+].[OH-]"
+			]
+		],
+		"starting_material_0": ">>O=C(Br)CBr",
+		"7": [
+			"CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			[
+				"CN(C)C=O",
+				"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		]
+	},
+	"O=C(CBr)NCC(=O)Nn1cnnc1": {
+		"starting_material_0": ">>Nn1cnnc1"
+	},
+	"COc1ccc(C(=O)[O-])cc1C(C)=O": {
+		"7": [
+			"CC(O)CN.O=C(Cl)C(F)(F)F>>CC(O)CNC(=O)C(F)(F)F",
+			[
+				"ClCCl"
+			]
+		],
+		"starting_material_0": ">>Brc1c[nH]cn1"
+	},
+	"CC(=O)N(C)CC(=O)Nc1nc(Cl)nc2[nH]cnc12": {
+		"7": [
+			"CC(O)CN.O=C(Cl)C(F)(F)F>>CC(O)CNC(=O)C(F)(F)F",
+			[
+				"ClCCl"
+			]
+		],
+		"3": [
+			"C[C@H](O)C(=O)N(CC(=O)OCc1ccccc1)S(C)(=O)=O>>C[C@H](O)C(=O)N(CC(=O)O)S(C)(=O)=O",
+			[
+				"CO",
+				"[H][H]",
+				"[Pd]"
+			]
+		],
+		"starting_material_0": ">>CC(=O)OCC(=O)O"
+	},
+	"CC(C)(C)OC(=O)N(CC(=O)Nc1nc(Cl)nc2[nH]cnc12)S(C)(=O)=O": {
+		"9": [
+			"O=C(O)C(F)(F)F>>O=C(Cl)C(F)(F)F",
+			[
+				"O=S(Cl)Cl"
+			]
+		],
+		"3": [
+			"COC(=O)c1ccc(NS(C)(=O)=O)c(C)c1>>Cc1cc(C(=O)O)ccc1NS(C)(=O)=O",
+			[
+				"C1CCOC1",
+				"[Li+].O.[OH-].O"
+			]
+		],
+		"starting_material_0": ">>CC(C)(C)OC(=O)NS(C)(=O)=O"
+	},
+	"CC(O)CNC(=O)C(F)(F)F": {
+		"starting_material_0": ">>CC(C)(C)OC(=O)NS(C)(=O)=O"
+	},
+	"CC(C)(C)OC(=O)N(CC(=O)Nc1ccc(Cl)cc1N)S(C)(=O)=O": {
+		"1": [
+			"CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)C(=O)C1CCCCC1>>CC(C)(C)OC(=O)N(CCNn1cnnc1)C(=O)C1CCCCC1",
+			[
+				"CN(C)C=O",
+				"O=C([O-])[O-].[K+]"
+			]
+		],
+		"3": [
+			"CNCC(=O)Nc1nc(Cl)nc2[nH]cnc12.C[C@H](O[Si](C)(C)C(C)(C)C)C(=O)Cl>>C[C@H](O[Si](C)(C)C(C)(C)C)C(=O)N(C)CC(=O)Nc1nc(Cl)nc2[nH]cnc12",
+			[
+				"CN(C)C=O"
+			]
+		],
+		"starting_material_0": ">>CC(C)(C)OC(=O)NS(C)(=O)=O"
+	},
+	"CN(C(=O)CN(C(=O)O)C(=O)C1CCCCC1)c1ncnc(Cl)c1C(=O)CCc1ccccc1": {
+		"starting_material_0": ">>O=C(Cl)C1CCCCC1"
+	},
+	"CC(CN)=Nn1cnnc1": {
+		"3": [
+			"CC=O.COc1ccc(C(=O)[O-])cc1Br>>COc1ccc(C(=O)[O-])cc1C(C)O",
+			[
+				"[Li]CCCC"
+			]
+		],
+		"5": [
+			"CC(C)(C)OC(=O)CN(C(=O)OC(C)(C)C)S(C)(=O)=O>>CC(C)(C)OC(=O)N(CC(=O)O)S(C)(=O)=O",
+			[
+				"[K+].[OH-]"
+			]
+		],
+		"1": [
+			"COc1ccc(C(C#N)c2cccnc2)cc1C(C)=O>>COc1ccc(C(=O)c2cccnc2)cc1C(C)=O",
+			[
+				"CN(C)C=O",
+				"CC(C)(C)[O-].[K+].O=O"
+			]
+		]
+	},
+	"CC(=O)N(C)c1cc(Cl)ncn1": {
+		"3": [
+			"COC(=O)CN(C)C(=O)C1CCCCC1>>CN(CC(N)=O)C(=O)C1CCCCC1",
+			[
+				"CO",
+				"N"
+			]
+		],
+		"starting_material_0": ">>CC(C)(C)OC(=O)NCC(=O)O"
+	},
+	"CN(CCO)C(=O)C1CCCCC1": {
+		"5": [
+			"NCCO.O=C=O>>O=C(O)NCCO",
+			[]
+		],
+		"3": [
+			"CNCC(=O)Nn1cnnc1>>CNCCNn1cnnc1",
+			[
+				"C1CCOC1",
+				"[AlH7-].[Li+]"
+			]
+		],
+		"starting_material_0": ">>CC(=O)OCC(=O)O"
+	},
+	"CN(CC(=O)Nn1cnnc1)C(=O)C1CCCCC1": {
+		"starting_material_0": ">>Oc1ccc(-c2ccccc2)cc1",
+		"7": [
+			"Nn1cnnc1.O=C(O)CCl>>O=C(CCl)Nn1cnnc1",
+			[
+				"CC(=O)OC(C)=O"
+			]
+		],
+		"1": [
+			"CC(C)(C)OC(=O)N(CC(=O)O)S(C)(=O)=O.Nn1cnnc1>>CC(C)(C)OC(=O)N(CC(=O)Nn1cnnc1)S(C)(=O)=O",
+			[
+				"CN(C)C=O",
+				"On1nnc2ccccc21.CCN=C=NCCCN(C)C.Cl"
+			]
+		]
+	},
+	"C[C@H](O)C(=O)N(C)CC(=O)Nc1nc(Cl)nc2[nH]cnc12": {
+		"starting_material_0": ">>Oc1ccc(-c2ccccc2)cc1"
+	},
+	"COc1ccc(C(=O)Nn2cnnc2)cc1C(C)=O": {
+		"1": [
+			"CC(CN(C(=O)c1cnn(C)c1)C(=O)C(F)(F)F)O[Si](C)(C)C(C)(C)C>>CC(O)CN(C(=O)c1cnn(C)c1)C(=O)C(F)(F)F",
+			[
+				"C1CCOC1",
+				"CCCC[N+](CCCC)(CCCC)CCCC.[F-]"
+			]
+		],
+		"starting_material_0": ">>O=C(CBr)OCc1ccccc1",
+		"7": [
+			"Nn1cnnc1.O=C(O)CCl>>O=C(CCl)Nn1cnnc1",
+			[
+				"CC(=O)OC(C)=O"
+			]
+		]
+	},
+	"CNCCNn1cnnc1": {
+		"7": [
+			"COC(=O)[C@H](C)O[Si](C)(C)C(C)(C)C>>C[C@H](O[Si](C)(C)C(C)(C)C)C(=O)O",
+			[
+				"CO",
+				"[K+].[OH-]"
+			]
+		],
+		"starting_material_0": ">>NC(=O)C1CCCCC1"
+	},
+	"CC(C)(C)OC(=O)NCC(=O)Nn1cnnc1": {
+		"5": [
+			"CC(C)(C)OC(=O)CN(C(=O)OC(C)(C)C)S(C)(=O)=O>>CC(C)(C)OC(=O)N(CC(=O)O)S(C)(=O)=O",
+			[
+				"[K+].[OH-]"
+			]
+		]
+	},
+	"CC(CNC(=O)C(F)(F)F)=Nn1cnnc1": {
+		"3": [
+			"CC=O.COc1ccc(C(=O)[O-])cc1Br>>COc1ccc(C(=O)[O-])cc1C(C)O",
+			[
+				"[Li]CCCC"
+			]
+		]
+	},
+	"CCOC(=O)CN(C)C(C)=O": {
+		"1": [
+			"CC(=O)Cl.CCOC(=O)CNC>>CCOC(=O)CN(C)C(C)=O",
+			[
+				"CCOCC"
+			]
+		],
+		"5": [
+			"CC(C)(C)OC(=O)NCC(=O)Nn1cnnc1>>NCC(=O)Nn1cnnc1",
+			[
+				"ClCCl",
+				"O=C(O)C(F)(F)F"
+			]
+		],
+		"starting_material_0": ">>O=C(Cl)C1CCCCC1"
+	},
+	"CC(C)(C)OC(=O)N(CC(=O)Nc1nc(Cl)nc2[nH]cnc12)C(=O)C1CCCCC1": {
+		"starting_material_0": ">>O=C(Cl)C1CCCCC1"
+	},
+	"CN(CC(=O)Nc1nc(Cl)nc2[nH]cnc12)C(=O)C1CCCCC1": {
+		"5": [
+			"CNCC(=O)Cl.Nc1nc(Cl)nc2[nH]cnc12>>CNCC(=O)Nc1nc(Cl)nc2[nH]cnc12",
+			[
+				"CN(C)C=O"
+			]
+		],
+		"starting_material_0": ">>CN(CC(=O)O)C(=O)OC(C)(C)C"
+	},
+	"CN(CCNn1cnnc1)C(=O)C1CCCCC1": {
+		"1": [
+			"CC(C)(C)OC(=O)NCC(=O)O.Nc1nc(Cl)nc2[nH]cnc12>>CC(C)(C)OC(=O)NCC(=O)Nc1nc(Cl)nc2[nH]cnc12",
+			[
+				"CN(C)C=O"
+			]
+		],
+		"starting_material_0": ">>CC(=O)Cl",
+		"7": [
+			"CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			[
+				"CN(C)C=O",
+				"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+			]
+		]
+	},
+	"CCOC(=O)CN(C(C)=O)C(=O)OC(C)(C)C": {
+		"1": [
+			"CC(=O)N(C)CC(N)=O.Clc1nc(Cl)c2nc[nH]c2n1>>CC(=O)N(C)CC(=O)Nc1nc(Cl)nc2[nH]cnc12",
+			[
+				"CCCCO",
+				"O=C([O-])[O-].[K+]"
+			]
+		],
+		"starting_material_0": ">>CNc1cc(Cl)ncn1"
+	}
+}

@@ -1,0 +1,77 @@
+{
+	"C4338": {
+		"Compounds": [],
+		"Reactions": [
+			">>CCOC(=O)c1cncc(Br)c1"
+		]
+	},
+	"C1157": {
+		"Compounds": [
+			"Nn1cnnc1",
+			"CN(CC(=O)O)C(=O)OC(C)(C)C"
+		],
+		"Reactions": [
+			"CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			">>Nn1cnnc1",
+			">>CN(CC(=O)O)C(=O)OC(C)(C)C"
+		]
+	},
+	"C4352": {
+		"Compounds": [],
+		"Reactions": [
+			">>Fc1cc(F)cc(CBr)c1"
+		]
+	},
+	"C2245": {
+		"Compounds": [],
+		"Reactions": [
+			">>O=C(O)c1cncc(Br)c1"
+		]
+	},
+	"C1158": {
+		"Compounds": [
+			"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			"Nn1cnnc1",
+			"CN(CC(=O)O)C(=O)OC(C)(C)C"
+		],
+		"Reactions": [
+			"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C>>CNCC(=O)Nn1cnnc1",
+			"CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			">>Nn1cnnc1",
+			">>CN(CC(=O)O)C(=O)OC(C)(C)C"
+		]
+	},
+	"C768": {
+		"Compounds": [],
+		"Reactions": [
+			">>CN(CC(=O)O)C(=O)OC(C)(C)C"
+		]
+	},
+	"C828": {
+		"Compounds": [],
+		"Reactions": [
+			">>CCOC(=O)CNC(=O)OC(C)(C)C"
+		]
+	},
+	"C1159": {
+		"Compounds": [
+			"CNCC(=O)Nn1cnnc1",
+			"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			"Nn1cnnc1",
+			"CN(CC(=O)O)C(=O)OC(C)(C)C"
+		],
+		"Reactions": [
+			"CNCC(=O)Nn1cnnc1>>CNCCNn1cnnc1",
+			"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C>>CNCC(=O)Nn1cnnc1",
+			"CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			">>Nn1cnnc1",
+			">>CN(CC(=O)O)C(=O)OC(C)(C)C"
+		]
+	},
+	"C2838": {
+		"Compounds": [],
+		"Reactions": [
+			">>COC(=O)c1ccc([N+](=O)[O-])c(C)c1"
+		]
+	}
+}

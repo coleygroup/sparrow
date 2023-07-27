@@ -1,0 +1,164 @@
+{
+	"CNCC(=O)Nn1cnnc1": {
+		"Compounds": [
+			"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			"Nn1cnnc1",
+			"CN(CC(=O)O)C(=O)OC(C)(C)C"
+		],
+		"Reactions": [
+			{
+				"smiles": "CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C>>CNCC(=O)Nn1cnnc1",
+				"conditions": [
+					"ClCCl",
+					"O=C(O)C(F)(F)F"
+				],
+				"score": 0.9918143993974954
+			},
+			{
+				"smiles": "CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+				"conditions": [
+					"CN(C)C=O",
+					"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+				],
+				"score": 0.999670716817361
+			},
+			{
+				"smiles": ">>Nn1cnnc1",
+				"starting material cost ($/g)": 0.6
+			},
+			{
+				"smiles": ">>CN(CC(=O)O)C(=O)OC(C)(C)C",
+				"starting material cost ($/g)": 0.9
+			}
+		],
+		"Reward": 12
+	},
+	"CNCCNn1cnnc1": {
+		"Compounds": [
+			"CNCC(=O)Nn1cnnc1",
+			"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+			"Nn1cnnc1",
+			"CN(CC(=O)O)C(=O)OC(C)(C)C"
+		],
+		"Reactions": [
+			{
+				"smiles": "CNCC(=O)Nn1cnnc1>>CNCCNn1cnnc1",
+				"conditions": [
+					"C1CCOC1",
+					"[AlH7-].[Li+]"
+				],
+				"score": 0.9392381907632167
+			},
+			{
+				"smiles": "CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C>>CNCC(=O)Nn1cnnc1",
+				"conditions": [
+					"ClCCl",
+					"O=C(O)C(F)(F)F"
+				],
+				"score": 0.9918143993974954
+			},
+			{
+				"smiles": "CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+				"conditions": [
+					"CN(C)C=O",
+					"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+				],
+				"score": 0.999670716817361
+			},
+			{
+				"smiles": ">>Nn1cnnc1",
+				"starting material cost ($/g)": 0.6
+			},
+			{
+				"smiles": ">>CN(CC(=O)O)C(=O)OC(C)(C)C",
+				"starting material cost ($/g)": 0.9
+			}
+		],
+		"Reward": 13
+	},
+	"O=C(O)c1cncc(Br)c1": {
+		"Compounds": [],
+		"Reactions": [
+			{
+				"smiles": ">>O=C(O)c1cncc(Br)c1",
+				"starting material cost ($/g)": 0.6
+			}
+		],
+		"Reward": 13
+	},
+	"CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C": {
+		"Compounds": [
+			"Nn1cnnc1",
+			"CN(CC(=O)O)C(=O)OC(C)(C)C"
+		],
+		"Reactions": [
+			{
+				"smiles": "CN(CC(=O)O)C(=O)OC(C)(C)C.Nn1cnnc1>>CN(CC(=O)Nn1cnnc1)C(=O)OC(C)(C)C",
+				"conditions": [
+					"CN(C)C=O",
+					"On1nnc2ccccc21.C(=NC1CCCCC1)=NC1CCCCC1"
+				],
+				"score": 0.999670716817361
+			},
+			{
+				"smiles": ">>Nn1cnnc1",
+				"starting material cost ($/g)": 0.6
+			},
+			{
+				"smiles": ">>CN(CC(=O)O)C(=O)OC(C)(C)C",
+				"starting material cost ($/g)": 0.9
+			}
+		],
+		"Reward": 15
+	},
+	"Fc1cc(F)cc(CBr)c1": {
+		"Compounds": [],
+		"Reactions": [
+			{
+				"smiles": ">>Fc1cc(F)cc(CBr)c1",
+				"starting material cost ($/g)": 1.6
+			}
+		],
+		"Reward": 19
+	},
+	"COC(=O)c1ccc([N+](=O)[O-])c(C)c1": {
+		"Compounds": [],
+		"Reactions": [
+			{
+				"smiles": ">>COC(=O)c1ccc([N+](=O)[O-])c(C)c1",
+				"starting material cost ($/g)": 0.8
+			}
+		],
+		"Reward": 13
+	},
+	"CN(CC(=O)O)C(=O)OC(C)(C)C": {
+		"Compounds": [],
+		"Reactions": [
+			{
+				"smiles": ">>CN(CC(=O)O)C(=O)OC(C)(C)C",
+				"starting material cost ($/g)": 0.9
+			}
+		],
+		"Reward": 12
+	},
+	"CCOC(=O)CNC(=O)OC(C)(C)C": {
+		"Compounds": [],
+		"Reactions": [
+			{
+				"smiles": ">>CCOC(=O)CNC(=O)OC(C)(C)C",
+				"starting material cost ($/g)": 0.8
+			}
+		],
+		"Reward": 9
+	},
+	"CCOC(=O)c1cncc(Br)c1": {
+		"Compounds": [],
+		"Reactions": [
+			{
+				"smiles": ">>CCOC(=O)c1cncc(Br)c1",
+				"starting material cost ($/g)": 0.7
+			}
+		],
+		"Reward": 14
+	}
+}
