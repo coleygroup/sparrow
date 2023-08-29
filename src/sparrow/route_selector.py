@@ -37,6 +37,7 @@ class RouteSelector:
         if remove_dummy_rxns_first: 
             self.graph.remove_dummy_rxns()
         
+        Path(self.dir/'chkpts').mkdir(parents=True, exist_ok=True)
         self.graph.set_buyable_compounds_and_costs(coster, save_json_dir=self.dir/'chkpts')
         self.add_dummy_starting_rxn_nodes()
 
