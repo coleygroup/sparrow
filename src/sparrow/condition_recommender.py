@@ -105,7 +105,7 @@ class AskcosLookupRecommender(Recommender):
 class AskcosAPIRecommender(Recommender): 
     """ Uses the ASKCOS API to recommend contexts for reactions """
     
-    def __init__(self, host: str = 'http://18.4.94.12'): 
+    def __init__(self, host: str): 
         self.host = host 
 
     def recommend_conditions(self, rxn_smi: str, n_c: int) -> List:
