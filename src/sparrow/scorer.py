@@ -2,7 +2,12 @@
 from abc import ABC, abstractmethod, abstractproperty
 from typing import Union, List
 from pathlib import Path 
+import requests
+from rdkit import Chem
 
+
+def canonicalize(smiles: str) -> str: 
+    return Chem.MolToSmiles(Chem.MolFromSmiles(smiles), isomericSmiles=False)
 
 
 class Scorer(ABC): 
@@ -13,7 +18,7 @@ class Scorer(ABC):
 
     """
     @abstractmethod
-    def score_rxn(rxn_smi: str, condition: List = None) -> Union[float, int]:
+    def score_rxn(rxn_smi: str, condition: List = None) -> float:
         """ Calculates a reaction score """
 
     def __call__(self, rxn_smi, condition: List = None) -> float: 
@@ -23,7 +28,7 @@ class Scorer(ABC):
 
 class AskcosScorer(Scorer): 
     """ 
-    Scores reactions using ASKCOS 
+    Scores reactions using local ASKCOS 
     """
     def __init__(self): 
         
@@ -46,10 +51,39 @@ class AskcosScorer(Scorer):
 
         return score 
 
+
+class AskcosAPIScorer(Scorer): 
+    """ 
+    Scores reactions by called ASKCOS API 
+    """
+    def __init__(self, host: str = 'http://18.4.94.12'): 
+        self.requires_contexts = True
+        self.host = host 
     
+    def score_rxn(self, rxn_smi: str, condition: List = None) -> float:
+        reactants, product = rxn_smi.split('>>')
+
+        params = {
+            'reactants': reactants, 
+            'reagents': '.'.join(condition),
+            'num_results': 10 
+        }
+        resp = requests.get(self.host+'/api/forward/', params=params, verify=False)
+        outcomes = {
+            prod['smiles']: prod['score']
+            for prod in resp.json()['outcomes']
+        }
+        if canonicalize(product) in outcomes: 
+            return outcomes[product]
+        else: 
+            return 0 
+        
 
 class LookupScorer(Scorer): 
-    """ Scores reactions by looking them up in a stored file """
+    """ 
+    Scores reactions by looking them up in a stored file 
+    TODO: implement this 
+    """
     def __init__(self, 
                  lookup_file: Union[str, Path], 
                  descriptor_type: str, 
