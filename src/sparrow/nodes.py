@@ -75,6 +75,12 @@ class CompoundNode(Node):
         super().__init__(smiles, parents, children, **kwargs)
         
         self.cost_set = cost_set 
+        self.reward = None 
+        self.buyable = None 
+        self.cost_per_g = None 
+        self.is_target = None 
+        self.is_intermediate = None 
+        self.cost_set = False 
 
         self.update(
             buyable=buyable, 
