@@ -1,34 +1,40 @@
 import os
 os.environ['KERAS_BACKEND'] = 'theano'
 
-from askcos.retrosynthetic.mcts.tree_builder import MCTS
-from askcos.utilities.io.logger import MyLogger
 from rdkit import Chem
-import tensorflow as tf 
-from typing import List, Dict, Union
 
+from typing import List, Dict, Union
+import requests 
 from sparrow.route_graph import RouteGraph
 import json
 import numpy as np 
 from pathlib import Path
 
-tf.config.set_visible_devices([], 'GPU')
-MyLogger.initialize_logFile()
-celery = False 
 
 
-def build_rxn_graph(
+
+def build_retro_graph_local(
         target_smis: List[str],
         filename: Union[str, Path] = 'debug/askcos_paths.json',        
         n_cpus: int = 5,
         time_per_target: int = 15,
         ) -> Dict: 
+
     """ 
     Builds retrosynthesis trees for the targets 
     and outputs a json file with path information 
     to the specified filename. Returns the storage dictionary 
-    that was saved to the json file 
-    """
+    that was saved to the json file. Assumes a local 
+    version of ASKCOS exists and is in the path   
+    """    
+    import tensorflow as tf 
+    from askcos.retrosynthetic.mcts.tree_builder import MCTS
+    from askcos.utilities.io.logger import MyLogger
+
+    tf.config.set_visible_devices([], 'GPU')
+    MyLogger.initialize_logFile()
+    celery = False 
+
     Tree = MCTS(nproc=n_cpus)
     mols = [Chem.MolFromSmiles(smi) for smi in target_smis]
     
@@ -63,6 +69,35 @@ def build_rxn_graph(
     with open(filename, 'w') as f:
         json.dump(make_dict_jsonable(storage), f, indent="\t")
 
+    return storage
+
+def build_retro_graph_api(        
+        target_smis: List[str],
+        host: str,
+        filename: Union[str, Path] = 'debug/askcos_paths.json',        
+        time_per_target: int = 15,
+    ) -> Dict: 
+    
+    storage = None 
+    mols = [Chem.MolFromSmiles(smi) for smi in target_smis]
+
+    for mol in mols: 
+        smiles = Chem.MolToSmiles(mol, isomericSmiles=False)  
+        params = {
+            'smiles': smiles, # required
+            'buyable_logic': 'or',
+            'max_depth': '10',
+            'expansion_time': str(time_per_target),
+            'max_ppg': '100',
+            'return_first': 'false'
+        }
+        resp = requests.get(host+'/api/treebuilder/', params=params, verify=False)
+        trees = resp.json()['trees']
+        storage = storage_from_paths(trees, storage)
+        
+    with open(filename, 'w') as f:
+        json.dump(make_dict_jsonable(storage), f, indent="\t")
+    
     return storage
 
 def storage_from_api_response(response, storage=None) -> Dict: 
