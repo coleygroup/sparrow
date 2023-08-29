@@ -2,6 +2,40 @@ from abc import ABC, abstractmethod, abstractproperty
 from typing import List, Union, Dict 
 from pathlib import Path  
 import json 
+import requests
+
+def clean_context(context):
+    """Clean a single context tuple from v1 condition recommender.
+
+    Output is intended to be passed to forward evaluator.
+    Modified from ASKCOS
+    """
+    temperature, solvent, reagent, catalyst = context
+
+    # Remove chemicals without parsable smiles
+    solvent = remove_names(solvent)
+    reagent = remove_names(reagent)
+    catalyst = remove_names(catalyst)
+
+    # Remove any trailing periods (seems unnecessary?)
+    solvent = solvent.rstrip(".")
+    reagent = reagent.rstrip(".")
+    catalyst = catalyst.rstrip(".")
+
+    # Keep first solvent only
+    if "." in solvent:
+        solvent = solvent.split(".")[0]
+
+    # Return as a list of chemicals only
+    return [c for c in [solvent, reagent, catalyst] if c]
+
+
+def remove_names(smiles):
+    """Remove chemicals without parsable SMILES from the input"""
+    smiles_list = smiles.split(".")
+    smiles_list = [smi for smi in smiles_list if "Reaxys" not in smi]
+    return ".".join(smiles_list)
+
 
 class Recommender(ABC): 
     """ 
@@ -68,9 +102,47 @@ class AskcosLookupRecommender(Recommender):
         contexts = self.data[rxn_smi]
         return contexts[:n_c]
         
+class AskcosAPIRecommender(Recommender): 
+    """ Uses the ASKCOS API to recommend contexts for reactions """
+    
+    def __init__(self, host: str = 'http://18.4.94.12'): 
+        self.host = host 
+
+    def recommend_conditions(self, rxn_smi: str, n_c: int) -> List:
+        contexts = self.get_conditions(rxn_smi, n_c)
+        contexts = [self.clean_context(ctxt) for ctxt in contexts]
+        return contexts
+    
+    def get_conditions(self, rxn_smi: str, n_c: int = 1) -> List: 
+        """ Returns a list of n_c recommended conditions (each a list). """
+        reactant_smis, product_smis = rxn_smi.split('>>')
+        params = {
+            'reactants': reactant_smis, 
+            'products': product_smis, 
+            'num_results': n_c, # default is 10
+            'return_scores': 'true' # default is false
+        }
+        resp = requests.get(self.host+'/api/context/', params=params, verify=False)
+        contexts = [
+            [
+            context['temperature'],
+            context['solvent'],
+            context['reagent'],
+            context['catalyst']
+            ]
+            for context in resp.json()['contexts']
+        ]
+        return contexts
+    
+    def clean_context(self, context): 
+        context = clean_context(context)
+        return context 
+        
+
+
 
 class AskcosRecommender(): 
-    """ Uses ASKCOS's context recommender to predict conditions """
+    """ Uses a local version of ASKCOS's context recommender to predict conditions """
     
     def __init__(self): 
 
