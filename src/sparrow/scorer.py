@@ -56,7 +56,7 @@ class AskcosAPIScorer(Scorer):
     """ 
     Scores reactions by called ASKCOS API 
     """
-    def __init__(self, host: str = 'http://18.4.94.12'): 
+    def __init__(self, host: str): 
         self.requires_contexts = True
         self.host = host 
     
