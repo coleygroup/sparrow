@@ -70,6 +70,14 @@ class RouteSelector:
         c=0
         for old_smi, reward in target_dict.items():
             clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
+            
+            try: 
+                float(reward)
+            except: 
+                print(f'Target {old_smi} has an invalid reward: {reward}. Being removed from target set!!!')
+                c+=1      
+                continue     
+
             if clean_smi in self.graph.compound_nodes.keys():
                 id = self.graph.id_from_smiles(clean_smi)
                 new_target_dict[id] = reward
@@ -212,13 +220,13 @@ class RouteSelector:
         # TODO: Add consideration of conditions 
         print('Setting objective function')
 
-        reward_mult =  1 # / ( len(self.target_dict)) # *max(self.target_dict.values()) )
-        cost_mult = 1 # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
-        pen_mult = 1 # / (len(self.graph.non_dummy_nodes())) # * max([node.penalty for node in self.graph.non_dummy_nodes()]) )
+        reward_mult = self.weights[0] # / ( len(self.target_dict)) # *max(self.target_dict.values()) )
+        cost_mult = self.weights[1] # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
+        pen_mult = self.weights[2] # / (len(self.graph.non_dummy_nodes())) # * max([node.penalty for node in self.graph.non_dummy_nodes()]) )
 
-        self.problem += -1*self.weights[0]*reward_mult*lpSum([self.target_dict[target]*self.m[target] for target in self.targets]) \
+        self.problem += -1*self.weights[0]*reward_mult*lpSum([float(self.target_dict[target])*self.m[target] for target in self.targets]) \
         + self.weights[1]*cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
-        + self.weights[2]*pen_mult*lpSum([self.r[node.id]*node.penalty for node in self.graph.non_dummy_nodes()])
+        + self.weights[2]*pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
             # reaction penalties, implement CSR later 
         return 
     
