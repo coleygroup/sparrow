@@ -1,11 +1,20 @@
+# askcos 
 askcos
 askcos-core
-.vscode
-*.zip
+askcos-base
+
+# setup
 dist 
-build 
+build
+
+# large files 
+*.json
+*.zip
+
+# misc 
 **/__pycache__/
 UNKNOWN**
 *.egg-info/
 *.egg
 key*
+.vscode
