@@ -1,11 +1,13 @@
 import os, sys
 sys.path.append('/home/jfromer/sparrow/askcos-base/askcos-core') # change this for your system to where askcos folder is located
+sys.path.append('/home/jfromer/sparrow/')
 
 from pathlib import Path
 import pandas as pd 
 import json 
 from typing import List, Dict
 from tqdm import tqdm
+from keys import chemspace_api_key
 
 from sparrow.tree_build_utils import get_paths
 from sparrow.json_utils import storage_from_api_response, save_storage_dict
@@ -33,32 +35,30 @@ def get_trees(targets, base_dir, time_per_target=60, max_branching=str(20), host
         'max_branching': max_branching,
     }
 
-    results = get_paths(targets, host=host, store_dir=base_dir/'paths', params=params)
+    results = get_paths(targets, host=host, store_dir=base_dir/'paths_cariprazine', params=params)
 
     return results 
 
-def combine_outputs(result_ls: List[Path], targets: List[str], base_dir):
-    paths = []
-    for p in result_ls: 
-        with open(p,'r') as f: 
-            paths.append(json.load(f))
-    
-    all_results = {}
-    for smi in targets:
-        entries = [path[smi] for path in paths if (smi in path and 'output' in path[smi] and len(path[smi]['output'])>0 ) ]
-        if len(entries) > 0: 
-            all_results[smi] = entries[0]
-    
-    trees = {smi: {"result": tree} for smi, tree in all_results.items()}
+def combine_outputs(result_ls: List[Path], path_dir: Path):
 
-    with open(base_dir/'trees.json', 'w') as f: 
-        json.dump(trees, f, indent='\t')
+    trees = {}
+    for p in tqdm(result_ls, desc='Combining ASKCOS outputs'): 
+        with open(p,'r') as f: 
+            entry = json.load(f)
+        for smi, path in entry.items(): 
+            if 'output' in path and len(path['output'])>0: 
+                trees[smi] = {"result": path} 
     
+    with open(path_dir/'askcos_outputs.json','w') as f: 
+        json.dump(trees, f, indent='\t')
+
     return trees
 
-def process_trees(tree_ls) -> Dict: 
-    with open(tree_ls[0], 'r') as f: 
-        trees = json.load(f)
+def process_tree(trees: Dict = None, tree_file: Path = None) -> Dict: 
+    if trees is None: 
+        with open(tree_file, 'r') as f: 
+            trees = json.load(f)
+    
 
     storage = None
     for response in tqdm(trees.values(), desc='Reading ASKCOS API results'):
@@ -90,7 +90,7 @@ def cost_compounds(json_file: str, target_dict: Dict, base_dir):
         route_graph=graph, 
         condition_recommender=None, # already in graph   
         rxn_scorer=None,     # already in graph      
-        coster=ChemSpaceCoster(api_key="dZH7vZYK2JDKWxgMSCKIBQZcKfteL395UuYtCuHoVk1WUcpq1MIeiPn95mBLsXOh"),
+        coster=ChemSpaceCoster(api_key=chemspace_api_key),
         output_dir=base_dir,
     )
     selector.graph.to_json(base_dir/'trees_w_context_scores_costs.json')
@@ -209,14 +209,21 @@ def find_mol_parents(store_dict, mol_id, selected_mols, selected_rxns, graph):
     return store_dict
 
 if __name__ == '__main__':
+    drug = 'cariprazine'
     base_dir = Path('examples/button_analogs')
-    result_ls = list(base_dir.glob('paths*'))
-    tree_ls = list(base_dir.glob('trees*'))
+    host = 'http://molgpu01.mit.edu:9100' # 'https://3.139.77.247/'
 
-    target_dict, targets = get_target_dict(base_dir/'alectinib_rewards.csv') 
-    get_trees(targets, base_dir, time_per_target=60, host='https://3.139.77.247/')
-    trees = combine_outputs(result_ls, targets, base_dir)
-    storage = process_trees(tree_ls)
+    path_dir = base_dir/f'paths_{drug}'
+    
+    target_dict, targets = get_target_dict(base_dir/f'{drug}_rewards.csv') 
+    # get_trees(targets, base_dir, time_per_target=60, host=host)
+
+    paths_ls = list(path_dir.glob('paths*'))
+    # trees = combine_outputs(paths_ls, path_dir)
+    
+    # tree_file = list(path_dir.glob('*outputs*'))[0]
+    #storage = process_tree(tree_file)
+
     save_storage_dict(storage, base_dir/'trees.json')
     selector = add_contexts_scores_to_trees(base_dir/'trees.json', target_dict, base_dir)
     selector = cost_compounds(base_dir/'trees_w_context_scores.json', target_dict, base_dir)

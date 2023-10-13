@@ -2,6 +2,7 @@ import os, sys
 sys.path.append('/home/jfromer/sparrow/askcos-base/askcos-core') # change this for your system to where askcos folder is located
 
 from pathlib import Path
+from keys import chemspace_api_key
 import pandas as pd 
 import json 
 from typing import List, Dict
@@ -90,7 +91,7 @@ def cost_compounds(json_file: str, target_dict: Dict, base_dir):
         route_graph=graph, 
         condition_recommender=None, # already in graph   
         rxn_scorer=None,     # already in graph      
-        coster=ChemSpaceCoster(api_key="dZH7vZYK2JDKWxgMSCKIBQZcKfteL395UuYtCuHoVk1WUcpq1MIeiPn95mBLsXOh"),
+        coster=ChemSpaceCoster(api_key=chemspace_api_key),
         output_dir=base_dir,
     )
     selector.graph.to_json(base_dir/'trees_w_context_scores_costs.json')

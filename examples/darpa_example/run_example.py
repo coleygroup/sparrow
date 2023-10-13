@@ -6,6 +6,7 @@ import pandas as pd
 from typing import Dict
 from tqdm import tqdm
 from pathlib import Path
+from keys import chemspace_api_key
 from sparrow.json_utils import storage_from_api_response, save_storage_dict 
 from sparrow.route_graph import RouteGraph
 from sparrow.route_selector import RouteSelector
@@ -64,7 +65,7 @@ def cost_compounds(json_file: str, target_dict: Dict):
         route_graph=graph, 
         condition_recommender=None, # already in graph   
         rxn_scorer=None,     # already in graph      
-        coster=ChemSpaceCoster(api_key="dZH7vZYK2JDKWxgMSCKIBQZcKfteL395UuYtCuHoVk1WUcpq1MIeiPn95mBLsXOh"),
+        coster=ChemSpaceCoster(api_key=chemspace_api_key),
         output_dir='darpa_example',
     )
     selector.graph.to_json('darpa_example/trees_w_context_scores_costs.json')
