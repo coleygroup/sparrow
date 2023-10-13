@@ -1,4 +1,5 @@
-from sparrow import Scorer, Recommender
+from sparrow.scorer import Scorer
+from sparrow.condition_recommender import Recommender
 from sparrow.route_graph import RouteGraph
 from sparrow.coster import Coster
 from sparrow.nodes import ReactionNode
@@ -105,7 +106,7 @@ class RouteSelector:
 
     def get_recommendations(self): 
         """ Completes condition recommendation for any reaction node that does not have conditions """
-        for node in tqdm(self.graph.reaction_nodes_only(), 'Recommending Conditions'):
+        for node in tqdm(self.graph.non_dummy_nodes(), 'Recommending Conditions'):
             if node.condition_set: 
                 continue
             
