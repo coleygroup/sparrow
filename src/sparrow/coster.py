@@ -2,9 +2,9 @@ import requests
 from urllib.parse import urljoin
 import time
 import pprint
-from typing import List, Tuple 
+from typing import List, Tuple, Dict, Union
+from pathlib import Path 
 from abc import ABC, abstractmethod, abstractproperty
-from typing import List, Dict
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
@@ -72,7 +72,6 @@ class NaiveCoster(Coster):
         
         return costs, buyables 
                 
-
 class ChemSpaceCoster(Coster):
     """ Determines if a molecule is buyable and what its cost is (if buyable) 
     Adapted from PyChemSearch (Marco Stenta, Marta Pasquini @ Syngenta)"""
@@ -250,3 +249,15 @@ class ChemSpaceCoster(Coster):
 
         
         return costs, buyables 
+    
+class LookupCoster(Coster): 
+    """ 
+    Determines if a molecule is buyable and what its cost is 
+    by looking up the smiles in a csv file 
+    TODO: implement this 
+    """
+    def __init__(self, 
+                 lookup_file: Union[str, Path], 
+                 ):
+
+        return 
