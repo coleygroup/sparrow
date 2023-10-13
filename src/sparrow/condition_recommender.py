@@ -1,8 +1,8 @@
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from typing import List, Union, Dict 
 from pathlib import Path  
 import json 
-import requests
+from sparrow.api_utils import post_and_get
 
 def clean_context(context):
     """Clean a single context tuple from v1 condition recommender.
@@ -122,30 +122,46 @@ class AskcosAPIRecommender(Recommender):
             'num_results': n_c, # default is 10
             'return_scores': 'true' # default is false
         }
-        resp = requests.get(self.host+'/api/context/', params=params, verify=False)
-        contexts = [
-            [
-            context['temperature'],
-            context['solvent'],
-            context['reagent'],
-            context['catalyst']
+        try:
+            request, result = post_and_get(
+                host_post=self.host+'/api/context/', 
+                host_results=self.host+'/api/v2/celery/',
+                params=params,
+                sleep_time=0.1,
+            )
+        except ConnectionError:
+            print ("Connection Error from " + self.host)
+        
+        if 'output' in result: 
+            contexts = [
+                [
+                context['temperature'],
+                context['solvent'],
+                context['reagent'],
+                context['catalyst']
+                ]
+                for context in result['output']
             ]
-            for context in resp.json()['contexts']
-        ]
-        return contexts
+            return contexts
+
+        else: 
+            print(f'Context not recommended successfully for reaction {rxn_smi}')
+            print(result)
+            return [None,None,None,None]
     
     def clean_context(self, context): 
         context = clean_context(context)
         return context 
         
-
-
-
-class AskcosRecommender(): 
+class AskcosRecommender(Recommender): 
     """ Uses a local version of ASKCOS's context recommender to predict conditions """
     
-    def __init__(self): 
-
+    def __init__(self, askcos_path = None):
+        
+        if askcos_path is not None: 
+            import sys
+            sys.path.append(askcos_path)
+         
         from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
         import askcos.global_config as gc
         import askcos.utilities.contexts as context_cleaner
