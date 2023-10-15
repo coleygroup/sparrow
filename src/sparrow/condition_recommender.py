@@ -143,11 +143,10 @@ class AskcosAPIRecommender(Recommender):
                 for context in result['output']
             ]
             return contexts
-
         else: 
             print(f'Context not recommended successfully for reaction {rxn_smi}')
             print(result)
-            return [None,None,None,None]
+            return [[]]
     
     def clean_context(self, context): 
         context = clean_context(context)
