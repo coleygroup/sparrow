@@ -81,7 +81,7 @@ class AskcosAPIScorer(Scorer):
                 host_post=self.host+'/api/forward/', 
                 host_results=self.host+'/api/v2/celery/',
                 params=params,
-                sleep_time=1,
+                sleep_time=0.1,
                 timeout=60,
             )
         except ConnectionError:
