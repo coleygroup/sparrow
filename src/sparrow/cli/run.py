@@ -1,19 +1,15 @@
 from pathlib import Path
 import pandas as pd 
 import json 
-from typing import List, Dict
-from tqdm import tqdm
 import sys 
 
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
-from sparrow.json_utils import storage_from_api_response
 from sparrow.route_graph import RouteGraph
 from sparrow.route_selector import RouteSelector
 from sparrow.condition_recommender import AskcosRecommender, AskcosAPIRecommender
 from sparrow.scorer import AskcosScorer, AskcosAPIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster
 from sparrow.cli.args import get_args
-from sparrow.tree_build_utils import get_trees
 
 
 
@@ -25,23 +21,13 @@ def get_target_dict(filepath: Path):
     }
     return target_dict, list(df['SMILES'])
 
-def optimize(selector, base_dir, params):
-    graph = RouteGraph(node_filename=json_file)
-    
-    selector = RouteSelector(
-        target_dict=target_dict,
-        route_graph=graph, 
-        condition_recommender=None, # already in graph
-        rxn_scorer=None, # already in graph       
-        coster=None, # already in graph 
-        output_dir=base_dir,
-        remove_dummy_rxns_first=True, 
-        weights=weights
-    )
+def optimize(selector, params):
+
     selector.define_variables()
     selector.set_objective()
     selector.set_constraints()
-    selector.optimize(solver=None) # solver='GUROBI' for GUROBI (license needed)
+    solver = {'pulp': None, 'gurobi': 'GUROBI'}[params['solver']]
+    selector.optimize(solver=solver) # solver='GUROBI' for GUROBI (license needed)
 
     return selector 
 
@@ -194,31 +180,35 @@ def build_selector(params, target_dict, storage_path):
         target_dict=target_dict,
         route_graph=graph, 
         condition_recommender=build_recommender(params), 
-        output_dir=Path(params['base_dir'])/'checkpoints',
+        output_dir=Path(params['base_dir']),
         rxn_scorer=build_scorer(params),
         coster=build_coster(params),
         weights=weights,
         constrain_all_targets=params['constrain_all']
     )
 
-    filepath = base_dir/'trees_w_info.json'
+    filepath = Path(params['base_dir'])/'trees_w_info.json'
     print(f'Saving route graph with contexts, reaction scores, and costs to {filepath}')
     selector.graph.to_json(filepath)
     
     return selector
 
-if __name__ == '__main__':
+def run():
     args = get_args()
     params = vars(args)
 
     print('SPARROW will be run with the following parameters:')    
     for k, v in sorted(params.items()):
-        print(f"  {k}: {v}")
+        if v is not None: 
+            print(f"  {k}: {v}")
     print(flush=True)
 
     base_dir = Path(params['base_dir'])
     target_dict, targets = get_target_dict(params['target_csv']) 
     storage_path = get_path_storage(params, targets)
     selector = build_selector(params, target_dict, storage_path)
-    selector = optimize(selector, target_dict, base_dir, weights=[5,1,1,1])
+    selector = optimize(selector, params)
     storage = extract_vars(selector, base_dir)
+
+if __name__ == '__main__':
+    run()

@@ -100,6 +100,7 @@ def add_optimization_args(parser):
                         help='weighting factor for starting material cost objective')
     parser.add_argument('--reaction-weight', action='store', type=float, default=1,
                         help='weighting factor for reaction objective')
-
+    parser.add_argument('--solver', action='store', type=str, choices=['pulp, gurobi'],
+                        default='pulp', help='solver to use for linear optimization')
     return parser
 
