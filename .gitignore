@@ -11,6 +11,9 @@ build
 *.json
 *.zip
 
+# debugging 
+debug/
+
 # misc 
 **/__pycache__/
 UNKNOWN**
