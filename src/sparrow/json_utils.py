@@ -5,12 +5,10 @@ from rdkit import Chem
 
 from typing import List, Dict, Union
 import requests 
-from sparrow.route_graph import RouteGraph
 import json
 import numpy as np 
 from pathlib import Path
 from tqdm import tqdm 
-import time 
 
 
 def build_retro_graph_local(

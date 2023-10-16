@@ -4,7 +4,7 @@ from sparrow.route_graph import RouteGraph
 from sparrow.coster import Coster
 from sparrow.nodes import ReactionNode
 from typing import Dict, Union, List
-from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
+from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI
 from rdkit import Chem
 from tqdm import tqdm
 from pathlib import Path

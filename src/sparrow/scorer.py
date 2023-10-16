@@ -1,8 +1,7 @@
 """ A Scorer gives one or more scores to a reaction """
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from typing import Union, List
 from pathlib import Path 
-import requests
 from rdkit import Chem
 
 from sparrow.api_utils import post_and_get
