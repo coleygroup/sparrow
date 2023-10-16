@@ -86,7 +86,7 @@ def extract_vars(selector: RouteSelector, base_dir):
     for target in selected_targets: 
         store_dict = {'Compounds':[], 'Reactions':[]}
         smi = selector.graph.smiles_from_id(target)
-        storage[smi] = find_mol_parents(store_dict, target, mol_ids, rxn_ids, selector.graph)
+        storage[smi] = find_mol_parents(store_dict, target, mol_ids, rxn_ids, selector)
         storage[smi]['Reward'] = selector.target_dict[target]
 
     with open(base_dir/f'routes_{len(selected_targets)}tars.json','w') as f: 
@@ -94,15 +94,17 @@ def extract_vars(selector: RouteSelector, base_dir):
 
     return storage 
 
-def find_rxn_parents(store_dict, rxn_id, selected_mols, selected_rxns, graph): 
+def find_rxn_parents(store_dict, rxn_id, selected_mols, selected_rxns, selector: RouteSelector):
+    graph = selector.graph 
     par_ids = [n.id for n in graph.node_from_id(rxn_id).parents.values()]
     selected_pars = set(par_ids) & set(selected_mols)
     for par in selected_pars: 
         store_dict['Compounds'].append(graph.smiles_from_id(par))
-        store_dict = find_mol_parents(store_dict, par, selected_mols, selected_rxns, graph)
+        store_dict = find_mol_parents(store_dict, par, selected_mols, selected_rxns, selector)
     return store_dict
 
-def find_mol_parents(store_dict, mol_id, selected_mols, selected_rxns, graph): 
+def find_mol_parents(store_dict, mol_id, selected_mols, selected_rxns, selector: RouteSelector): 
+    graph = selector.graph 
     par_ids = [n.id for n in graph.node_from_id(mol_id).parents.values()]
     selected_pars = set(par_ids) & set(selected_rxns)
     for par in selected_pars: 
@@ -118,7 +120,7 @@ def find_mol_parents(store_dict, mol_id, selected_mols, selected_rxns, graph):
                 'conditions': node.get_condition(1)[0], 
                 'score': node.score,
             })
-        store_dict = find_rxn_parents(store_dict, par, selected_mols, selected_rxns, graph)
+        store_dict = find_rxn_parents(store_dict, par, selected_mols, selected_rxns, selector)
     return store_dict
 
 def get_path_storage(params, targets): 
