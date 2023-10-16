@@ -124,6 +124,9 @@ def find_mol_parents(store_dict, mol_id, selected_mols, selected_rxns, selector:
     return store_dict
 
 def get_path_storage(params, targets): 
+    if params['graph'] is not None: 
+        return None 
+    
     if params['path_finder'] == 'lookup': 
         planner = LookupPlanner(params['tree_lookup'])
     elif params['path_finder'] == 'api': 
@@ -143,6 +146,8 @@ def build_recommender(params):
         return AskcosAPIRecommender(host=params['context_host'])
     elif rec == 'local': 
         return AskcosRecommender(askcos_path=params['askcos_path'])
+    elif rec is None: 
+        return None    
     elif rec == 'lookup': 
         raise NotImplementedError
     else:
@@ -154,6 +159,8 @@ def build_scorer(params):
         return AskcosAPIScorer(host=params['scorer_host'])
     elif rec == 'local': 
         return AskcosScorer(askcos_path=params['askcos_path'])
+    elif rec is None: 
+        return None  
     elif rec == 'lookup': 
         raise NotImplementedError
     else:
@@ -167,6 +174,8 @@ def build_coster(params):
         return ChemSpaceCoster(api_key=chemspace_api_key)
     elif rec == 'naive': 
         return NaiveCoster()
+    elif rec is None: 
+        return None  
     elif rec == 'lookup': 
         raise NotImplementedError
     else:
@@ -174,7 +183,10 @@ def build_coster(params):
      
 def build_selector(params, target_dict, storage_path):
 
-    graph = RouteGraph(node_filename=storage_path)
+    if storage_path is None: 
+        graph = RouteGraph(node_filename=params['graph'])
+    else: 
+        graph = RouteGraph(node_filename=storage_path)
 
     weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight']]
 

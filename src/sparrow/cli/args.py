@@ -11,6 +11,10 @@ def get_args():
     # local askcos implementation (applies to local scorer and local context recommender)
     parser.add_argument('--askcos-path', action='store', default=None, type=str,
                     help='path where askcos exists if using askcos local modules')
+    
+    # path to graph object if just rerunning optimization 
+    parser.add_argument('--graph', type=str, action='store', default=None, 
+                        help='path to route graph json file. If provided, no route planning is performed')
 
     parser = add_tree_build_args(parser)
     parser = add_condition_rec_args(parser)
@@ -21,7 +25,7 @@ def get_args():
     return parser.parse_args()
 
 def add_tree_build_args(parser): 
-    parser.add_argument('--path-finder', required=True, action='store', type=str,
+    parser.add_argument('--path-finder', default=None, action='store', type=str,
                         choices=['lookup', 'api'], 
                         help='type of tree builder to use')
     
@@ -41,7 +45,7 @@ def add_tree_build_args(parser):
     return parser
 
 def add_condition_rec_args(parser):    
-    parser.add_argument('--recommender', required=True, action='store', type=str,
+    parser.add_argument('--recommender', default=None, action='store', type=str,
                         choices=['lookup', 'local', 'api'], 
                         help='type of context recommender to use')
     
@@ -57,7 +61,7 @@ def add_condition_rec_args(parser):
     return parser
 
 def add_coster_args(parser): 
-    parser.add_argument('--coster', required=True, action='store', type=str,
+    parser.add_argument('--coster', default=None, action='store', type=str,
                         choices=['naive', 'chemspace'], 
                         help='type of compound coster to use')
     
@@ -74,7 +78,7 @@ def add_coster_args(parser):
     return parser
 
 def add_scorer_args(parser): 
-    parser.add_argument('--scorer', required=True, action='store', type=str,
+    parser.add_argument('--scorer', default=None, action='store', type=str,
                         choices=['lookup', 'local', 'api'], 
                         help='type of scorer to use')    
     
