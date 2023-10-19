@@ -5,6 +5,7 @@ from sparrow.coster import Coster
 from sparrow.nodes import ReactionNode
 from typing import Dict, Union, List
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI
+from pulp.apis import PULP_CBC_CMD
 from rdkit import Chem
 from tqdm import tqdm
 from pathlib import Path
@@ -31,7 +32,7 @@ class RouteSelector:
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
                  ) -> None:
-        
+
         self.dir = Path(output_dir)
 
         self.graph = route_graph  
@@ -106,24 +107,32 @@ class RouteSelector:
 
     def get_recommendations(self): 
         """ Completes condition recommendation for any reaction node that does not have conditions """
+        count = 0
         for node in tqdm(self.graph.non_dummy_nodes(), 'Recommending Conditions'):
             if node.condition_set: 
                 continue
             
             condition = self.condition_recommender(node.smiles)
             node.update_condition(condition)
+            count += 1
+
+            if count % 100 == 0: 
+                time = datetime.now().strftime("%H-%M-%S")
+                self.graph.to_json(self.dir / 'chkpts' / f'trees_w_conditions_{time}.json')
+            
+        self.graph.to_json(self.dir / 'chkpts' / f'trees_w_conditions.json')
     
     def get_rxn_scores(self): 
         """ Scores all reactions in the graph that are not already scored """
         count = 0
         for node in tqdm(self.graph.reaction_nodes_only(), 'Scoring reactions'): 
-            if node.score_set or node.dummy: 
+            if (node.score_set and node.score > 0) or node.dummy: 
                 continue 
 
             try:    
                 score = self.rxn_scorer(rxn_smi=node.smiles, condition=node.condition)
             except: 
-                print(f'Reaction {node.smiles} could not be scored, setting score=0')
+                print(f'Reaction {node.smiles} could not be scored, setting score=0, condition: {node.condition}')
                 score = 0 
 
             node.update(score=score)
@@ -132,6 +141,8 @@ class RouteSelector:
                 time = datetime.now().strftime("%H-%M-%S")
                 self.graph.to_json(self.dir / 'chkpts' / f'trees_w_scores_{time}.json')
         
+        self.graph.to_json(self.dir / 'chkpts' / f'trees_w_scores.json')
+
     def define_variables(self): 
         """ 
         TODO: explain in readme what variables mean, refer to that here 
@@ -225,14 +236,17 @@ class RouteSelector:
         cost_mult = self.weights[1] # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
         pen_mult = self.weights[2] # / (len(self.graph.non_dummy_nodes())) # * max([node.penalty for node in self.graph.non_dummy_nodes()]) )
 
-        self.problem += -1*self.weights[0]*reward_mult*lpSum([float(self.target_dict[target])*self.m[target] for target in self.targets]) \
-        + self.weights[1]*cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
-        + self.weights[2]*pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
+        self.problem += -1*reward_mult*lpSum([float(self.target_dict[target])*self.m[target] for target in self.targets]) \
+        + cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
+        + pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
             # reaction penalties, implement CSR later 
         return 
     
-    def cost_of_dummy(self, dummy: ReactionNode) -> float:
-        start_node = list(dummy.children.values())[0]
+    def cost_of_dummy(self, dummy_node: ReactionNode = None, dummy_id: str = None) -> float:
+        if dummy_node is None: 
+            dummy_node = self.graph.node_from_id(dummy_id)
+
+        start_node = list(dummy_node.children.values())[0]
         return start_node.cost_per_g 
 
     def optimize(self, solver=None):
@@ -242,7 +256,7 @@ class RouteSelector:
         if solver == 'GUROBI': 
             self.problem.solve(GUROBI(timeLimit=86400))
         else: 
-            self.problem.solve()
+            self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9))
 
         print("Optimization problem completed...")
 
