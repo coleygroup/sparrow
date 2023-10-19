@@ -6,6 +6,7 @@ from typing import List, Tuple, Dict, Union
 from pathlib import Path 
 from abc import ABC, abstractmethod, abstractproperty
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from tqdm import tqdm
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -20,6 +21,8 @@ class Coster(ABC):
     or maybe allow ChemSpaceCoster to be updated with inventory list and 
     change those buyables to cost = 0
     """
+    def __init__(self):
+        self.status_log = None 
 
     @abstractmethod
     def __call__(smis: List[str]) -> Tuple[Dict, List]: 
@@ -29,6 +32,9 @@ class Coster(ABC):
     @abstractmethod
     def get_buyable_and_cost(smiles: str) -> Tuple[bool, float]:
         """ For a single smiles strings, outputs if the smiles is buyable and what its cost is"""
+    
+    def build_status_log(self, pos=1): 
+        self.status_log = tqdm(total=0, position=pos, bar_format='{desc}')
 
 class NaiveCoster(Coster): 
     """ Determines if a molecule is buyable based on the number of certain elements. 
@@ -106,6 +112,8 @@ class ChemSpaceCoster(Coster):
             'min_packMg': 100, 
             'max_packMg': 10000,  
         } # TODO: make this user-set parameters
+        
+        super().__init__()
 
         return 
     
@@ -113,11 +121,13 @@ class ChemSpaceCoster(Coster):
         if (time.time() - self.search_ref_time) > 59: 
             self.search_ref_time = time.time()
             self.searches_in_time_frame = 0
+            self.status_log.set_description_str('')
         elif self.searches_in_time_frame >= self.max_search_in_time_frame: # out of searches in this minute 
-            print('Waiting to avoid hitting max requests')
+            self.status_log.set_description_str('Waiting to avoid hitting max requests')
             time.sleep(65 - (time.time() - self.search_ref_time)) # sleep until you can search more 
             self.searches_in_time_frame = 0
             self.search_ref_time = time.time()
+            self.status_log.set_description_str('')
         
         delta_time = int(time.time() - self.token_ref_time)
         
@@ -249,6 +259,7 @@ class ChemSpaceCoster(Coster):
 
         
         return costs, buyables 
+    
     
 class LookupCoster(Coster): 
     """ 
