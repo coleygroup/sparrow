@@ -7,7 +7,7 @@ import time
 import json
 import urllib3
 from pathlib import Path
-from typing import List
+from typing import List, Union
 from sparrow.json_utils import storage_from_api_response, save_storage_dict
 
 urllib3.disable_warnings()
@@ -31,7 +31,7 @@ class AskcosAPIPlanner(PathFinder):
     """ Uses ASKCOS API to get paths to target smiles """
     def __init__(self, 
                  host: str,
-                 base_dir: Path,
+                 output_dir: Path,
                  time_per_target: int = 30, 
                  max_ppg: int = 10000,
                  max_branching: int = 20,
@@ -42,7 +42,7 @@ class AskcosAPIPlanner(PathFinder):
         self.time_per_target = time_per_target
         self.max_ppg = max_ppg
         self.max_branching = max_branching
-        self.base_dir = base_dir
+        self.output_dir = output_dir
         self.timeout = timeout
 
         self.params = {
@@ -59,8 +59,8 @@ class AskcosAPIPlanner(PathFinder):
         targets, combines the trees, and stores the output. returns the path
         of the combined trees """
 
-        tree_path = self.base_dir/'combined_tree.json'
-        path_ls = self.get_trees(targets, store_dir=self.base_dir/'askcos_trees')
+        tree_path = self.output_dir/'combined_tree.json'
+        path_ls = self.get_trees(targets, store_dir=self.output_dir/'askcos_trees')
         storage = self.combine_trees(path_ls)
         save_storage_dict(storage, filename=tree_path)
 
@@ -114,8 +114,26 @@ class AskcosAPIPlanner(PathFinder):
 
 class LookupPlanner(PathFinder):
     """ Loads in a json file that is in a retrosynthesis tree structure """
-    def __init__(self, filename) -> None:
-        self.filename = filename
+    def __init__(self, output_dir: Union[str, Path] = None, file_list: list = [], json_dir: Union[str, Path] = None) -> None:
+        self.file_list = [Path(file_list) for file in file_list] 
         
-    def get_save_trees(self) -> Path:
-        return self.filename
+        if json_dir is not None: 
+            [self.file_list.append(p) for p in json_dir.glob('*.json')]
+        
+        self.tree_path = output_dir/'combined_tree.json'
+
+    def combine_trees(self):
+        storage = None
+        for p in tqdm(self.file_list, desc='Combining ASKCOS outputs'): 
+            with open(p,'r') as f: 
+                entry = json.load(f)
+            for smi, path in entry.items(): 
+                if 'output' in path and len(path['output'])>0: 
+                    storage = storage_from_api_response({"result": path}, storage)
+
+        return storage 
+        
+    def get_save_trees(self, targets=None) -> Path:
+        storage = self.combine_trees()        
+        save_storage_dict(storage, filename=self.tree_path)
+        return self.tree_path
