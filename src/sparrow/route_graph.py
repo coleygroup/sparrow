@@ -4,8 +4,9 @@ from typing import Iterable, Dict, Union, Optional, List
 from pathlib import Path
 from tqdm import tqdm
 from datetime import datetime
+from scipy.sparse import csr_matrix
 import json 
-
+import numpy as np 
 import pickle 
 
 
@@ -200,28 +201,38 @@ class RouteGraph:
         return 
     
     def set_buyable_compounds_and_costs(self, coster: Coster = None, save_json_dir: str = None):
-        """ sets CompoundNode.buyable for starting materials listed in ****insert**** 
-        (for now using arbitrary definition based on number of carbons, nitrogens, oxygens) """
+        """ sets CompoundNode.buyable and CompoundNode.cost_per_g for starting materials in ChemSpace """
+
         if coster is None: 
             return 
         
+        coster.build_status_log()
+        
+        prog_bar = tqdm(total=len(self.compound_nodes_only()), desc= 'Searching for price/buyability', position=0)
         c = 0
-        for node in tqdm(self.compound_nodes_only(), 'Searching for price/buyability'): 
+        for node in self.compound_nodes_only(): 
             if node.cost_set and node.cost_per_g != 1: 
+                prog_bar.update(1)
                 continue 
-            
+
+            coster.status_log.set_description_str(f'Searching for {node.smiles}')
+
             buyable, cost = coster.get_buyable_and_cost(node.smiles)
             node.update(
                 buyable=buyable, 
                 cost_per_g=cost,
             )
             c += 1
+            prog_bar.update(1)
 
             if c % 500 == 0 and save_json_dir is not None: 
                 time = datetime.now().strftime("%H-%M-%S")
                 self.to_json(Path(save_json_dir) / f'trees_w_costs_{time}.json')
-        
+            
+        coster.status_log.set_description_str('Saving retrosynthetic graph with costs')
         self.to_json(Path(save_json_dir) / f'trees_w_costs.json')
+        coster.status_log.set_description_str('Done searching for buyability and costs')
+
         return 
 
     def set_intermediates(self):
@@ -283,6 +294,12 @@ class RouteGraph:
     
     def non_dummy_nodes(self) -> List[ReactionNode]: 
         return [node for node in self.reaction_nodes_only() if not node.dummy]
+    
+    def child_of_dummy(self, dummy_node_id: str) -> str: 
+        """ Returns the ID corresponding to the starting material node that is produced by the dummy reaction """
+        dummy_node = self.node_from_id(dummy_node_id)
+        child_node = list(dummy_node.children.values())[0]
+        return child_node.id 
 
     def node_from_id(self, id) -> Node: 
         return self.ids[id]
@@ -300,6 +317,42 @@ class RouteGraph:
         conditions = [node.get_condition(1)[0] for node in self.reaction_nodes_only()]
         reagents = set([i for cond in conditions for i in cond])
         return reagents    
+
+    def compute_adjacency_matrix(self) -> csr_matrix: 
+        id_to_ind = {node.id: ind for ind, node in enumerate(self.nodes().values())}
+
+        rows = []
+        cols = []
+
+        for idd, ind in id_to_ind.items():
+            child_ids = [child.id for child in self.node_from_id(idd).children.values()]
+            for id in child_ids: 
+                rows.append(id_to_ind[id])
+                cols.append(ind)
+        
+        data = (np.ones(len(rows)), (np.array(rows), np.array(cols)) )
+         
+        A = csr_matrix( data, shape=(len(id_to_ind), len(id_to_ind)) )        
+
+        return A
+    
+    def check_cycles_depth(self, depth=4) -> bool: 
+        """ 
+        Checks for cycles in graph to specified depth. Depth of 4 is A->B and B->A 
+        depth = 0 returns True if diag(A) > 0 (should never be true) 
+        """
+        A = self.compute_adjacency_matrix()
+        A_N = A
+        for _ in range(depth):
+            A_N = A_N.dot(A) 
+        
+        trace = A_N.diagonal().sum()
+
+        if trace > 0: 
+            return True 
+        else: 
+            return False 
+    
     
     def to_json(self, filename) -> None: 
         compound_nodes = [node.to_dict() for node in self.compound_nodes_only()]
