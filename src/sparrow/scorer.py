@@ -65,11 +65,11 @@ class AskcosAPIScorer(Scorer):
         self.requires_contexts = True
         self.host = host 
     
-    def score_rxn(self, rxn_smi: str, condition: List = None) -> float:
+    def score_rxn(self, rxn_smi: str, condition: List = None, attempt = 0) -> float:
         if type(condition[0]) is list: 
             condition = condition[0]
         reactants, product = rxn_smi.split('>>')
-
+    
         params = {
             'reactants': reactants, 
             'reagents': '.'.join(condition),
@@ -85,15 +85,23 @@ class AskcosAPIScorer(Scorer):
             )
         except ConnectionError:
             print ("Connection Error from " + self.host)
-
-        outcomes = {
-            prod['smiles']: prod['prob']
-            for prod in result['output']
-        }
-        if canonicalize(product) in outcomes: 
-            return outcomes[product]
-        else: 
-            return 0 
+        
+        if result['complete'] == True: 
+            outcomes = {
+                prod['smiles']: prod['prob']
+                for prod in result['output']
+            }
+            if canonicalize(product) in outcomes: 
+                return outcomes[canonicalize(product)]
+            else: 
+                return 0  
+        else: # if scoring failed 
+            if attempt == 0:
+                print(f'Could not score {rxn_smi}, trying again without conditions')
+                return self.score_rxn(rxn_smi, condition=[[]], attempt=attempt+1)
+            else: 
+                print(f'Could not score {rxn_smi}, returning score of 0')
+                return 0 
         
 
 class LookupScorer(Scorer): 
