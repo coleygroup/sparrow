@@ -73,7 +73,7 @@ def add_contexts_scores_to_trees(json_file: str, target_dict: str, base_dir) -> 
         target_dict=target_dict,
         route_graph=graph, 
         condition_recommender=AskcosRecommender(), 
-        output_dir=base_dir/'checkpoints',
+        output_dir=base_dir,
         rxn_scorer=AskcosScorer(),
     )
 
