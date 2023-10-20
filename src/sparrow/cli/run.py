@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd 
 import json 
 import sys 
+import numpy as np 
 
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
@@ -26,12 +27,13 @@ def optimize(selector, params):
     selector.define_variables()
     selector.set_objective()
     selector.set_constraints()
+    
     solver = {'pulp': None, 'gurobi': 'GUROBI'}[params['solver']]
     selector.optimize(solver=solver) # solver='GUROBI' for GUROBI (license needed)
 
     return selector 
 
-def export_selected_nodes(selector: RouteSelector, rxn_list, starting_list, target_list, base_dir): 
+def export_selected_nodes(selector: RouteSelector, rxn_list, starting_list, target_list, output_dir): 
     storage = {'Starting Materials': [], 'Reactions': [], 'Targets': []}
     graph = selector.graph
 
@@ -63,24 +65,39 @@ def export_selected_nodes(selector: RouteSelector, rxn_list, starting_list, targ
             'reward': node.reward,
         })
     
-    with open(base_dir/'optimal_routes.json','w') as f:
+    with open(output_dir/'optimal_routes.json','w') as f:
         json.dump(storage, f, indent='\t')
 
     return storage 
 
-def extract_vars(selector: RouteSelector, base_dir): 
-    sys.setrecursionlimit(100000)
+def extract_vars(selector: RouteSelector, output_dir): 
+
     nonzero_vars = [
             var for var in selector.problem.variables() if var.varValue > 0.01
         ]
     rxn_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('rxn')]
     mol_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('mol')]
+    dummy_ids = [rxn for rxn in rxn_ids if selector.graph.node_from_id(rxn).dummy]
+    non_dummy_ids = [rxn for rxn in rxn_ids if selector.graph.node_from_id(rxn).dummy == 0]
 
     selected_targets = set(mol_ids) & set(selector.targets)
-    starting_mats = set([node.id for node in selector.graph.buyable_nodes()])
-    selected_starting = set(mol_ids) & starting_mats
-    print(f'{len(selected_targets)} targets selected using {len(rxn_ids)} reactions and {len(selected_starting)} starting materials')
-    export_selected_nodes(selector, rxn_ids, selected_starting, selected_targets, base_dir)
+    selected_starting = set([selector.graph.child_of_dummy(dummy) for dummy in dummy_ids])
+    print(f'{len(selected_targets)} targets selected using {len(non_dummy_ids)} reactions and {len(selected_starting)} starting materials')
+    export_selected_nodes(selector, rxn_ids, selected_starting, selected_targets, output_dir)
+    
+    avg_rxn_score = np.mean([selector.graph.node_from_id(rxn).score for rxn in non_dummy_ids]) if len(rxn_ids) > 0 else None
+
+    summary = {
+        'Weights': selector.weights,
+        'Number targets': len(selected_targets), 
+        'Fraction targets': len(selected_targets)/len(selector.targets),
+        'Total reward': sum([selector.target_dict[tar] for tar in selected_targets]),
+        'Possible reward': sum(selector.target_dict.values()),
+        'Number starting materials': len(selected_starting),
+        'Cost starting materials': np.sum([selector.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
+        'Number reaction steps': len(non_dummy_ids),
+        'Average reaction score': avg_rxn_score,
+    }
 
     storage = {}
     for target in selected_targets: 
@@ -89,10 +106,10 @@ def extract_vars(selector: RouteSelector, base_dir):
         storage[smi] = find_mol_parents(store_dict, target, mol_ids, rxn_ids, selector)
         storage[smi]['Reward'] = selector.target_dict[target]
 
-    with open(base_dir/f'routes_{len(selected_targets)}tars.json','w') as f: 
+    with open(output_dir/f'routes.json','w') as f: 
         json.dump(storage, f, indent='\t')
 
-    return storage 
+    return summary 
 
 def find_rxn_parents(store_dict, rxn_id, selected_mols, selected_rxns, selector: RouteSelector):
     graph = selector.graph 
@@ -128,11 +145,14 @@ def get_path_storage(params, targets):
         return None 
     
     if params['path_finder'] == 'lookup': 
-        planner = LookupPlanner(params['tree_lookup'])
+        planner = LookupPlanner(
+            json_dir=Path(params['tree_lookup_dir']),
+            output_dir=Path(params['output_dir']),
+        )
     elif params['path_finder'] == 'api': 
         planner = AskcosAPIPlanner( 
             host=params['tree_host'],
-            base_dir=Path(params['base_dir']),
+            output_dir=Path(params['output_dir']),
             time_per_target=params['time_per_target'], 
             max_ppg=params['max_ppg'],
             max_branching=params['max_branching'],
@@ -154,7 +174,7 @@ def build_recommender(params):
         raise NotImplementedError(f'Context recommender {rec} not implemented')
 
 def build_scorer(params): 
-    rec = params['recommender']
+    rec = params['scorer']
     if rec == 'api': 
         return AskcosAPIScorer(host=params['scorer_host'])
     elif rec == 'local': 
@@ -194,18 +214,27 @@ def build_selector(params, target_dict, storage_path):
         target_dict=target_dict,
         route_graph=graph, 
         condition_recommender=build_recommender(params), 
-        output_dir=Path(params['base_dir']),
+        output_dir=Path(params['output_dir']),
         rxn_scorer=build_scorer(params),
         coster=build_coster(params),
         weights=weights,
         constrain_all_targets=params['constrain_all']
     )
 
-    filepath = Path(params['base_dir'])/'trees_w_info.json'
-    print(f'Saving route graph with contexts, reaction scores, and costs to {filepath}')
-    selector.graph.to_json(filepath)
+    if storage_path is not None: 
+        filepath = Path(params['output_dir'])/'trees_w_info.json'
+        print(f'Saving route graph with contexts, reaction scores, and costs to {filepath}')
+        selector.graph.to_json(filepath)
     
     return selector
+
+def save_args(params): 
+    filename = Path(params['output_dir'])/'params.ini'
+    with open(filename, 'w') as f:  
+        for k, v in sorted(params.items()):
+            f.write(f'{k}: {v}\n')
+
+    return 
 
 def run():
     args = get_args()
@@ -216,13 +245,19 @@ def run():
         if v is not None: 
             print(f"  {k}: {v}")
     print(flush=True)
+    output_dir = Path(params['output_dir'])
+    output_dir.mkdir(exist_ok=True, parents=True)
+    
+    save_args(params)
 
-    base_dir = Path(params['base_dir'])
     target_dict, targets = get_target_dict(params['target_csv']) 
     storage_path = get_path_storage(params, targets)
     selector = build_selector(params, target_dict, storage_path)
     selector = optimize(selector, params)
-    storage = extract_vars(selector, base_dir)
+    summary = extract_vars(selector, output_dir)
+    
+    with open(output_dir/'summary.json', 'w') as f:
+        json.dump(summary, f, indent='\t')
 
 if __name__ == '__main__':
     run()

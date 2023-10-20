@@ -6,7 +6,7 @@ def get_args():
 
     parser.add_argument('--config', is_config_file=True, help="the filepath of the configuration file")
     parser.add_argument('--target-csv', action='store', type=str, help="the filepath of the target csv file")
-    parser.add_argument('--base-dir', action='store', type=str)
+    parser.add_argument('--output-dir', action='store', type=str)
 
     # local askcos implementation (applies to local scorer and local context recommender)
     parser.add_argument('--askcos-path', action='store', default=None, type=str,
@@ -30,7 +30,7 @@ def add_tree_build_args(parser):
                         help='type of tree builder to use')
     
     # lookup tree builder 
-    parser.add_argument('--tree-lookup', action='store', default=None, type=str,
+    parser.add_argument('--tree-lookup-dir', action='store', default=None, type=str,
                         help='path of lookup json file with combined retrosynthesis tree')
 
     # ASKCOS API tree builder  
