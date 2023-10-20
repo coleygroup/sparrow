@@ -38,7 +38,9 @@ class RouteSelector:
         self.graph = route_graph  
         if remove_dummy_rxns_first: 
             self.graph.remove_dummy_rxns()
-        
+        else: 
+            self.graph.prune_dummy_rxns()
+
         Path(self.dir/'chkpts').mkdir(parents=True, exist_ok=True)
         self.graph.set_buyable_compounds_and_costs(coster, save_json_dir=self.dir/'chkpts')
         self.add_dummy_starting_rxn_nodes()
@@ -166,13 +168,16 @@ class RouteSelector:
         
         return 
 
-    def set_constraints(self):
+    def set_constraints(self, set_cycle_constraints=True):
         """ Sets constraints defined in TODO: write in README all constraints """
         print('Setting constraints')
         # implement constrain_all_targets later
 
         self.set_rxn_constraints()
         self.set_mol_constraints()
+
+        if set_cycle_constraints: 
+            self.set_cycle_constraints()
 
         return 
     
@@ -197,6 +202,16 @@ class RouteSelector:
                 self.m[node.id] <= lpSum(self.r[par_id] for par_id in parent_ids)
             )
         
+        return 
+
+    def set_cycle_constraints(self): 
+
+        cycles = self.graph.dfs_find_cycles_nx()
+        for cyc in cycles: 
+            self.problem += (
+                lpSum(self.r[rid] for rid in cyc) <= (len(cyc) - 1)
+            )
+
         return 
     
     def get_child_and_parent_ids(self, smi: str = None, id: str = None): 
@@ -252,13 +267,13 @@ class RouteSelector:
     def optimize(self, solver=None):
 
         # self.problem.writeLP("RouteSelector.lp", max_length=300)
-
+        print("Solving optimization problem...")
         if solver == 'GUROBI': 
             self.problem.solve(GUROBI(timeLimit=86400))
         else: 
-            self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9))
+            self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
 
-        print("Optimization problem completed...")
+        print("Optimization problem completed")
 
         return 
     

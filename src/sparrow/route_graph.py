@@ -7,8 +7,16 @@ from datetime import datetime
 from scipy.sparse import csr_matrix
 import json 
 import numpy as np 
-import pickle 
+import pickle
+import warnings  
+import networkx as nx 
 
+def find_cycles_nx(adjacency_matrix):
+    G = nx.DiGraph(adjacency_matrix)
+    cycles = list(nx.simple_cycles(G))
+    # filtered_cycles = [cycle for cycle in cycles if len(cycle) <= k]
+
+    return cycles
 
 class RouteGraph: 
     """
@@ -133,6 +141,13 @@ class RouteGraph:
             if node.smiles.startswith('>>'): 
                 self.remove_rxn_node(node.smiles)
         return 
+    
+    def prune_dummy_rxns(self) -> None: 
+        for node in self.dummy_nodes_only(): 
+            child = list(node.children.values())[0]
+            if not child.buyable: 
+                self.remove_rxn_node(node.smiles)
+        return         
     
     def remove_rxn_node(self, smi) -> None: 
         self.reaction_nodes.pop(smi)
@@ -334,26 +349,15 @@ class RouteGraph:
          
         A = csr_matrix( data, shape=(len(id_to_ind), len(id_to_ind)) )        
 
-        return A
-    
-    def check_cycles_depth(self, depth=4) -> bool: 
-        """ 
-        Checks for cycles in graph to specified depth. Depth of 4 is A->B and B->A 
-        depth = 0 returns True if diag(A) > 0 (should never be true) 
-        """
-        A = self.compute_adjacency_matrix()
-        A_N = A
-        for _ in range(depth):
-            A_N = A_N.dot(A) 
-        
-        trace = A_N.diagonal().sum()
+        return A, id_to_ind
 
-        if trace > 0: 
-            return True 
-        else: 
-            return False 
-    
-    
+    def dfs_find_cycles_nx(self) -> list: 
+        A, id_to_ind = self.compute_adjacency_matrix()
+        cycles = find_cycles_nx(A)
+        ind_to_id = {ind: idd for idd, ind in id_to_ind.items()}
+        cycless = [[ind_to_id[ind] for ind in cyc if ind_to_id[ind].startswith('R') ] for cyc in cycles]
+        return cycless 
+
     def to_json(self, filename) -> None: 
         compound_nodes = [node.to_dict() for node in self.compound_nodes_only()]
         reaction_nodes = [node.to_dict() for node in self.reaction_nodes_only()]

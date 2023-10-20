@@ -26,6 +26,8 @@ class Node:
         self.selected = selected
         self.id = id
 
+        self.blocked = False 
+
     def update(self, 
                parents = None, 
                children = None, 
