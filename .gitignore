@@ -1,10 +1,28 @@
+# askcos 
 askcos
 askcos-core
-.vscode
-*.zip
+askcos-base
+
+# setup
 dist 
-build 
+build
+
+# large files 
+*.json
+!examples/amd/trees_w_info.json
+!examples/button_alectinib/trees_w_info.json
+!examples/button_alectinib/trees_w_info.json
+!examples/garibsingh/trees_w_info.json
+
+*.zip
+
+# debugging 
+debug/
+
+# misc 
 **/__pycache__/
 UNKNOWN**
 *.egg-info/
 *.egg
+key*
+.vscode

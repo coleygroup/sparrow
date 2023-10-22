@@ -1,7 +1,18 @@
+from sparrow.scorer import Scorer
+from sparrow.condition_recommender import Recommender
 from sparrow.route_graph import RouteGraph
-from typing import Dict, Union, List, Optional
-from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI, LpInteger
+from sparrow.coster import Coster
+from sparrow.nodes import ReactionNode
+from typing import Dict, Union, List
+from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI
+from pulp.apis import PULP_CBC_CMD
 from rdkit import Chem
+from tqdm import tqdm
+from pathlib import Path
+from datetime import datetime
+import time
+import warnings
+import csv 
 
 reward_type = Union[int, float]
 
@@ -13,49 +24,127 @@ class RouteSelector:
     """
     def __init__(self, 
                  route_graph: RouteGraph, 
-                 target_dict: Dict[str, reward_type],
+                 target_dict: Dict[str, reward_type],                 
+                 rxn_scorer: Scorer = None, 
+                 condition_recommender: Recommender = None,
                  constrain_all_targets: bool = False, 
+                 coster: Coster = None, 
                  weights: List = [1,1,1,1],
-                 calc_reaction_scores: Optional[bool] = True,
+                 output_dir: str = 'debug',
+                 remove_dummy_rxns_first: bool = False,
                  ) -> None:
-        
-        self.graph = route_graph        
-        self.target_dict = {
-            Chem.MolToSmiles(Chem.MolFromSmiles(smi), isomericSmiles=False):score 
-            for smi, score in target_dict.items()
-            }
 
-        self.rewards = list(self.target_dict.values())
+        self.dir = Path(output_dir)
 
-        self.constrain_all_targets = constrain_all_targets
+        self.graph = route_graph  
+        if remove_dummy_rxns_first: 
+            self.graph.remove_dummy_rxns()
+        else: 
+            self.graph.prune_dummy_rxns()
 
-        self.graph.set_compound_types(self.target_dict)
-
-        if calc_reaction_scores: 
-            from askcos.synthetic.evaluation.evaluator import Evaluator
-            from askcos.synthetic.context.neuralnetwork import NeuralNetContextRecommender
-            import askcos.global_config as gc
-
-            context_recommender = NeuralNetContextRecommender()
-            context_recommender.load_nn_model(
-                model_path=gc.NEURALNET_CONTEXT_REC['model_path'], 
-                info_path=gc.NEURALNET_CONTEXT_REC['info_path'], 
-                weights_path=gc.NEURALNET_CONTEXT_REC['weights_path']
-            )
-            self.graph.calc_reaction_scores(
-                context_recommender,
-                evaluator=Evaluator(),
-            )
-        
+        Path(self.dir/'chkpts').mkdir(parents=True, exist_ok=True)
+        self.graph.set_buyable_compounds_and_costs(coster, save_json_dir=self.dir/'chkpts')
         self.add_dummy_starting_rxn_nodes()
 
         self.graph.id_nodes()
-        self.targets = [self.graph.compound_nodes[tar].id for tar in self.target_dict.keys()]
-        self.target_dict = {self.graph.compound_nodes[tar].id: score for tar, score in self.target_dict.items()}
+
+        self.target_dict = self.clean_target_dict(target_dict)
+        self.targets = list(self.target_dict.keys())
+
+        self.target_dict = self.graph.set_compound_types(self.target_dict, coster=coster, save_dir=self.dir/'chkpts')
+
+        self.rxn_scorer = rxn_scorer
+        self.condition_recommender = condition_recommender
+              
+        self.constrain_all_targets = constrain_all_targets
+        self.weights = weights
+        
+
+        if self.condition_recommender is not None: 
+            self.get_recommendations()
+
+        if self.rxn_scorer is not None: 
+            self.get_rxn_scores()
 
         self.problem = LpProblem("Route_Selection", LpMinimize)
 
-        self.weights = weights
+    def clean_target_dict(self, target_dict: Dict[str, float]) -> Dict[str, float]:
+        """ Converts target dict from Dict[smiles, reward] to Dict[id, reward] """
+        new_target_dict = {}
+        
+        c=0
+        for old_smi, reward in target_dict.items():
+            clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
+            
+            try: 
+                float(reward)
+            except: 
+                warnings.warn(f'Target {old_smi} has an invalid reward ({reward}) and is being removed from target set')
+                c+=1      
+                continue     
+
+            if clean_smi in self.graph.compound_nodes.keys():
+                id = self.graph.id_from_smiles(clean_smi)
+                new_target_dict[id] = reward
+            elif old_smi in self.graph.compound_nodes.keys(): 
+                id = self.graph.id_from_smiles(old_smi)
+                new_target_dict[id] = reward                
+            else: 
+                warnings.warn(f'Target {old_smi} is not in routes and is being removed from target set')
+                c+=1
+
+        p = self.dir / 'cleaned_tar_dict.csv'
+        print(f'Saving remaining targets, ids, and rewards to {p}')
+
+        save_list = [
+            {'SMILES': self.graph.smiles_from_id(id), 'ID': id, 'Reward': reward,}
+            for id, reward in new_target_dict.items()
+        ]
+        
+        with open(p, 'w') as csvfile: 
+            writer = csv.DictWriter(csvfile, fieldnames=['SMILES', 'ID', 'Reward'])
+            writer.writeheader()
+            writer.writerows(save_list)
+
+        return new_target_dict
+
+    def get_recommendations(self): 
+        """ Completes condition recommendation for any reaction node that does not have conditions """
+        count = 0
+        for node in tqdm(self.graph.non_dummy_nodes(), 'Recommending Conditions'):
+            if node.condition_set: 
+                continue
+            
+            condition = self.condition_recommender(node.smiles)
+            node.update_condition(condition)
+            count += 1
+
+            if count % 100 == 0: 
+                time = datetime.now().strftime("%H-%M-%S")
+                self.graph.to_json(self.dir / 'chkpts' / f'trees_w_conditions_{time}.json')
+            
+        self.graph.to_json(self.dir / 'chkpts' / f'trees_w_conditions.json')
+    
+    def get_rxn_scores(self): 
+        """ Scores all reactions in the graph that are not already scored """
+        count = 0
+        for node in tqdm(self.graph.reaction_nodes_only(), 'Scoring reactions'): 
+            if (node.score_set and node.score > 0) or node.dummy: 
+                continue 
+
+            try:    
+                score = self.rxn_scorer(rxn_smi=node.smiles, condition=node.condition)
+            except: 
+                print(f'Reaction {node.smiles} could not be scored, setting score=0, condition: {node.condition}')
+                score = 0 
+
+            node.update(score=score)
+            count += 1
+            if count % 100 == 0: 
+                time = datetime.now().strftime("%H-%M-%S")
+                self.graph.to_json(self.dir / 'chkpts' / f'trees_w_scores_{time}.json')
+        
+        self.graph.to_json(self.dir / 'chkpts' / f'trees_w_scores.json')
 
     def define_variables(self): 
         """ 
@@ -64,149 +153,81 @@ class RouteSelector:
         TODO: include conditions 
         """
 
-        self.a = LpVariable.dicts(
-            "target",
-            self.targets,
-            cat="Binary",
-        ) # whether each target is selected for synthesis 
-        
-        starting_nodes = self.graph.buyable_nodes()
-        self.s = LpVariable.dicts(
-            "start",
-            [node.id for node in starting_nodes],
-            cat="Binary",
-        ) # whether each starting material is used in the selected routes 
-        
-        rxn_ids = [node.id for node in self.graph.reaction_nodes.values()]
-        self.o = LpVariable.dicts(
-            "rxnfortarget",
-            (rxn_ids, self.targets),
-            cat="Binary"
-        ) # whether each reaction is used to synthesize a given target 
-
-        self.f = LpVariable.dicts(
-            "rxnflow",
-            rxn_ids,
-            lowBound=0,
-            upBound=len(self.targets),
-            cat=LpInteger,
-        )  # flow through reaction node 
-
+        rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
         self.r = LpVariable.dicts(
-            "rxnused", 
-            rxn_ids, 
+            "rxn", 
+            indices=rxn_ids, 
             cat="Binary",
         )
 
+        mol_ids = [node.id for node in self.graph.compound_nodes_only()]
+        self.m = LpVariable.dicts(
+            "mol", 
+            mol_ids, 
+            cat="Binary",
+        )
+        
         return 
 
-    def set_constraints(self):
+    def set_constraints(self, set_cycle_constraints=True):
         """ Sets constraints defined in TODO: write in README all constraints """
+        print('Setting constraints')
+        # implement constrain_all_targets later
 
-        if self.constrain_all_targets: 
-            self.set_all_targets_selected_constraint()
-        else: 
-            self.set_target_flow_constraint()
+        self.set_rxn_constraints()
+        self.set_mol_constraints()
 
-        self.set_intermediate_flow_constraint()
-        self.set_starting_material_constraint()
-        self.set_reaction_used_constraint()
-        self.set_overall_flow_constraint()
+        if set_cycle_constraints: 
+            self.set_cycle_constraints()
 
         return 
     
-    def set_target_flow_constraint(self):
-        """ Sets constraint on flow through a target node """
-        # flow into target node - flow out of target node = 0 (target not selected)
-        # or 1 (target is selected )
-        for target in self.targets: 
-            target_smi = self.graph.ids[target].smiles
-            parent_ids, child_ids = self.get_compound_child_and_parent_ids(target_smi)
-            self.problem += (
-                lpSum([self.f[parent_id] for parent_id in parent_ids])
-                    - lpSum([self.f[child_id] for child_id in child_ids])  
-                    == self.a[target],
-                f"Flow_Through_Target_{target}"
-            )
+    def set_rxn_constraints(self): 
 
-        return 
-    
-    def set_intermediate_flow_constraint(self): 
-        """ Sets constraint on flow through intermediate nodes: net flow must be zero """
-        intermediate_nodes = [*self.graph.intermediate_nodes(), *self.graph.buyable_nodes()]
-        inter_smiles = [node.smiles for node in intermediate_nodes]
-        
-        for inter in inter_smiles: 
-            parent_ids, child_ids = self.get_compound_child_and_parent_ids(inter)
-            self.problem += (
-                lpSum([self.f[parent_id] for parent_id in parent_ids])
-                    - lpSum([self.f[child_id] for child_id in child_ids])  
-                    == 0,
-                f"Flow_Through_Inter_{self.graph.compound_nodes[inter].id}"
-            )
-           
-        return 
-    
-    def set_starting_material_constraint(self):
-        """ Sets constraint on 's' variables and dummy reaction nodes """
-
-        starting_smis = [node.smiles for node in self.graph.buyable_nodes()]
-        N = len(self.targets)
-        for start in starting_smis: 
-            parent_ids, _ = self.get_compound_child_and_parent_ids(start) 
-            # ^ parent_smis should only have one dummy rxn node if this is done correctly 
-            self.problem += (
-                N*self.s[self.graph.compound_nodes[start].id] >= lpSum([self.f[rxn] for rxn in parent_ids]),
-                f"Start_{self.graph.compound_nodes[start].id}_from_dummy_flow"
-            )
-
-        return 
-    
-    def set_reaction_used_constraint(self):
-        """ Sets constraint on 'r' abd 'f' variables, so if f_rxn > 0, r_rxn = 1"""
-
-        N = len(self.targets)
-        for rxn_smi, node in self.graph.reaction_nodes.items(): 
-            # parent_ids, _ = self.get_compound_child_and_parent_ids(rxn_smi) 
-            # ^ parent_smis should only have one dummy rxn node if this is done correctly 
-            self.problem += (
-                N*self.r[node.id] >= self.f[node.id],
-                f"Rxnused_flow_{node.id}"
-            )
-
-        return 
-
-    def set_overall_flow_constraint(self):
-        """ Sets constraint between o_mn and f_m for reaction node m """
-
-        rxn_ids = [node.id for node in self.graph.reaction_nodes.values()]
-        for rxn in rxn_ids: 
-            self.problem += (
-                self.f[rxn] == lpSum([self.o[rxn][target] for target in self.targets]),
-                f"Total_flow_through_{rxn}"
-            )
+        for node in self.graph.reaction_nodes_only(): 
+            if node.dummy: 
+                continue 
+            par_ids = [par.id for par in node.parents.values()]
+            for par_id in par_ids: 
+                self.problem += (
+                    self.m[par_id] >= self.r[node.id]
+                )
         
         return 
     
-    def set_all_targets_selected_constraint(self):
-        """ Sets constraint that all targets are selected """
-        for target in self.targets: 
-            target_smi = self.graph.ids[target].smiles
-            parent_ids, child_ids = self.get_compound_child_and_parent_ids(target_smi)
+    def set_mol_constraints(self): 
+
+        for node in self.graph.compound_nodes_only(): 
+            parent_ids = [par.id for par in node.parents.values()]
             self.problem += (
-                lpSum([self.f[parent_id] for parent_id in parent_ids])
-                    - lpSum([self.f[child_id] for child_id in child_ids])  
-                    == 1,
-                f"Flow_Through_Target_{target}"
+                self.m[node.id] <= lpSum(self.r[par_id] for par_id in parent_ids)
+            )
+        
+        return 
+
+    def set_cycle_constraints(self): 
+
+        cycles = self.graph.dfs_find_cycles_nx()
+        for cyc in cycles: 
+            self.problem += (
+                lpSum(self.r[rid] for rid in cyc) <= (len(cyc) - 1)
             )
 
         return 
     
-    def get_compound_child_and_parent_ids(self, node_smis: str): 
+    def get_child_and_parent_ids(self, smi: str = None, id: str = None): 
         """ Returns list of child node smiles and parent node smiles for a given
         compound smiles """
-        child_ids = [child.id for child in self.graph.compound_nodes[node_smis].children.values()] 
-        parent_ids = [parent.id for parent in self.graph.compound_nodes[node_smis].parents.values()]
+        if smi is None and id is None: 
+            print('No node information given')
+            return None 
+        
+        if id is not None: 
+            child_ids = [child.id for child in self.graph.node_from_id(id).children.values()] 
+            parent_ids = [parent.id for parent in self.graph.node_from_id(id).parents.values()]
+        elif smi is not None: 
+            child_ids = [child.id for child in self.graph.node_from_smiles(smi).children.values()] 
+            parent_ids = [parent.id for parent in self.graph.node_from_smiles(smi).parents.values()]
 
         return parent_ids, child_ids
     
@@ -215,51 +236,54 @@ class RouteSelector:
         TODO: describe this in README """
         for start_node in self.graph.buyable_nodes(): 
             dummy_rxn_smiles = f">>{start_node.smiles}"
-            self.graph.add_reaction_node(dummy_rxn_smiles, children=[start_node.smiles], dummy=True)
-
-            # make penalty of dummy reactions zero 
-            self.graph.reaction_nodes[dummy_rxn_smiles].penalty = 0
+            self.graph.add_reaction_node(
+                dummy_rxn_smiles, 
+                children=[start_node.smiles], 
+                dummy=True, 
+                penalty=0, 
+                score = 10**6,
+            )
     
     def set_objective(self): 
-        # FIX THIS 
-        rxn_ids = [node.id for node in self.graph.reaction_nodes.values()]
+        # TODO: Add consideration of conditions 
+        print('Setting objective function')
 
-        if self.constrain_all_targets: #TODO: fix this 
-            self.problem += self.weights[0]
-        else:
-            self.problem += -1*self.weights[0]*lpSum([self.target_dict[target]*self.a[target] for target in self.targets]) # reward
-            self.problem += self.problem.objective + self.weights[1]*lpSum([s for s in self.s.values()]) # starting materials 
-            self.problem += self.problem.objective + self.weights[2]*0 # not considering conditions yet 
-            self.problem += self.problem.objective + self.weights[3]*lpSum([self.r[rxn]*self.graph.id_nodes()[rxn].penalty for rxn in rxn_ids])
-                # reaction penalties 
+        reward_mult = self.weights[0] # / ( len(self.target_dict)) # *max(self.target_dict.values()) )
+        cost_mult = self.weights[1] # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
+        pen_mult = self.weights[2] # / (len(self.graph.non_dummy_nodes())) # * max([node.penalty for node in self.graph.non_dummy_nodes()]) )
+
+        self.problem += -1*reward_mult*lpSum([float(self.target_dict[target])*self.m[target] for target in self.targets]) \
+        + cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
+        + pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
+            # reaction penalties, implement CSR later 
         return 
     
+    def cost_of_dummy(self, dummy_node: ReactionNode = None, dummy_id: str = None) -> float:
+        if dummy_node is None: 
+            dummy_node = self.graph.node_from_id(dummy_id)
+
+        start_node = list(dummy_node.children.values())[0]
+        return start_node.cost_per_g 
+
     def optimize(self, solver=None):
 
         # self.problem.writeLP("RouteSelector.lp", max_length=300)
-
+        print("Solving optimization problem...")
+        opt_start = time.time()
         if solver == 'GUROBI': 
             self.problem.solve(GUROBI(timeLimit=86400))
         else: 
-            self.problem.solve()
+            self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
 
-        print("Optimization problem completed...")
-
+        print(f"Optimization problem completed. Took {time.time()-opt_start} seconds to solve")
+        
         return 
     
     def optimal_variables(self):
-        """ Takes optimal variables from problem solution and converts it to a set of routes """
+        """ Returns nonzero variables """
         nonzero_vars = [
             var for var in self.problem.variables() if var.varValue > 0.01
         ]
-        selected_targets = { var.name.split("target_")[1]: self.graph.ids[var.name.split("target_")[1]]
-            for var in nonzero_vars
-            if var.name.find("target_") == 0 
-        } # dict {id: smiles} for selected targets 
-
-        print('Selected targets: ')
-        for tar in selected_targets: 
-            print(self.graph.ids[tar].smiles)
 
         return nonzero_vars
 

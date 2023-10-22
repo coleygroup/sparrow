@@ -1,3 +1,9 @@
+numpy
+pymongo
+pycairo
+pyyaml
+hbdscan
+jupyter
 cython
 h5py
 keras
@@ -21,3 +27,4 @@ sphinx
 pandas
 setuptools
 joblib==1.1.0
+configargparse

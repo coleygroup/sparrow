@@ -1,0 +1,14 @@
+ID,SMILES
+C193,O=C(Cl)c1ccccc1
+C3,COc1cccc(N)c1
+C327,COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC
+C328,Nc1cccc(O)c1
+C4,COc1cccc(Nc2ncnc3cc(OC)c(OC)cc23)c1
+C502,COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC
+C503,Nc1ccc(N)cc1
+C504,COc1cc2ncnc(Nc3ccc(N)cc3)c2cc1OC
+C6,COc1cc2ncnc(Cl)c2cc1OC
+R4,COc1cc2ncnc(Cl)c2cc1OC.COc1cccc(N)c1>>COc1cccc(Nc2ncnc3cc(OC)c(OC)cc23)c1
+R456,COc1cc2ncnc(Cl)c2cc1OC.Nc1cccc(O)c1>>COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC
+R728,COc1cc2ncnc(Cl)c2cc1OC.Nc1ccc(N)cc1>>COc1cc2ncnc(Nc3ccc(N)cc3)c2cc1OC
+R737,COc1cc2ncnc(Nc3ccc(N)cc3)c2cc1OC.O=C(Cl)c1ccccc1>>COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC
