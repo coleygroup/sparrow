@@ -3,8 +3,8 @@ from pathlib import Path
 import numpy as np 
 
 conf_path = Path(f'examples/button_alectinib/config_opt.ini')
-lam = [None, 0.1, 0.1]
-lam_1s = [40] # np.linspace(1, 20, 20).round(2)
+lam = [None, 0.1, 2]
+lam_1s = [10] # np.linspace(1, 20, 20).round(2)
 cmds = []
 
 for l1 in lam_1s:
