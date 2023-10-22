@@ -3,5 +3,5 @@ channels:
   - conda-forge
 dependencies:
   - python=3.7
-  - pango
-  - pytorch=1.7.1=cpu_py37hf1c21f6_2
+  # - pango # uncomment if using local ASKCOS implementation 
+  # - pytorch=1.7.1=cpu_py37hf1c21f6_2 # uncomment if using local ASKCOS implementation 
