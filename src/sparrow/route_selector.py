@@ -10,7 +10,8 @@ from rdkit import Chem
 from tqdm import tqdm
 from pathlib import Path
 from datetime import datetime
-
+import time
+import warnings
 import csv 
 
 reward_type = Union[int, float]
@@ -78,7 +79,7 @@ class RouteSelector:
             try: 
                 float(reward)
             except: 
-                print(f'Target {old_smi} has an invalid reward: {reward}. Being removed from target set!!!')
+                warnings.warn(f'Target {old_smi} has an invalid reward ({reward}) and is being removed from target set')
                 c+=1      
                 continue     
 
@@ -89,7 +90,7 @@ class RouteSelector:
                 id = self.graph.id_from_smiles(old_smi)
                 new_target_dict[id] = reward                
             else: 
-                print(f'Target {old_smi} not in routes! Being removed from target set!!!')
+                warnings.warn(f'Target {old_smi} is not in routes and is being removed from target set')
                 c+=1
 
         p = self.dir / 'cleaned_tar_dict.csv'
@@ -268,13 +269,14 @@ class RouteSelector:
 
         # self.problem.writeLP("RouteSelector.lp", max_length=300)
         print("Solving optimization problem...")
+        opt_start = time.time()
         if solver == 'GUROBI': 
             self.problem.solve(GUROBI(timeLimit=86400))
         else: 
             self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
 
-        print("Optimization problem completed")
-
+        print(f"Optimization problem completed. Took {time.time()-opt_start} seconds to solve")
+        
         return 
     
     def optimal_variables(self):
