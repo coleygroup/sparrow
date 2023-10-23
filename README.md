@@ -14,13 +14,11 @@ This repository performs the following steps:
 
 ## Table of Contents 
 - [Overview](#overview)
-- [Table of Contents](#table-of-contents)
 - [Installation](#installation)
 - [Requirements](#requirements)
 - [Running SPARROW](#running-sparrow)
-- [Reproducing Experimental Results](#reproducing-experimental-results)
-- [Object Model](#object-model)
-- [Future Directions](#future-directions)
+- [Future Goals](#future-goals)
+- [Reproducing Results](#reproducing-results)
 - [Citation](#citation)
 
 ## Requirements 
@@ -74,17 +72,23 @@ If more than one run is performed on the same set of compounds, and only the wei
   - `--scorer {lookup,local,api}`: type of scorer to use
  - `--scorer-host`: host address for reaction scorer, if using API recommender
  - `--scorer-lookup`: path of reaction scorer csv file for lookup reaction scorer (not implemented yet)
- - `--coster {naive,chemspace}`: type of compound coster to use
+ - `--coster {lookup, naive, chemspace}`: type of compound coster to use
  - `--key-path` path that includes the file keys.py with chemspace api key
  - `--coster-lookup`: path of lookup file for lookup cost and buyability
+
+**A note about required arguments:** The only required argument in SPARROW in `--tree-csv`. However, providing this alone will not be sufficient to run SPARROW. In addition to candidates and rewards, SPARROW's optimization requires a set of potential reactions and scores for each reaction. If a provided `--graph` argument corresponds to a file that includes both potential reactions as a retrosynthesis tree _and_ reaction scores, that is sufficient to run SPARROW. However, if the file only contains a retrosynthesis tree, without reaction scores, SPARROW will require a `--recommender` argument. Likewise, if no `--graph` is provided, a valid entry for `--path-finder` (and any corresponding arguments) are required. We are currently working on expanding the documentation for SPARROW and improving its usability.
 
 
 ##  Optimization Problem Formulation 
 The formulation of the optimization problem can be found at our preprint (need link). 
 
-## Future goals
+## Reproducing Results
+The results shown in our [preprint]() can be reproduced using the [optimize_preprint](scripts/optimize_preprint.py) script. This uses SPARROW to select routes from previously generated retrosynthesis trees with previously computed conditions and reaction scores. For each case study, this information is stored in the relevant [examples folder](examples) as a `trees_w_info.json` file. Two configuration files exist for each example: a `config_opt.ini` that builds a route graph from the existing `trees_w_info.json` file, and a `config.ini` that builds a route graph from scratch using ASKCOS. In order to use the sample `config.ini` files, you must enter an IP address corresponding to an ASKCOS instance where indicated. 
+
+## Future Goals
 1. Incorporate reaction conditions into objective function 
-2. Update tree visualization to show compounds and conditions (not just IDs)
+2. Update tree visualization
+3. Modify optimization function formulation to better capture information gain and cost 
 
 ## Citation
 If you used SPARROW in your work, we would appreciate you citing us! (need citation)
