@@ -1,6 +1,0 @@
-SMILES,Reward
-COc1cccc(Nc2ncnc3cc(OC)c(OC)cc23)c1,3
-COc1cc2ncnc(Nc3ccc(OCc4ccccc4)cc3)c2cc1OC,4
-COc1cc2ncnc(Nc3cccc(Cl)c3)c2cc1OC,2
-COc1cc2ncnc(Nc3cccc(O)c3)c2cc1OC,11
-COc1cc2ncnc(Nc3ccc(NC(=O)c4ccccc4)cc3)c2cc1OC,14
