@@ -5,8 +5,8 @@ def get_args():
     parser = ArgumentParser()
 
     parser.add_argument('--config', is_config_file=True, help="the filepath of the configuration file")
-    parser.add_argument('--target-csv', action='store', type=str, help="the filepath of the target csv file")
-    parser.add_argument('--output-dir', action='store', type=str)
+    parser.add_argument('--target-csv', action='store', type=str, required=True, help="the filepath of the target csv file")
+    parser.add_argument('--output-dir', action='store', type=str, default='sparrow_results')
 
     # local askcos implementation (applies to local scorer and local context recommender)
     parser.add_argument('--askcos-path', action='store', default=None, type=str,
