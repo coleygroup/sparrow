@@ -7,6 +7,9 @@ askcos-base
 dist 
 build
 
+# results 
+results/
+
 # large files 
 *.json
 !examples/amd/trees_w_info.json
