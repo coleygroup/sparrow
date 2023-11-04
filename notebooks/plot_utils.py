@@ -9,7 +9,7 @@ from sparrow.route_graph import RouteGraph
 from tqdm import tqdm
 import random 
 
-theme_colors = ['#405E90','#D45127','#AA2165','#818084','#AA2165']
+theme_colors = ['#405E90','#D45127','#AA2165','#818084']
 
 cluster_colors = {
     'None': '#0E713E',
@@ -78,7 +78,7 @@ def df_from_dir(results_dir):
             summ = json.load(f)
         
         l1, l2, l3 = summ.pop('Weights')
-        summ['Reward Weight'] = l1
+        summ['Utility Weight'] = l1
         summ['Starting Material Weight'] = l2
         summ['Reaction Weight'] = l3
 
@@ -105,20 +105,25 @@ def graph_vis(tree_path: str, routes_path: str, cleaned_tar_path: str, percent_p
 
     G = nx.DiGraph(directed=True)
     sel_ids = []
-
+    tar_ids = []
     cpd_ids = []
     for cpd_node in route_graph.compound_nodes_only(): 
         G.add_node(id_to_ind[cpd_node.id])
         cpd_ids.append(id_to_ind[cpd_node.id])
         if cpd_node.smiles in sel_cpds: 
             sel_ids.append(id_to_ind[cpd_node.id])
+        if cpd_node.smiles in sel_tars: 
+            tar_ids.append(id_to_ind[cpd_node.id])
     
     rxn_ids = []
+    start_ids = []
     for rxn_node in route_graph.reaction_nodes_only(): 
         G.add_node(id_to_ind[rxn_node.id])
         rxn_ids.append(id_to_ind[rxn_node.id])
         if rxn_node.smiles in sel_rxns: 
             sel_ids.append(id_to_ind[rxn_node.id])
+            if rxn_node.smiles.startswith('>>'):
+                start_ids.append(id_to_ind[rxn_node.id])
 
     sel_edges = []
     for rxn_node in route_graph.reaction_nodes_only(): 
@@ -149,21 +154,55 @@ def graph_vis(tree_path: str, routes_path: str, cleaned_tar_path: str, percent_p
     
     nx.set_node_attributes(G, values = layers, name='layer')
 
-    fig, ax = plt.subplots()
-    pos = nx.multipartite_layout(G, subset_key = "layer")
+    fig1, ax1 = plt.subplots()
+    # pos = nx.multipartite_layout(G, subset_key = "layer")
+    pos = nx.spring_layout(G, )
     nodelist2 = [node for node in G.nodes() if node in sel_ids]
-    nodecolor = [theme_colors[1] if n in cpd_ids else theme_colors[2] for n in nodelist2]
+    nodecolor = []
+    for n in nodelist2:
+        if n in tar_ids: 
+            nodecolor.append(theme_colors[2])
+        elif n in cpd_ids:
+            nodecolor.append(theme_colors[3])
+        elif n in start_ids: 
+            nodecolor.append(theme_colors[0])
+        else: 
+            nodecolor.append(theme_colors[1])
+    # nodecolor = [theme_colors[0] if n in cpd_ids elif n in else theme_colors[2] for n in nodelist2]
     edgelist2 = [edge for edge in G.edges() if edge in sel_edges]
-    
-    nx.draw(G, pos, node_color='lightgray', edge_color='lightgray', with_labels=False, node_size=5, width=0.3, arrowsize=5, ax=ax)
-    nx.draw_networkx_nodes(G, pos, node_color=nodecolor, nodelist=nodelist2, node_size=5, ax=ax)
-    nx.draw_networkx_edges(G, pos, edgelist=edgelist2, width=0.3, arrowsize=5, edge_color=theme_colors[0], node_size=8, ax=ax)
+    ns = 20
+    nx.draw_networkx_edges(G, pos, edgelist=G.edges(), edge_color='lightgray', node_size=ns, width=0.5, arrowsize=5, ax=ax1)
+    nx.draw_networkx_nodes(G, pos, nodelist=G.nodes(), node_color='lightgray', node_size=ns, ax=ax1, edgecolors='lightgray', linewidths=0.1)
+
+    fig2, ax2 = plt.subplots()
+    nx.draw_networkx_edges(G, pos, edgelist=edgelist2, edge_color='dimgrey', node_size=ns, width=0.5, arrowsize=5, ax=ax2)
+    nx.draw_networkx_nodes(G, pos, nodelist=nodelist2, node_color=nodecolor, node_size=ns, ax=ax2, edgecolors='k', linewidths=0.1)
 
     
-    return fig, ax
+    return fig1, ax1, fig2, ax2
     
 def calc_layer(G: nx.DiGraph, node_ind: int, target_verts: list): 
     ps = list(nx.all_simple_paths(G, node_ind, target_verts, cutoff=10))    
     return len(min(ps, key=lambda x: len(x)))
+
+def df_to_latex(df: pd.DataFrame, path: str): 
+    df = df.rename(columns={"Utility Weight": "$\lambda_1$", "Starting Material Weight": "$\lambda_2$", "Reaction Weight": "$\lambda_3$"})
+    df = df.rename(columns={"Total reward": "Cumulative utility", "Cost starting materials": "Cost of starting materials", \
+                            "Number reaction steps": "Number of reaction steps"})
+    cols = ['$\lambda_1$','$\lambda_2$','$\lambda_3$',"Cumulative utility", "Cost of starting materials", "Number of reaction steps", "Average reaction score" ]
+    df = df[cols]
+    df = df.sort_values(by=['$\lambda_1$','$\lambda_2$', '$\lambda_3$'])
+    df['$\lambda_1$'] = [f'{a:0.2f}' for a in df['$\lambda_1$']]
+    df['$\lambda_2$'] = [f'{a:0.2f}' for a in df['$\lambda_2$']]
+    df['$\lambda_3$'] = [f'{a:0.2f}' for a in df['$\lambda_3$']]
+
+    df = df.round({
+        # '$\lambda_1$':1,'$\lambda_2$':1,'$\lambda_3$':3, 
+        "Cumulative utility":1, "Cost of starting materials": 1,"Number of reaction steps":0,"Average reaction score": 2})
+    str_df = df.to_latex(escape=False, index=False, multicolumn_format='c')
+    with open(path,'w') as f:
+        f.writelines(str_df)
+    return df
+    
 
     
