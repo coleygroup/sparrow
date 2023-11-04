@@ -275,7 +275,7 @@ class RouteSelector:
         else: 
             self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
 
-        print(f"Optimization problem completed. Took {time.time()-opt_start} seconds to solve")
+        print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds to solve")
         
         return 
     

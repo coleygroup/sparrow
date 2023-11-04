@@ -65,7 +65,7 @@ def export_selected_nodes(selector: RouteSelector, rxn_list, starting_list, targ
             'reward': node.reward,
         })
     
-    with open(output_dir/'optimal_routes.json','w') as f:
+    with open(output_dir/'solution_list_format.json','w') as f:
         json.dump(storage, f, indent='\t')
 
     return storage 
