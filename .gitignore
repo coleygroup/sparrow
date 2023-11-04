@@ -16,16 +16,23 @@ results/
 !examples/button_alectinib/trees_w_info.json
 !examples/button_alectinib/trees_w_info.json
 !examples/garibsingh/trees_w_info.json
-
 *.zip
+
+
+# figures 
+*.pdf 
+*.png 
+
 
 # debugging 
 debug/
+
+# secret keys 
+key*
 
 # misc 
 **/__pycache__/
 UNKNOWN**
 *.egg-info/
 *.egg
-key*
 .vscode
