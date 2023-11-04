@@ -19,7 +19,6 @@ This repository performs the following steps:
 - [Running SPARROW](#running-sparrow)
 - [Future Goals](#future-goals)
 - [Reproducing Results](#reproducing-results)
-- [Citation](#citation)
 
 ## Requirements 
 To use ASKCOS to perform retrosynthesis searches, propose conditions, and score reactions, an API address to a deployed version of ASKCOS is required. Directions to deploy ASKCOS can be found [here](https://github.com/ASKCOS/ASKCOS). A ChemSpace API key is required use ChemSpace to assign compound buyability and cost. Refer to [these directions](https://api.chem-space.com/docs/#:~:text=Get%20API%20Key&text=The%20API%20key%20is%20unique,%40chem%2Dspace.com.) to attain the key. The key should be entered into the [keys.py](keys.py) file, and the path to this file is required to run SPARROW with ChemSpace. 
