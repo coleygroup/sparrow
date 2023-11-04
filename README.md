@@ -32,6 +32,10 @@ mamba env create -f environment.yml
 conda activate sparrow
 pip install -r requirements.txt
 ```
+Finally, install this package. 
+```
+python setup.py develop 
+```
 
 #### Installing Mamba
 If on Linux with x86 cores: 
@@ -80,7 +84,7 @@ If more than one run is performed on the same set of compounds, and only the wei
 
 
 ##  Optimization Problem Formulation 
-The formulation of the optimization problem can be found at our preprint (need link). 
+The formulation of the optimization problem can be found at our preprint (link to be added shortly). 
 
 ## Reproducing Results
 The results shown in our [preprint]() can be reproduced using the [optimize_preprint](scripts/optimize_preprint.py) script. This uses SPARROW to select routes from previously generated retrosynthesis trees with previously computed conditions and reaction scores. For each case study, this information is stored in the relevant [examples folder](examples) as a `trees_w_info.json` file. Two configuration files exist for each example: a `config_opt.ini` that builds a route graph from the existing `trees_w_info.json` file, and a `config.ini` that builds a route graph from scratch using ASKCOS. In order to use the sample `config.ini` files, you must enter an IP address corresponding to an ASKCOS instance where indicated. 
@@ -90,7 +94,5 @@ The results shown in our [preprint]() can be reproduced using the [optimize_prep
 2. Update tree visualization
 3. Modify optimization function formulation to better capture information gain and cost 
 
-## Citation
-If you used SPARROW in your work, we would appreciate you citing us! (need citation)
 
 
