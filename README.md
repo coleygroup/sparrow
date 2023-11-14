@@ -1,6 +1,6 @@
 # SPARROW (Synthesis Planning And Rewards-based Route Optimization Workflow)
 
-A workflow to simultaneously select molecules and their synthetic routes for lead optimization and design-make-test cycles. This optimization approach aims to minimize synthetic cost while selecting the molecules that are most likely to fulfill design constraints.  
+A workflow to simultaneously select molecules and their synthetic routes for lead optimization and design-make-test cycles. This optimization approach aims to minimize synthetic cost while selecting the molecules that are most likely to fulfill design constraints. More details about SPARROW can be found in [our preprint](https://arxiv.org/abs/2311.02187).   
 
 ## Overview 
 This repository performs the following steps: 
@@ -9,8 +9,8 @@ This repository performs the following steps:
 3. Calculates confidence scores for all reactions in the network using the ASKCOS forward predictor. These scores indicate the confidence of the model in the success of the reaction and serve as a proxy to estimate the likelihood that the reaction will succeed. 
 4. Defines optimization problem variables using PuLP
 5. Sets relevant constraints on the optimization variables and sets the objective function. 
-6. Solves optimization problem with Gurobi.  
-7. Visualizes the resulting selected routes and target molecules. 
+6. Solves optimization problem.  
+7. Outputs the resulting selected routes and target molecules. 
 
 ## Table of Contents 
 - [Overview](#overview)
