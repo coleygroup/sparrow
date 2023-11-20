@@ -104,6 +104,10 @@ def add_optimization_args(parser):
                         help='weighting factor for starting material cost objective')
     parser.add_argument('--reaction-weight', action='store', type=float, default=1,
                         help='weighting factor for reaction objective')
+    parser.add_argument('--diversity-weight', action='store', type=float, default=0,
+                        help='weighting factor for diversity, encourages more clusters to be represented')
+    parser.add_argument('--cluster-cutoff', action='store', type=float, default=0.7,
+                        help='cutoff for Butina clustering algorithm (lower cutoff -> more small clusters)')
     parser.add_argument('--solver', action='store', type=str, choices=['pulp, gurobi'],
                         default='pulp', help='solver to use for linear optimization')
     return parser
