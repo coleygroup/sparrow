@@ -208,7 +208,7 @@ def build_selector(params, target_dict, storage_path):
     else: 
         graph = RouteGraph(node_filename=storage_path)
 
-    weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight']]
+    weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
 
     selector = RouteSelector(
         target_dict=target_dict,

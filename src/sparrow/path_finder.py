@@ -8,7 +8,7 @@ import json
 import urllib3
 from pathlib import Path
 from typing import List, Union
-from sparrow.json_utils import storage_from_api_response, save_storage_dict
+from sparrow.utils.json_utils import storage_from_api_response, save_storage_dict
 
 urllib3.disable_warnings()
 

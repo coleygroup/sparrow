@@ -4,7 +4,7 @@ from typing import Union, List
 from pathlib import Path 
 from rdkit import Chem
 
-from sparrow.api_utils import post_and_get
+from sparrow.utils.api_utils import post_and_get
 
 
 def canonicalize(smiles: str) -> str: 

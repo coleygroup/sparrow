@@ -3,6 +3,7 @@ from sparrow.condition_recommender import Recommender
 from sparrow.route_graph import RouteGraph
 from sparrow.coster import Coster
 from sparrow.nodes import ReactionNode
+from sparrow.utils.cluster_utils import cluster_smiles
 from typing import Dict, Union, List
 from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI
 from pulp.apis import PULP_CBC_CMD
@@ -13,6 +14,7 @@ from datetime import datetime
 import time
 import warnings
 import csv 
+import json 
 
 reward_type = Union[int, float]
 
@@ -32,6 +34,7 @@ class RouteSelector:
                  weights: List = [1,1,1,1],
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
+                 cluster_cutoff: float = 0.7, 
                  ) -> None:
 
         self.dir = Path(output_dir)
@@ -58,6 +61,7 @@ class RouteSelector:
               
         self.constrain_all_targets = constrain_all_targets
         self.weights = weights
+        self.cluster_cutoff = cluster_cutoff
         
 
         if self.condition_recommender is not None: 
@@ -256,7 +260,43 @@ class RouteSelector:
         + cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
         + pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
             # reaction penalties, implement CSR later 
+        
+        if self.weights[3]>0: 
+            self.add_diversity_objective()
+
         return 
+
+    def add_diversity_objective(self): 
+        """ Adds scalarization objective to increase the number of clusters represented, requires defining new variable """
+        print('Clustering molecules for diversity objective')
+        cs_ind = cluster_smiles([self.graph.smiles_from_id(id) for id in self.targets], cutoff=self.cluster_cutoff)
+        cs = [[self.targets[ind] for ind in cluster] for cluster in cs_ind]
+        
+        cs_file = self.dir / 'clusters.json'
+        print(f'Saving list of {len(cs)} clusters to {cs_file}')
+        
+        with open(cs_file,'w') as f: 
+            json.dump(cs, f, indent='\t')
+
+        # d_i : whether cluster i is represented by the selected set 
+        self.d = LpVariable.dicts(
+            "cluster", 
+            indices=range(len(cs)), 
+            cat="Binary",
+        )
+
+        # constraint: d_i <= sum(c_j) for j in cluster i
+        for i, ids_in_cluster in enumerate(cs): 
+            self.problem += (
+                self.d[i] <= lpSum(self.m[cpd_id] for cpd_id in ids_in_cluster)
+            )
+        
+        # add objective 
+        print(f'adding objective with {self.weights[3]}')
+        self.problem += self.problem.objective - self.weights[3]*lpSum(self.d)
+
+        return 
+
     
     def cost_of_dummy(self, dummy_node: ReactionNode = None, dummy_id: str = None) -> float:
         if dummy_node is None: 
