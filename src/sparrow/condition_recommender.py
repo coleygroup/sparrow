@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import List, Union, Dict 
 from pathlib import Path  
 import json 
-from sparrow.api_utils import post_and_get
+from sparrow.utils.api_utils import post_and_get
 
 def clean_context(context):
     """Clean a single context tuple from v1 condition recommender.
