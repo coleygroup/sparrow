@@ -31,7 +31,7 @@ class RouteSelector:
                  condition_recommender: Recommender = None,
                  constrain_all_targets: bool = False, 
                  coster: Coster = None, 
-                 weights: List = [1,1,1,1],
+                 weights: List = [1,1,1,0,0],
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
                  cluster_cutoff: float = 0.7, 
@@ -263,6 +263,9 @@ class RouteSelector:
         
         if self.weights[3]>0: 
             self.add_diversity_objective()
+        
+        if self.weights[4]>0: 
+            self.add_mmp_objective()
 
         return 
 
@@ -292,12 +295,40 @@ class RouteSelector:
             )
         
         # add objective 
-        print(f'adding objective with {self.weights[3]}')
         self.problem += self.problem.objective - self.weights[3]*lpSum(self.d)
 
         return 
 
-    
+    def add_mmp_objective(self): 
+        """ Adds scalarization objective to increase the number of mmps selected, requires defining new variable """
+        
+        print('Identifying matched molecular pairs')
+        # TODO: implement function that finds MMPs (outputs variable mmps)
+        
+        mmp_file = self.dir / 'mmps.json'
+        print(f'Saving list of {len(mmps)} MMPs to {mmp_file}')
+        
+        with open(mmp_file,'w') as f: 
+            json.dump(mmps, f, indent='\t')
+
+        # p_i : whether both molecules in pair i are selected
+        self.p = LpVariable.dicts(
+            "pair", 
+            indices=range(len(mmps)), 
+            cat="Binary",
+        )
+
+        # constraint: 2*p_i <= sum(c_j) for j in pair i
+        for i, ids_in_pair in enumerate(mmps): 
+            self.problem += (
+                2*self.p[i] <= lpSum(self.m[cpd_id] for cpd_id in ids_in_pair)
+            )
+        
+        # add objective 
+        self.problem += self.problem.objective - self.weights[4]*lpSum(self.p)
+
+        return
+
     def cost_of_dummy(self, dummy_node: ReactionNode = None, dummy_id: str = None) -> float:
         if dummy_node is None: 
             dummy_node = self.graph.node_from_id(dummy_id)
