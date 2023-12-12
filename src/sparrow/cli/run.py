@@ -94,7 +94,7 @@ def extract_vars(selector: RouteSelector, output_dir):
         'Total reward': sum([selector.target_dict[tar] for tar in selected_targets]),
         'Possible reward': sum(selector.target_dict.values()),
         'Number starting materials': len(selected_starting),
-        'Cost starting materials': np.sum([selector.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
+        'Cost starting materials': sum([selector.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
         'Number reaction steps': len(non_dummy_ids),
         'Average reaction score': avg_rxn_score,
     }
@@ -202,7 +202,6 @@ def build_coster(params):
         raise NotImplementedError(f'Scorer {rec} not implemented')
      
 def build_selector(params, target_dict, storage_path):
-
     if storage_path is None: 
         graph = RouteGraph(node_filename=params['graph'])
     else: 
