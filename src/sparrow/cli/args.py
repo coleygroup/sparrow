@@ -1,7 +1,7 @@
 from configargparse import ArgumentParser
 from pathlib import Path
 
-def get_args():
+def get_args(args: str = None):
     parser = ArgumentParser()
 
     parser.add_argument('--config', is_config_file=True, help="the filepath of the configuration file")
@@ -22,7 +22,7 @@ def get_args():
     parser = add_scorer_args(parser)
     parser = add_optimization_args(parser)
 
-    return parser.parse_args()
+    return parser.parse_args(args)
 
 def add_tree_build_args(parser): 
     parser.add_argument('--path-finder', default=None, action='store', type=str,
