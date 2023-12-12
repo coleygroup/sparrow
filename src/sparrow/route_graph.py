@@ -43,24 +43,20 @@ class RouteGraph:
     
     def add_reaction_node(self, 
                           smiles: str, 
-                          parents: Optional[Iterable[str]] = None, 
-                          children: Optional[Iterable[str]] = None,
+                          parents: Optional[Iterable[str]] = [], 
+                          children: Optional[Iterable[str]] = [],
                           dummy: Optional[bool] = None,
                           **kwargs) -> ReactionNode:
         """ Adds reaction node to graph from reaction smiles. If parents/chidlren provided, first add them as 
         compound nodes  """ 
 
-        if parents: 
-            parent_nodes = [self.add_compound_node(parent) for parent in parents]
-        else: 
-            parent_nodes = None
+        par_smis, child_smis = smiles.split('>>')
+        child_smis = list(filter(None, child_smis.split('.')))
+        par_smis = list(filter(None, par_smis.split('.')))
 
-        if children: 
-            child_nodes = [self.add_compound_node(child) for child in children]
-        else: 
-            child_nodes = None
+        parent_nodes = [self.add_compound_node(parent) for parent in set([*parents, *par_smis])]
+        child_nodes = [self.add_compound_node(child) for child in set([*children, *child_smis])]
         
-            
         if smiles in self.reaction_nodes.keys(): 
             self.reaction_nodes[smiles].update(
                 parents=parent_nodes, 
@@ -76,14 +72,12 @@ class RouteGraph:
                 **kwargs)
         
         # go back to parent nodes and add this new node as a child 
-        if parents: 
-            for parent in parents: 
-                self.compound_nodes[parent].update(children=[self.reaction_nodes[smiles]])
+        for node in parent_nodes: 
+            node.update(children=[self.reaction_nodes[smiles]])
 
         # go back to child nodes and add this new node as a parent 
-        if children: 
-            for child in children: 
-                self.compound_nodes[child].update(parents=[self.reaction_nodes[smiles]])
+        for node in child_nodes: 
+            node.update(parents=[self.reaction_nodes[smiles]])
         
         return self.reaction_nodes[smiles]
     
