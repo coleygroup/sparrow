@@ -127,7 +127,7 @@ class RouteGraph:
         return self.compound_nodes[smiles]
     
     def nodes(self) -> Dict[str, Node]:
-        """ Returns a  dictionary [smi, ReactionNode] of all nodes in the graph """
+        """ Returns a dictionary [smi, ReactionNode] of all nodes in the graph """
         return {**self.compound_nodes, **self.reaction_nodes}
     
     def remove_dummy_rxns(self) -> None: 
@@ -318,6 +318,9 @@ class RouteGraph:
     
     def id_from_smiles(self, smiles) -> str: 
         return self.nodes()[smiles].id
+    
+    def molid_from_smiles(self, smiles) -> str: 
+        return self.compound_nodes[smiles].id
 
     def smiles_from_id(self, id) -> str: 
         return self.node_from_id(id).smiles
@@ -371,7 +374,7 @@ class RouteGraph:
             storage = json.load(f)
         
         if 'Compound Nodes' in storage.keys(): 
-            for node_info in storage['Compound Nodes']: 
+            for node_info in tqdm(storage['Compound Nodes'], desc='Building graph (compound nodes)'): 
                 self.add_compound_node(
                     smiles=node_info.pop('smiles'),
                     parents=node_info.pop('parents') if 'parents' in node_info else [],
@@ -380,7 +383,7 @@ class RouteGraph:
                 )
         
         if 'Reaction Nodes' in storage.keys(): 
-            for node_info in storage['Reaction Nodes']: 
+            for node_info in tqdm(storage['Reaction Nodes'], desc='Building graph (reaction nodes)'): 
                 self.add_reaction_node(
                     smiles=node_info.pop('smiles'),
                     parents=node_info.pop('parents') if 'parents' in node_info else [],
