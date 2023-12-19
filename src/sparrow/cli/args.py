@@ -7,6 +7,7 @@ def get_args(args: str = None):
     parser.add_argument('--config', is_config_file=True, help="the filepath of the configuration file")
     parser.add_argument('--target-csv', action='store', type=str, required=True, help="the filepath of the target csv file")
     parser.add_argument('--output-dir', action='store', type=str, default='sparrow_results')
+    parser.add_argument('--no-routes', action='store_true', default=False)
 
     # local askcos implementation (applies to local scorer and local context recommender)
     parser.add_argument('--askcos-path', action='store', default=None, type=str,
@@ -110,5 +111,8 @@ def add_optimization_args(parser):
                         help='cutoff for Butina clustering algorithm (lower cutoff -> more small clusters)')
     parser.add_argument('--solver', action='store', type=str, choices=['pulp, gurobi'],
                         default='pulp', help='solver to use for linear optimization')
+    parser.add_argument('--acyclic', action='store_true', default=False, 
+                        help='if the reaction network graph is known to be acyclic')
+
     return parser
 

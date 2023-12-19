@@ -3,6 +3,7 @@ import pandas as pd
 import json 
 import sys 
 import numpy as np 
+from tqdm import tqdm 
 
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
@@ -26,7 +27,7 @@ def optimize(selector, params):
 
     selector.define_variables()
     selector.set_objective()
-    selector.set_constraints()
+    selector.set_constraints(set_cycle_constraints=not params['acyclic'])
     
     solver = {'pulp': None, 'gurobi': 'GUROBI'}[params['solver']]
     selector.optimize(solver=solver) # solver='GUROBI' for GUROBI (license needed)
@@ -70,7 +71,7 @@ def export_selected_nodes(selector: RouteSelector, rxn_list, starting_list, targ
 
     return storage 
 
-def extract_vars(selector: RouteSelector, output_dir): 
+def extract_vars(selector: RouteSelector, output_dir, extract_routes=True): 
 
     nonzero_vars = [
             var for var in selector.problem.variables() if var.varValue > 0.01
@@ -85,7 +86,7 @@ def extract_vars(selector: RouteSelector, output_dir):
     print(f'{len(selected_targets)} targets selected using {len(non_dummy_ids)} reactions and {len(selected_starting)} starting materials')
     export_selected_nodes(selector, rxn_ids, selected_starting, selected_targets, output_dir)
     
-    avg_rxn_score = np.mean([selector.graph.node_from_id(rxn).score for rxn in non_dummy_ids]) if len(rxn_ids) > 0 else None
+    avg_rxn_score = np.mean([selector.graph.node_from_id(rxn).score for rxn in non_dummy_ids]) if len(non_dummy_ids) > 0 else None
 
     summary = {
         'Weights': selector.weights,
@@ -99,15 +100,16 @@ def extract_vars(selector: RouteSelector, output_dir):
         'Average reaction score': avg_rxn_score,
     }
 
-    storage = {}
-    for target in selected_targets: 
-        store_dict = {'Compounds':[], 'Reactions':[]}
-        smi = selector.graph.smiles_from_id(target)
-        storage[smi] = find_mol_parents(store_dict, target, mol_ids, rxn_ids, selector)
-        storage[smi]['Reward'] = selector.target_dict[target]
+    if extract_routes:
+        storage = {}
+        for target in tqdm(selected_targets, desc='Extracting routes'): 
+            store_dict = {'Compounds':[], 'Reactions':[]}
+            smi = selector.graph.smiles_from_id(target)
+            storage[smi] = find_mol_parents(store_dict, target, mol_ids, rxn_ids, selector)
+            storage[smi]['Reward'] = selector.target_dict[target]
 
-    with open(output_dir/f'routes.json','w') as f: 
-        json.dump(storage, f, indent='\t')
+        with open(output_dir/f'routes.json','w') as f: 
+            json.dump(storage, f, indent='\t')
 
     return summary 
 
@@ -202,6 +204,7 @@ def build_coster(params):
         raise NotImplementedError(f'Scorer {rec} not implemented')
      
 def build_selector(params, target_dict, storage_path):
+    print('ca')
     if storage_path is None: 
         graph = RouteGraph(node_filename=params['graph'])
     else: 
@@ -209,6 +212,7 @@ def build_selector(params, target_dict, storage_path):
 
     weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
 
+    print('cb')
     selector = RouteSelector(
         target_dict=target_dict,
         route_graph=graph, 
@@ -220,11 +224,13 @@ def build_selector(params, target_dict, storage_path):
         constrain_all_targets=params['constrain_all']
     )
 
+    print('cc')
     if storage_path is not None: 
         filepath = Path(params['output_dir'])/'trees_w_info.json'
         print(f'Saving route graph with contexts, reaction scores, and costs to {filepath}')
         selector.graph.to_json(filepath)
     
+    print('cd')
     return selector
 
 def save_args(params): 
@@ -252,8 +258,9 @@ def run():
     target_dict, targets = get_target_dict(params['target_csv']) 
     storage_path = get_path_storage(params, targets)
     selector = build_selector(params, target_dict, storage_path)
+    print('d')
     selector = optimize(selector, params)
-    summary = extract_vars(selector, output_dir)
+    summary = extract_vars(selector, output_dir, extract_routes=not params['no_routes'] )
     
     with open(output_dir/'summary.json', 'w') as f:
         json.dump(summary, f, indent='\t')
