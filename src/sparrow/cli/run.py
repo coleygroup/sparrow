@@ -204,7 +204,6 @@ def build_coster(params):
         raise NotImplementedError(f'Scorer {rec} not implemented')
      
 def build_selector(params, target_dict, storage_path):
-    print('ca')
     if storage_path is None: 
         graph = RouteGraph(node_filename=params['graph'])
     else: 
@@ -212,7 +211,6 @@ def build_selector(params, target_dict, storage_path):
 
     weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
 
-    print('cb')
     selector = RouteSelector(
         target_dict=target_dict,
         route_graph=graph, 
@@ -224,13 +222,11 @@ def build_selector(params, target_dict, storage_path):
         constrain_all_targets=params['constrain_all']
     )
 
-    print('cc')
     if storage_path is not None: 
         filepath = Path(params['output_dir'])/'trees_w_info.json'
         print(f'Saving route graph with contexts, reaction scores, and costs to {filepath}')
         selector.graph.to_json(filepath)
     
-    print('cd')
     return selector
 
 def save_args(params): 
@@ -258,7 +254,6 @@ def run():
     target_dict, targets = get_target_dict(params['target_csv']) 
     storage_path = get_path_storage(params, targets)
     selector = build_selector(params, target_dict, storage_path)
-    print('d')
     selector = optimize(selector, params)
     summary = extract_vars(selector, output_dir, extract_routes=not params['no_routes'] )
     

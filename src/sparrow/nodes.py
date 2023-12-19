@@ -30,7 +30,7 @@ class Node:
 
     def update(self, 
                parents = None, 
-               children = None, 
+               children = None,  
             ) -> None: 
         """ Adds children and parents to node """
 
@@ -134,6 +134,7 @@ class CompoundNode(Node):
                reward: float = None,
                is_target: bool = None,  
                is_intermediate: bool = None,
+               **kwargs,
                ) -> None:
         
         super().update(parents, children)
