@@ -7,6 +7,7 @@ from pathlib import Path
 from abc import ABC, abstractmethod, abstractproperty
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from tqdm import tqdm
+import warnings 
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -41,6 +42,7 @@ class NaiveCoster(Coster):
     Sets all costs to 1
     """
     def __init__(self) -> None:
+        warnings.warn('Using a naive method to assign buyability and cost with no guarantee of accuracy.')
         return 
     
     def buyable(self, smiles: str) -> bool: 
