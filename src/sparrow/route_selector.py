@@ -51,7 +51,7 @@ class RouteSelector:
 
         self.graph.id_nodes()
 
-        self.target_dict = self.clean_target_dict(target_dict)
+        self.clean_target_dict(target_dict)
         self.targets = list(self.target_dict.keys())
 
         self.target_dict = self.graph.set_compound_types(self.target_dict, coster=coster, save_dir=self.dir/'chkpts')
@@ -74,43 +74,45 @@ class RouteSelector:
 
     def clean_target_dict(self, target_dict: Dict[str, float]) -> Dict[str, float]:
         """ Converts target dict from Dict[smiles, reward] to Dict[id, reward] """
-        new_target_dict = {}
+        self.target_dict = {}
         
         c=0
-        for old_smi, reward in target_dict.items():
-            clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
-            
+        for old_smi, reward in tqdm(target_dict.items(), desc='Checking targets and rewards'):
+             
             try: 
                 float(reward)
             except: 
                 warnings.warn(f'Target {old_smi} has an invalid reward ({reward}) and is being removed from target set')
                 c+=1      
                 continue     
-
-            if clean_smi in self.graph.compound_nodes.keys():
-                id = self.graph.id_from_smiles(clean_smi)
-                new_target_dict[id] = reward
-            elif old_smi in self.graph.compound_nodes.keys(): 
-                id = self.graph.id_from_smiles(old_smi)
-                new_target_dict[id] = reward                
+            
+            node = self.graph.compound_nodes.get(old_smi, None)
+            if node:
+                self.target_dict[node.id] = reward
             else: 
-                warnings.warn(f'Target {old_smi} is not in routes and is being removed from target set')
-                c+=1
+                clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
+                node = self.graph.compound_nodes.get(clean_smi, None)
+                if node: 
+                    self.target_dict[node.id] = reward          
+                else:       
+                    warnings.warn(f'Target {old_smi} is not in routes and is being removed from target set')
+                    c+=1
 
-        p = self.dir / 'cleaned_tar_dict.csv'
-        print(f'Saving remaining targets, ids, and rewards to {p}')
+        if len(self.target_dict) < len(target_dict):
+            p = self.dir / 'cleaned_tar_dict.csv'
+            print(f'Saving {len(self.target_dict)} remaining targets, ids, and rewards to {p}')
 
-        save_list = [
-            {'SMILES': self.graph.smiles_from_id(id), 'ID': id, 'Reward': reward,}
-            for id, reward in new_target_dict.items()
-        ]
-        
-        with open(p, 'w') as csvfile: 
-            writer = csv.DictWriter(csvfile, fieldnames=['SMILES', 'ID', 'Reward'])
-            writer.writeheader()
-            writer.writerows(save_list)
+            save_list = [
+                {'SMILES': self.graph.smiles_from_id(id), 'ID': id, 'Reward': reward,}
+                for id, reward in self.target_dict.items()
+            ]
+            
+            with open(p, 'w') as csvfile: 
+                writer = csv.DictWriter(csvfile, fieldnames=['SMILES', 'ID', 'Reward'])
+                writer.writeheader()
+                writer.writerows(save_list)
 
-        return new_target_dict
+        return self.target_dict
 
     def get_recommendations(self): 
         """ Completes condition recommendation for any reaction node that does not have conditions """
@@ -175,7 +177,7 @@ class RouteSelector:
 
     def set_constraints(self, set_cycle_constraints=True):
         """ Sets constraints defined in TODO: write in README all constraints """
-        print('Setting constraints')
+        print('Setting constraints ...')
         # implement constrain_all_targets later
 
         self.set_rxn_constraints()
@@ -188,7 +190,7 @@ class RouteSelector:
     
     def set_rxn_constraints(self): 
 
-        for node in self.graph.reaction_nodes_only(): 
+        for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'): 
             if node.dummy: 
                 continue 
             par_ids = [par.id for par in node.parents.values()]
@@ -201,7 +203,7 @@ class RouteSelector:
     
     def set_mol_constraints(self): 
 
-        for node in self.graph.compound_nodes_only(): 
+        for node in tqdm(self.graph.compound_nodes_only(), 'Compound constraints'): 
             parent_ids = [par.id for par in node.parents.values()]
             self.problem += (
                 self.m[node.id] <= lpSum(self.r[par_id] for par_id in parent_ids)
@@ -212,7 +214,7 @@ class RouteSelector:
     def set_cycle_constraints(self): 
 
         cycles = self.graph.dfs_find_cycles_nx()
-        for cyc in cycles: 
+        for cyc in tqdm(cycles, desc='Cycle constraints'): 
             self.problem += (
                 lpSum(self.r[rid] for rid in cyc) <= (len(cyc) - 1)
             )
@@ -250,7 +252,7 @@ class RouteSelector:
     
     def set_objective(self): 
         # TODO: Add consideration of conditions 
-        print('Setting objective function')
+        print('Setting objective function ...')
 
         reward_mult = self.weights[0] # / ( len(self.target_dict)) # *max(self.target_dict.values()) )
         cost_mult = self.weights[1] # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
