@@ -23,8 +23,15 @@ This repository performs the following steps:
 ## Requirements 
 To use ASKCOS to perform retrosynthesis searches, propose conditions, and score reactions, an API address to a deployed version of ASKCOS is required. Directions to deploy ASKCOS can be found [here](https://github.com/ASKCOS/ASKCOS). A ChemSpace API key is required use ChemSpace to assign compound buyability and cost. Refer to [these directions](https://api.chem-space.com/docs/#:~:text=Get%20API%20Key&text=The%20API%20key%20is%20unique,%40chem%2Dspace.com.) to attain the key. The key should be entered into the [keys.py](keys.py) file, and the path to this file is required to run SPARROW with ChemSpace. 
 
-## Installation 
-Create conda environment using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. 
+## Installation
+
+Dependencies: 
+* Python >= 3.7
+* Remaining requirements in [requirements.txt](requirements.txt)
+
+SPARROW has been tested on Python version 3.7 and 3.8 and on Linux and Windows machines. 
+
+On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. 
 
 ```
 mamba env create -f environment.yml
@@ -81,6 +88,11 @@ If more than one run is performed on the same set of compounds, and only the wei
 
 **A note about required arguments:** The only required argument in SPARROW in `--target-csv`. However, providing this alone will not be sufficient to run SPARROW. In addition to candidates and rewards, SPARROW's optimization requires a set of potential reactions and scores for each reaction. If a provided `--graph` argument corresponds to a file that includes both potential reactions as a retrosynthesis tree _and_ reaction scores, that is sufficient to run SPARROW. However, if the file only contains a retrosynthesis tree, without reaction scores, SPARROW will require a `--recommender` argument. Likewise, if no `--graph` is provided, a valid entry for `--path-finder` (and any corresponding arguments) are required. We are currently working on expanding the documentation for SPARROW and improving its usability.
 
+#### Outputs
+SPARROW outputs a set of results files, and checkpoints if relevant, to the specified output directory (`--output-dir`). All parameters used for that run are output in `params.ini`. A summary of SPARROW's output, including the number of candidates, reactions, and starting materials selected, is included in `summary.json`. The selected routes are provided in two separate formats, both json files. `routes.json` provides the synthetic route to each selected candidate, and `solution_list_format.json` individually lists the selected candidates, selected reactions, and selected buyable materials. A pruned target SMILES/rewards csv file will also be output by SPARROW _if_ at least one target cannot be found in the retrosynthetic graph.
+
+#### Run time 
+The run time associated with SPARROW depends on the information provided. If a route graph is provided, SPARROW will typically run in seconds (< ~100 candidates) or minutes (> ~100 candidates). When retrosynthesis, condition recommendation, reaction scoring, and compound buyability must all be performed, the total run time for SPARROW will scale linearly with the number of candidates. For the [example of 300 candidate molecules](examples/button_alectinib/), the total runtime of the SPARROW workflow was approximately 13 hours. Approximately 5 hours of retrosynthesis planning, 4 hours of searching for buyability and cost, and 4 hours of condition recommendation and scoring contributed to this computation cost.
 
 ##  Optimization Problem Formulation 
 The formulation of the optimization problem can be found at our preprint (link to be added shortly). 
