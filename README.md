@@ -14,22 +14,22 @@ This repository performs the following steps:
 
 ## Table of Contents 
 - [Overview](#overview)
-- [Installation](#installation)
 - [Requirements](#requirements)
+- [Installation](#installation)
 - [Running SPARROW](#running-sparrow)
-- [Future Goals](#future-goals)
 - [Reproducing Results](#reproducing-results)
+- [Future Goals](#future-goals)
 
 ## Requirements 
 To use ASKCOS to perform retrosynthesis searches, propose conditions, and score reactions, an API address to a deployed version of ASKCOS is required. Directions to deploy ASKCOS can be found [here](https://github.com/ASKCOS/ASKCOS). A ChemSpace API key is required use ChemSpace to assign compound buyability and cost. Refer to [these directions](https://api.chem-space.com/docs/#:~:text=Get%20API%20Key&text=The%20API%20key%20is%20unique,%40chem%2Dspace.com.) to attain the key. The key should be entered into the [keys.py](keys.py) file, and the path to this file is required to run SPARROW with ChemSpace. 
-
-## Installation
 
 Dependencies: 
 * Python >= 3.7
 * Remaining requirements in [requirements.txt](requirements.txt)
 
 SPARROW has been tested on Python version 3.7 and 3.8 and on Linux and Windows machines. 
+
+## Installation
 
 On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. 
 
@@ -95,10 +95,10 @@ SPARROW outputs a set of results files, and checkpoints if relevant, to the spec
 The run time associated with SPARROW depends on the information provided. If a route graph is provided, SPARROW will typically run in seconds (< ~100 candidates) or minutes (> ~100 candidates). When retrosynthesis, condition recommendation, reaction scoring, and compound buyability must all be performed, the total run time for SPARROW will scale linearly with the number of candidates. For the [example of 300 candidate molecules](examples/button_alectinib/), the total runtime of the SPARROW workflow was approximately 13 hours. Approximately 5 hours of retrosynthesis planning, 4 hours of searching for buyability and cost, and 4 hours of condition recommendation and scoring contributed to this computation cost.
 
 ##  Optimization Problem Formulation 
-The formulation of the optimization problem can be found at our preprint (link to be added shortly). 
+The formulation of the optimization problem can be found at our [preprint](https://arxiv.org/abs/2311.02187). 
 
 ## Reproducing Results
-The results shown in our [preprint]() can be reproduced using the [optimize_preprint](scripts/optimize_preprint.py) script. This uses SPARROW to select routes from previously generated retrosynthesis trees with previously computed conditions and reaction scores. For each case study, this information is stored in the relevant [examples folder](examples) as a `trees_w_info.json` file. Each example contains a `config_opt.ini` that builds a route graph from the existing `trees_w_info.json` file and (if applicable) a `config.ini` that builds a route graph from scratch using ASKCOS. In order to use the sample `config.ini` files, you must enter an IP address corresponding to an ASKCOS instance where indicated and enter a ChemSpace API key in [keys.py](keys.py). 
+The results shown in our [preprint](https://arxiv.org/abs/2311.02187) can be reproduced using the [optimize_preprint](scripts/optimize_preprint.py) script. This uses SPARROW to select routes from previously generated retrosynthesis trees with previously computed conditions and reaction scores. For each case study, this information is stored in the relevant [examples folder](examples) as a `trees_w_info.json` file. Each example contains a `config_opt.ini` that builds a route graph from the existing `trees_w_info.json` file and (if applicable) a `config.ini` that builds a route graph from scratch using ASKCOS. In order to use the sample `config.ini` files, you must enter an IP address corresponding to an ASKCOS instance where indicated and enter a ChemSpace API key in [keys.py](keys.py). 
 
 ## Future Goals
 1. Incorporate reaction conditions into objective function 
