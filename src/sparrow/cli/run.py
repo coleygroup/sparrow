@@ -219,7 +219,8 @@ def build_selector(params, target_dict, storage_path):
         rxn_scorer=build_scorer(params),
         coster=build_coster(params),
         weights=weights,
-        constrain_all_targets=params['constrain_all']
+        constrain_all_targets=params['constrain_all'],
+        max_targets=params['max_targets'],
     )
 
     if storage_path is not None: 

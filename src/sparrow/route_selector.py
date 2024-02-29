@@ -30,11 +30,12 @@ class RouteSelector:
                  rxn_scorer: Scorer = None, 
                  condition_recommender: Recommender = None,
                  constrain_all_targets: bool = False, 
+                 max_targets: int = None,
                  coster: Coster = None, 
                  weights: List = [1,1,1,1],
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
-                 cluster_cutoff: float = 0.7, 
+                 cluster_cutoff: float = 0.7,
                  ) -> None:
 
         self.dir = Path(output_dir)
@@ -62,8 +63,8 @@ class RouteSelector:
         self.constrain_all_targets = constrain_all_targets
         self.weights = weights
         self.cluster_cutoff = cluster_cutoff
+        self.max_targets = max_targets
         
-
         if self.condition_recommender is not None: 
             self.get_recommendations()
 
@@ -185,6 +186,12 @@ class RouteSelector:
 
         if set_cycle_constraints: 
             self.set_cycle_constraints()
+        
+        if self.max_targets:
+            self.set_max_target_constraint()
+        
+        if self.constrain_all_targets:
+            self.set_constraint_all_targets()
 
         return 
     
@@ -220,6 +227,19 @@ class RouteSelector:
             )
 
         return 
+    
+    def set_max_target_constraint(self):
+        """ Sets constraint on the maximum number of selected targets. """
+        self.problem += (
+            lpSum(self.m[target] for target in self.targets) <= self.max_targets
+        )
+    
+    def set_constraint_all_targets(self): 
+        """ Constrains that all targets must be synthesized """
+        for target in self.targets: 
+            self.problem += (
+                self.m[target] == 1
+            )
     
     def get_child_and_parent_ids(self, smi: str = None, id: str = None): 
         """ Returns list of child node smiles and parent node smiles for a given

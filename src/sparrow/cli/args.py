@@ -25,7 +25,7 @@ def get_args(args: str = None):
 
     return parser.parse_args(args)
 
-def add_tree_build_args(parser): 
+def add_tree_build_args(parser: ArgumentParser): 
     parser.add_argument('--path-finder', default=None, action='store', type=str,
                         choices=['lookup', 'api'], 
                         help='type of tree builder to use')
@@ -45,7 +45,7 @@ def add_tree_build_args(parser):
                     help='host address for tree builder, if using ASKCOS API path finder')
     return parser
 
-def add_condition_rec_args(parser):    
+def add_condition_rec_args(parser: ArgumentParser):    
     parser.add_argument('--recommender', default=None, action='store', type=str,
                         choices=['lookup', 'local', 'api'], 
                         help='type of context recommender to use')
@@ -61,7 +61,7 @@ def add_condition_rec_args(parser):
                         help='path of lookup csv file for lookup context recommender (not implemented yet)')
     return parser
 
-def add_coster_args(parser): 
+def add_coster_args(parser: ArgumentParser): 
     parser.add_argument('--coster', default=None, action='store', type=str,
                         choices=['naive', 'chemspace'], 
                         help='type of compound coster to use')
@@ -78,7 +78,7 @@ def add_coster_args(parser):
     
     return parser
 
-def add_scorer_args(parser): 
+def add_scorer_args(parser: ArgumentParser): 
     parser.add_argument('--scorer', default=None, action='store', type=str,
                         choices=['lookup', 'local', 'api'], 
                         help='type of scorer to use')    
@@ -95,10 +95,12 @@ def add_scorer_args(parser):
     
     return parser 
 
-def add_optimization_args(parser): 
+def add_optimization_args(parser: ArgumentParser): 
 
     parser.add_argument('--constrain-all', action='store_true', default=False,
-                        help='whether to constrain that all candidates are selection (not implemented yet)')
+                        help='whether to constrain that all candidates are selection')
+    parser.add_argument('--max-targets', action='store', default=None, type=int,
+                        help='maximum number of selected targets (useful if testing is a bottleneck)')
     parser.add_argument('--reward-weight', action='store', type=float, default=1,
                         help='weighting factor for reward objective')
     parser.add_argument('--start-cost-weight', action='store', type=float, default=1,
