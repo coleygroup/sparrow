@@ -36,3 +36,4 @@ UNKNOWN**
 *.egg-info/
 *.egg
 .vscode
+*.log
