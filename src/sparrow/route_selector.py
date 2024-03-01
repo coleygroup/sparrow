@@ -5,12 +5,11 @@ from sparrow.coster import Coster
 from sparrow.nodes import ReactionNode
 from sparrow.utils.cluster_utils import cluster_smiles
 from typing import Dict, Union, List
-from pulp import LpVariable, LpProblem, LpMinimize, lpSum, GUROBI
-from pulp.apis import PULP_CBC_CMD
 from rdkit import Chem
 from tqdm import tqdm
 from pathlib import Path
 from datetime import datetime
+from math import log 
 import time
 import warnings
 import csv 
@@ -164,18 +163,20 @@ class RouteSelector:
         TODO: include conditions 
         """
 
-        rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
+        # whether rxn is used 
+        self.rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
         # self.r = LpVariable.dicts(
         #     "rxn", 
         #     indices=rxn_ids, 
         #     cat="Binary",
         # )
         self.r = self.model.addVars(
-            rxn_ids,
+            self.rxn_ids,
             vtype=GRB.BINARY,
             name="rxn",
         )
 
+        # whether molecule is selected 
         mol_ids = [node.id for node in self.graph.compound_nodes_only()]
         # self.m = LpVariable.dicts(
         #     "mol", 
@@ -187,11 +188,59 @@ class RouteSelector:
             vtype=GRB.BINARY,
             name="mol"
         )
+
+        # whether rxn i is used for target j 
+        self.u = self.model.addVars(
+            self.rxn_ids, self.targets, 
+            vtype=GRB.BINARY,
+            name="rxnfor"
+        )
+
+        # additional variables for nonlinearity 
+        self.usum = self.model.addVars(
+            self.targets, 
+            vtype=GRB.CONTINUOUS,  
+            name="usum",
+            ub=0,
+            lb=-1e20,
+        )
+        self.expusum = self.model.addVars(
+            self.targets,
+            vtype=GRB.CONTINUOUS,
+            name="expusum",
+            ub=1,
+            lb=0
+        )
+        self.probsuccess = self.model.addVars(
+            self.targets, 
+            vtype=GRB.CONTINUOUS,
+            name="probsuccess",
+            ub=1,
+            lb=0,
+        )
+        self.allcosts = self.model.addVar(
+            name="allcosts",
+            vtype=GRB.CONTINUOUS,
+            ub=1e20,
+            lb=0,
+        )
+        self.invcosts = self.model.addVar(
+            name="invcosts",
+            vtype=GRB.CONTINUOUS,
+            lb=0,
+            ub=1e20,
+        )
+        self.erpercost = self.model.addVar(
+            name="erpercost",
+            vtype=GRB.CONTINUOUS,
+            lb=0,
+            ub=1e20,
+        )
         
         return 
 
     def set_constraints(self, set_cycle_constraints=True):
-        """ Sets constraints defined in TODO: write in README all constraints """
+        """ Sets constraints """
         print('Setting constraints ...')
         # implement constrain_all_targets later
 
@@ -207,20 +256,73 @@ class RouteSelector:
         if self.constrain_all_targets:
             self.set_constraint_all_targets()
 
+        self.set_nonlinear_constraints()
+
+        return 
+    
+    def set_nonlinear_constraints(self): 
+        # sets exponential constraints for usum 
+        # usum = sum_i u_i,j * log (Li)
+        log_scores = [log(node.score) if node.score>0 else -1e20 for node in self.graph.reaction_nodes_only()]
+        for t in self.targets: 
+            self.model.addConstr(
+                self.usum[t] == gp.quicksum(
+                    self.u[node.id, t]*logscore 
+                    for logscore, node in zip(log_scores, self.graph.reaction_nodes_only())
+                ),
+                name=f'usumConstr_{t}'
+            )
+            self.model.addGenConstrExp(self.usum[t], self.expusum[t], name=f'expusumConstr_{t}')
+            self.model.addConstr(
+                self.probsuccess[t]==self.expusum[t]*self.m[t]
+            )
+        
+        self.model.addConstr(
+            self.allcosts == gp.quicksum(
+                [self.weights[2]*gp.quicksum(self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()),
+                self.weights[1]*gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()),]
+            ),
+        )
+        self.model.addConstr(
+            self.allcosts*self.invcosts == 1
+        )
+        self.model.addConstr(
+            self.erpercost == self.invcosts*gp.quicksum(    
+                self.target_dict[t]*self.probsuccess[t]
+                for t in self.targets
+            )
+        )
+
         return 
     
     def set_rxn_constraints(self): 
+        # TODO: consider redudancy in these constraints and simplify problem 
 
+        # if a reaction is selected, every parent (reactant) must also be selected 
         for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'): 
             if node.dummy: 
                 continue 
             par_ids = [par.id for par in node.parents.values()]
             for par_id in par_ids:
+                # whether reaction selected at all
                 self.model.addConstr(
                     self.m[par_id] >= self.r[node.id],
                     name=f'rxnConstr_{node.id}_{par_id}'
                 )
-        
+
+                # reaction for specific targets
+                self.model.addConstrs(
+                    (
+                        self.m[par_id] >= self.u[node.id, target]
+                        for target in self.targets 
+                    )
+                )
+            
+            # if a reaction is used for a target, it is also used in general 
+            self.model.addConstr(
+                len(self.targets)*self.r[node.id] >= gp.quicksum(self.u[node.id, tar] for tar in self.targets)
+            )
+
         return 
     
     def set_mol_constraints(self): 
@@ -311,16 +413,21 @@ class RouteSelector:
         # TODO: Add consideration of conditions 
         print('Setting objective function ...')
 
-        reward_mult = self.weights[0] # / ( len(self.target_dict)) # *max(self.target_dict.values()) )
-        cost_mult = self.weights[1] # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
-        pen_mult = self.weights[2] # / (len(self.graph.non_dummy_nodes())) # * max([node.penalty for node in self.graph.non_dummy_nodes()]) )
+        # reward_mult = self.weights[0] 
+        # cost_mult = self.weights[1] 
+        # pen_mult = self.weights[2] 
 
-        cost_sms = cost_mult*gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only())
-        cost_rxns = pen_mult*gp.quicksum(self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes())
-        rew = -1*reward_mult*gp.quicksum(float(self.target_dict[target])*self.m[target] for target in self.targets)
+        # NONLINEAR GUROBI 
+        self.model.setObjective(self.erpercost, sense=GRB.MAXIMIZE)
+
+        # LINEAR GUROBI
+        # cost_sms = cost_mult*gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only())
+        # cost_rxns = pen_mult*gp.quicksum(self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes())
+        # rew = -1*reward_mult*gp.quicksum(float(self.target_dict[target])*self.m[target] for target in self.targets)
         
-        self.model.setObjective(gp.quicksum([cost_sms, cost_rxns, rew]))
+        # self.model.setObjective(gp.quicksum([cost_sms, cost_rxns, rew]))
 
+        # PULP 
         # self.problem += -1*reward_mult*lpSum([float(self.target_dict[target])*self.m[target] for target in self.targets]) \
         # + cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
         # + pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
@@ -333,32 +440,34 @@ class RouteSelector:
 
     def add_diversity_objective(self): 
         """ Adds scalarization objective to increase the number of clusters represented, requires defining new variable """
-        print('Clustering molecules for diversity objective')
-        cs_ind = cluster_smiles([self.graph.smiles_from_id(id) for id in self.targets], cutoff=self.cluster_cutoff)
-        cs = [[self.targets[ind] for ind in cluster] for cluster in cs_ind]
+        # NOT SUPPORTED WITH GUROBI 
+        print("not supported with gurobi yet! ")
+        # print('Clustering molecules for diversity objective')
+        # cs_ind = cluster_smiles([self.graph.smiles_from_id(id) for id in self.targets], cutoff=self.cluster_cutoff)
+        # cs = [[self.targets[ind] for ind in cluster] for cluster in cs_ind]
         
-        cs_file = self.dir / 'clusters.json'
-        print(f'Saving list of {len(cs)} clusters to {cs_file}')
+        # cs_file = self.dir / 'clusters.json'
+        # print(f'Saving list of {len(cs)} clusters to {cs_file}')
         
-        with open(cs_file,'w') as f: 
-            json.dump(cs, f, indent='\t')
+        # with open(cs_file,'w') as f: 
+        #     json.dump(cs, f, indent='\t')
 
-        # d_i : whether cluster i is represented by the selected set 
-        self.d = LpVariable.dicts(
-            "cluster", 
-            indices=range(len(cs)), 
-            cat="Binary",
-        )
+        # # d_i : whether cluster i is represented by the selected set 
+        # self.d = LpVariable.dicts(
+        #     "cluster", 
+        #     indices=range(len(cs)), 
+        #     cat="Binary",
+        # )
 
-        # constraint: d_i <= sum(c_j) for j in cluster i
-        for i, ids_in_cluster in enumerate(cs): 
-            self.problem += (
-                self.d[i] <= lpSum(self.m[cpd_id] for cpd_id in ids_in_cluster)
-            )
+        # # constraint: d_i <= sum(c_j) for j in cluster i
+        # for i, ids_in_cluster in enumerate(cs): 
+        #     self.problem += (
+        #         self.d[i] <= lpSum(self.m[cpd_id] for cpd_id in ids_in_cluster)
+        #     )
         
-        # add objective 
-        print(f'adding objective with {self.weights[3]}')
-        self.problem += self.problem.objective - self.weights[3]*lpSum(self.d)
+        # # add objective 
+        # print(f'adding objective with {self.weights[3]}')
+        # self.problem += self.problem.objective - self.weights[3]*lpSum(self.d)
 
         return 
 
@@ -380,7 +489,8 @@ class RouteSelector:
         #     self.problem.solve(GUROBI(timeLimit=86400))
         # else: 
         #     self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
-
+        
+        self.model.params.NonConvex = 2
         self.model.optimize()
         print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds to solve")
         
