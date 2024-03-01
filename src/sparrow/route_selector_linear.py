@@ -16,9 +16,6 @@ import warnings
 import csv 
 import json 
 
-import gurobipy as gp 
-from gurobipy import GRB
-
 reward_type = Union[int, float]
 
 class RouteSelector: 
@@ -74,8 +71,7 @@ class RouteSelector:
         if self.rxn_scorer is not None: 
             self.get_rxn_scores()
 
-        # self.problem = LpProblem("Route_Selection", LpMinimize)
-        self.model = gp.Model("sparrow")
+        self.problem = LpProblem("Route_Selection", LpMinimize)
 
     def clean_target_dict(self, target_dict: Dict[str, float]) -> Dict[str, float]:
         """ Converts target dict from Dict[smiles, reward] to Dict[id, reward] """
@@ -165,27 +161,17 @@ class RouteSelector:
         """
 
         rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
-        # self.r = LpVariable.dicts(
-        #     "rxn", 
-        #     indices=rxn_ids, 
-        #     cat="Binary",
-        # )
-        self.r = self.model.addVars(
-            rxn_ids,
-            vtype=GRB.BINARY,
-            name="rxn",
+        self.r = LpVariable.dicts(
+            "rxn", 
+            indices=rxn_ids, 
+            cat="Binary",
         )
 
         mol_ids = [node.id for node in self.graph.compound_nodes_only()]
-        # self.m = LpVariable.dicts(
-        #     "mol", 
-        #     mol_ids, 
-        #     cat="Binary",
-        # )
-        self.m = self.model.addVars(
-            mol_ids,
-            vtype=GRB.BINARY,
-            name="mol"
+        self.m = LpVariable.dicts(
+            "mol", 
+            mol_ids, 
+            cat="Binary",
         )
         
         return 
@@ -215,10 +201,9 @@ class RouteSelector:
             if node.dummy: 
                 continue 
             par_ids = [par.id for par in node.parents.values()]
-            for par_id in par_ids:
-                self.model.addConstr(
-                    self.m[par_id] >= self.r[node.id],
-                    name=f'rxnConstr_{node.id}_{par_id}'
+            for par_id in par_ids: 
+                self.problem += (
+                    self.m[par_id] >= self.r[node.id]
                 )
         
         return 
@@ -226,57 +211,35 @@ class RouteSelector:
     def set_mol_constraints(self): 
 
         for node in tqdm(self.graph.compound_nodes_only(), 'Compound constraints'): 
-            par_ids = [par.id for par in node.parents.values()]
-            self.model.addConstr(
-                self.m[node.id] <= gp.quicksum(self.r[par_id] for par_id in par_ids),
-                name=f'cpdConstr_{node.id}'
+            parent_ids = [par.id for par in node.parents.values()]
+            self.problem += (
+                self.m[node.id] <= lpSum(self.r[par_id] for par_id in parent_ids)
             )
-            # self.problem += (
-            #     self.m[node.id] <= lpSum(self.r[par_id] for par_id in parent_ids)
-            # )
         
         return 
 
     def set_cycle_constraints(self): 
 
         cycles = self.graph.dfs_find_cycles_nx()
-        c = 0
         for cyc in tqdm(cycles, desc='Cycle constraints'): 
-            self.model.addConstr(
-                gp.quicksum(self.r[rid] for rid in cyc) <= (len(cyc) - 1),
-                name=f'cycConstr_{c}'
+            self.problem += (
+                lpSum(self.r[rid] for rid in cyc) <= (len(cyc) - 1)
             )
-            c += 1
-            # self.problem += (
-            #     lpSum(self.r[rid] for rid in cyc) <= (len(cyc) - 1)
-            # )
 
         return 
     
     def set_max_target_constraint(self):
         """ Sets constraint on the maximum number of selected targets. """
-        self.model.addConstr(
-            gp.quicksum(self.m[target] for target in self.targets) <= self.max_targets,
-            name='max_targets'
+        self.problem += (
+            lpSum(self.m[target] for target in self.targets) <= self.max_targets
         )
-        # self.problem += (
-        #     lpSum(self.m[target] for target in self.targets) <= self.max_targets
-        # )
     
     def set_constraint_all_targets(self): 
         """ Constrains that all targets must be synthesized """
-        
-        self.model.addConstrs(
-                (
-                    self.m[target] == 1
-                    for target in self.targets
-                ),
-                name='constrain_all'
+        for target in self.targets: 
+            self.problem += (
+                self.m[target] == 1
             )
-        # for target in self.targets: 
-        #     self.problem += (
-        #         self.m[target] == 1
-        #     )
     
     def get_child_and_parent_ids(self, smi: str = None, id: str = None): 
         """ Returns list of child node smiles and parent node smiles for a given
@@ -315,16 +278,10 @@ class RouteSelector:
         cost_mult = self.weights[1] # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
         pen_mult = self.weights[2] # / (len(self.graph.non_dummy_nodes())) # * max([node.penalty for node in self.graph.non_dummy_nodes()]) )
 
-        cost_sms = cost_mult*gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only())
-        cost_rxns = pen_mult*gp.quicksum(self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes())
-        rew = -1*reward_mult*gp.quicksum(float(self.target_dict[target])*self.m[target] for target in self.targets)
-        
-        self.model.setObjective(gp.quicksum([cost_sms, cost_rxns, rew]))
-
-        # self.problem += -1*reward_mult*lpSum([float(self.target_dict[target])*self.m[target] for target in self.targets]) \
-        # + cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
-        # + pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
-        #     # reaction penalties, implement CSR later 
+        self.problem += -1*reward_mult*lpSum([float(self.target_dict[target])*self.m[target] for target in self.targets]) \
+        + cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
+        + pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
+            # reaction penalties, implement CSR later 
         
         if self.weights[3]>0: 
             self.add_diversity_objective()
@@ -375,13 +332,11 @@ class RouteSelector:
         # self.problem.writeLP("RouteSelector.lp", max_length=300)
         print("Solving optimization problem...")
         opt_start = time.time()
+        if solver == 'GUROBI': 
+            self.problem.solve(GUROBI(timeLimit=86400))
+        else: 
+            self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
 
-        # if solver == 'GUROBI': 
-        #     self.problem.solve(GUROBI(timeLimit=86400))
-        # else: 
-        #     self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
-
-        self.model.optimize()
         print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds to solve")
         
         return 

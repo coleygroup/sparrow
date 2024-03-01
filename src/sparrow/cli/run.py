@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd 
 import json 
 import sys 
+import re 
 import numpy as np 
 from tqdm import tqdm 
 
@@ -29,8 +30,9 @@ def optimize(selector, params):
     selector.set_objective()
     selector.set_constraints(set_cycle_constraints=not params['acyclic'])
     
-    solver = {'pulp': None, 'gurobi': 'GUROBI'}[params['solver']]
-    selector.optimize(solver=solver) # solver='GUROBI' for GUROBI (license needed)
+    # solver = {'pulp': None, 'gurobi': 'GUROBI'}[params['solver']]
+    # selector.optimize(solver=solver) # solver='GUROBI' for GUROBI (license needed)
+    selector.optimize()
 
     return selector 
 
@@ -72,12 +74,18 @@ def export_selected_nodes(selector: RouteSelector, rxn_list, starting_list, targ
     return storage 
 
 def extract_vars(selector: RouteSelector, output_dir, extract_routes=True): 
-
-    nonzero_vars = [
-            var for var in selector.problem.variables() if var.varValue > 0.01
+    nonzero_varnames = [
+            var.VarName for var in selector.model.getVars() if var.X > 0.01
         ]
-    rxn_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('rxn')]
-    mol_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('mol')]
+    rxn_ids = re.findall(r'rxn\[(.*?)\]', ' '.join(nonzero_varnames))
+    mol_ids = re.findall(r'mol\[(.*?)\]', ' '.join(nonzero_varnames))
+    
+    # nonzero_vars = [
+    #         var for var in selector.problem.variables() if var.varValue > 0.01
+    #     ]
+    # rxn_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('rxn')]
+    # mol_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('mol')]
+
     dummy_ids = [rxn for rxn in rxn_ids if selector.graph.node_from_id(rxn).dummy]
     non_dummy_ids = [rxn for rxn in rxn_ids if selector.graph.node_from_id(rxn).dummy == 0]
 
