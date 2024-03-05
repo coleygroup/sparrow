@@ -224,18 +224,36 @@ class RouteSelector:
             ub=1e20,
             lb=0,
         )
-        self.invcosts = self.model.addVar(
-            name="invcosts",
+        self.sumer = self.model.addVar(
+            name="sumer",
             vtype=GRB.CONTINUOUS,
-            lb=0,
             ub=1e20,
+            lb=0,
         )
-        self.erpercost = self.model.addVar(
-            name="erpercost",
+        self.logsumer = self.model.addVar(
+            name="logsumer",
             vtype=GRB.CONTINUOUS,
-            lb=0,
             ub=1e20,
+            lb=0,
         )
+        self.logallcosts = self.model.addVar(
+            name='logallcosts',
+            vtype=GRB.CONTINUOUS,
+            ub=1e20,
+            lb=0,
+        )
+        # self.invcosts = self.model.addVar(
+        #     name="invcosts",
+        #     vtype=GRB.CONTINUOUS,
+        #     lb=0,
+        #     ub=1e20,
+        # )
+        # self.erpercost = self.model.addVar(
+        #     name="erpercost",
+        #     vtype=GRB.CONTINUOUS,
+        #     lb=0,
+        #     ub=1e20,
+        # )
         
         return 
 
@@ -283,15 +301,30 @@ class RouteSelector:
                 self.weights[1]*gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()),]
             ),
         )
+        
         self.model.addConstr(
-            self.allcosts*self.invcosts == 1
-        )
-        self.model.addConstr(
-            self.erpercost == self.invcosts*gp.quicksum(    
-                self.target_dict[t]*self.probsuccess[t]
-                for t in self.targets
+            self.sumer == gp.quicksum(
+                self.target_dict[t]*self.probsuccess[t] for t in self.targets
             )
         )
+        self.model.addGenConstrLog(
+            self.allcosts,
+            self.logallcosts,
+        )
+
+        self.model.addGenConstrLog(
+            self.sumer,
+            self.logsumer,            
+        )
+        # self.model.addConstr(
+        #     self.allcosts*self.invcosts == 1
+        # )
+        # self.model.addConstr(
+        #     self.erpercost == self.invcosts*gp.quicksum(    
+        #         self.target_dict[t]*self.probsuccess[t]
+        #         for t in self.targets
+        #     )
+        # )
 
         return 
     
@@ -418,7 +451,14 @@ class RouteSelector:
         # pen_mult = self.weights[2] 
 
         # NONLINEAR GUROBI 
-        self.model.setObjective(self.erpercost, sense=GRB.MAXIMIZE)
+        # self.model.setObjective(self.erpercost, sense=GRB.MAXIMIZE)
+        # self.model.setObjective(self.allcosts - gp.quicksum(
+        #     self.target_dict[t]*self.probsuccess[t]
+        #     for t in self.targets
+        # ), sense=GRB.MINIMIZE)
+        self.model.setObjective(
+            self.logsumer - (self.weights[1]+self.weights[2])*self.logallcosts, sense=GRB.MAXIMIZE
+        )
 
         # LINEAR GUROBI
         # cost_sms = cost_mult*gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only())
@@ -491,6 +531,7 @@ class RouteSelector:
         #     self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
         
         self.model.params.NonConvex = 2
+        self.model.Params.TIME_LIMIT = 3*3600
         self.model.optimize()
         print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds to solve")
         
