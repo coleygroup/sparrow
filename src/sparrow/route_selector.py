@@ -142,8 +142,12 @@ class RouteSelector:
             try:    
                 score = self.rxn_scorer(rxn_smi=node.smiles, condition=node.condition)
             except: 
-                print(f'Reaction {node.smiles} could not be scored, setting score=0, condition: {node.condition}')
-                score = 0 
+                try: 
+                    print(f'Could not score {node.smiles} with conditions {node.condition}, trying again without conditions')
+                    score = self.rxn_scorer(rxn_smi=node.smiles, condition=[[]])
+                except:
+                    print(f'Could not score {node.smiles}, returning score of 0')
+                    score = 0 
 
             node.update(score=score)
             count += 1
