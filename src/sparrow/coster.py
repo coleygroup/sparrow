@@ -6,8 +6,10 @@ from typing import List, Tuple, Dict, Union
 from pathlib import Path 
 from abc import ABC, abstractmethod, abstractproperty
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from rdkit import Chem
 from tqdm import tqdm
 import warnings 
+import pandas as pd
 
 requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
@@ -262,7 +264,6 @@ class ChemSpaceCoster(Coster):
         
         return costs, buyables 
     
-    
 class LookupCoster(Coster): 
     """ 
     Determines if a molecule is buyable and what its cost is 
@@ -271,6 +272,61 @@ class LookupCoster(Coster):
     """
     def __init__(self, 
                  lookup_file: Union[str, Path], 
+                 smis_col: int = 0,
+                 cost_col: int = 1, 
+                 canonicalize: bool = True 
                  ):
+        try:
+            self.data = pd.read_csv(lookup_file)
+        except: 
+            self.data = pd.read_csv(lookup_file, lineterminator='\n')
 
-        return 
+        self.buyables = self.data.iloc[:, smis_col]
+        self.failures = []
+
+        if self.canonicalize: 
+            self.buyables = self.canon_library(self.buyables)
+            
+        self.costs = self.data.iloc[:, cost_col]
+        self.cost_map = {
+            bb: cost for bb, cost 
+            in zip(self.buyables, self.costs)
+        }
+
+        print(f'Inventory loaded with {len(self.cost_map)} compounds')
+        print(f'Remaining {len(self.costs)-len(self.cost_map)} were either duplicates or unable to be canonicalized')
+    
+    def canon_library(self, smi_list: list) -> list:
+        from rdkit import RDLogger
+        RDLogger.DisableLog('rdApp.*')
+        canon_smis = [self.canonicalize(smi) for smi in tqdm(smi_list, desc='Canonicalizing buyables...')]
+        return canon_smis
+
+    def canonicalize(self, smi: str) -> str: 
+        try: 
+            smicanon = Chem.MolToSmiles(Chem.MolFromSmiles(smi))
+        except: 
+            smicanon = None
+            self.failures.append(smi)
+        return smicanon 
+
+    def get_buyable_and_cost(self, smiles: str) -> Tuple[bool, float]:
+        if smiles in self.cost_map:
+            return True, self.cost_map[smiles]
+        canonsmi = self.canonicalize(smiles)
+        if canonsmi in self.cost_map:
+            return True, self.cost_map[canonsmi]
+        return False, None
+
+    def __call__(self, smis: List[str]): 
+
+        costs = {}
+        buyables = set()
+
+        for smiles in smis: 
+            _, cost = self.get_buyable_and_cost(self, smiles)
+            costs[smiles] = cost
+            if cost is not None: 
+                buyables.add(smiles)
+        
+        return costs, buyables 

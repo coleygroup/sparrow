@@ -97,7 +97,7 @@ class AskcosAPIScorer(Scorer):
                 return 0  
         else: # if scoring failed 
             if attempt == 0:
-                print(f'Could not score {rxn_smi}, trying again without conditions')
+                print(f'Could not score {rxn_smi} with conditions {condition}, trying again without conditions')
                 return self.score_rxn(rxn_smi, condition=[[]], attempt=attempt+1)
             else: 
                 print(f'Could not score {rxn_smi}, returning score of 0')
