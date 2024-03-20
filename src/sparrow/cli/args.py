@@ -63,7 +63,7 @@ def add_condition_rec_args(parser: ArgumentParser):
 
 def add_coster_args(parser: ArgumentParser): 
     parser.add_argument('--coster', default=None, action='store', type=str,
-                        choices=['naive', 'chemspace'], 
+                        choices=['naive', 'chemspace', 'lookup'], 
                         help='type of compound coster to use')
     
     # Naive Coster - no arguments 
@@ -73,8 +73,10 @@ def add_coster_args(parser: ArgumentParser):
                         help='path that includes the file keys.py with chemspace api key')    
     
     # lookup coster 
-    parser.add_argument('--coster-lookup', action='store', type=str, default=None,
-                        help='path of lookup file for lookup cost and buyability (not implemented yet)')
+    parser.add_argument('--inventory', action='store', type=str, default=None,
+                        help='path of lookup file for lookup cost and buyability')
+    parser.add_argument('--skip-canon', action='store_true', default=False,
+                        help='whether to skip canonicalization of smiles in the inventory set')
     
     return parser
 

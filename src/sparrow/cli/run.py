@@ -10,7 +10,7 @@ from sparrow.route_graph import RouteGraph
 from sparrow.route_selector import RouteSelector
 from sparrow.condition_recommender import AskcosRecommender, AskcosAPIRecommender
 from sparrow.scorer import AskcosScorer, AskcosAPIScorer
-from sparrow.coster import ChemSpaceCoster, NaiveCoster
+from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
 from sparrow.cli.args import get_args
 
 
@@ -196,10 +196,10 @@ def build_coster(params):
         return ChemSpaceCoster(api_key=chemspace_api_key)
     elif rec == 'naive': 
         return NaiveCoster()
+    elif rec == 'lookup': 
+        return LookupCoster(lookup_file=params['inventory'], canonicalize= not params['skip_canon'])
     elif rec is None: 
         return None  
-    elif rec == 'lookup': 
-        raise NotImplementedError
     else:
         raise NotImplementedError(f'Scorer {rec} not implemented')
      
