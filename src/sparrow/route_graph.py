@@ -209,7 +209,7 @@ class RouteGraph:
         
         return 
     
-    def set_buyable_compounds_and_costs(self, coster: Coster = None, save_json_dir: str = None):
+    def set_buyable_compounds_and_costs(self, coster: Coster = None, save_json_dir: str = None, save_freq: int = 500):
         """ sets CompoundNode.buyable and CompoundNode.cost_per_g for starting materials in ChemSpace """
 
         if coster is None: 
@@ -234,7 +234,7 @@ class RouteGraph:
             c += 1
             prog_bar.update(1)
 
-            if c % 500 == 0 and save_json_dir is not None: 
+            if c % save_freq == 0 and save_json_dir is not None: 
                 time = datetime.now().strftime("%H-%M-%S")
                 self.to_json(Path(save_json_dir) / f'trees_w_costs_{time}.json')
             
