@@ -103,11 +103,7 @@ def add_optimization_args(parser: ArgumentParser):
                         help='whether to constrain that all candidates are selection')
     parser.add_argument('--max-targets', action='store', default=None, type=int,
                         help='maximum number of selected targets (useful if testing is a bottleneck)')
-    parser.add_argument('--reward-weight', action='store', type=float, default=1,
-                        help='weighting factor for reward objective')
-    parser.add_argument('--start-cost-weight', action='store', type=float, default=1,
-                        help='weighting factor for starting material cost objective')
-    parser.add_argument('--reaction-weight', action='store', type=float, default=1,
+    parser.add_argument('--cost_of_rxn_weight', action='store', type=float, default=100,
                         help='weighting factor for reaction objective')
     parser.add_argument('--diversity-weight', action='store', type=float, default=0,
                         help='weighting factor for diversity, encourages more clusters to be represented')
@@ -117,6 +113,8 @@ def add_optimization_args(parser: ArgumentParser):
                         default='pulp', help='solver to use for linear optimization')
     parser.add_argument('--acyclic', action='store_true', default=False, 
                         help='if the reaction network graph is known to be acyclic')
+    parser.add_argument('--custom-cluster', action='store_true', default=False,
+                        help='To use custom clusters. Target csv file must include a "Cluster" column' )
 
     return parser
 
