@@ -13,7 +13,9 @@ from math import log
 import time
 import warnings
 import csv 
+import re
 import json 
+import numpy as np 
 
 import gurobipy as gp 
 from gurobipy import GRB
@@ -34,14 +36,15 @@ class RouteSelector:
                  constrain_all_targets: bool = False, 
                  max_targets: int = None,
                  coster: Coster = None, 
-                 weights: List = [1,1,1,1],
+                 cost_per_rxn: float = 100,
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
                  cluster_cutoff: float = 0.7,
+                 custom_clusters: dict = None,
                  ) -> None:
 
         self.dir = Path(output_dir)
-
+        self.cost_per_rxn = cost_per_rxn
         self.graph = route_graph  
         if remove_dummy_rxns_first: 
             self.graph.remove_dummy_rxns()
@@ -61,13 +64,17 @@ class RouteSelector:
         self.clean_target_dict(target_dict)
         self.targets = list(self.target_dict.keys())
 
+        if custom_clusters: 
+            self.clusters = self.clean_clusters(custom_clusters) 
+        else: 
+            self.clusters = None
+
         self.target_dict = self.graph.set_compound_types(self.target_dict, coster=coster, save_dir=self.dir/'chkpts')
 
         self.rxn_scorer = rxn_scorer
         self.condition_recommender = condition_recommender
               
         self.constrain_all_targets = constrain_all_targets
-        self.weights = weights
         self.cluster_cutoff = cluster_cutoff
         self.max_targets = max_targets
         
@@ -77,7 +84,6 @@ class RouteSelector:
         if self.rxn_scorer is not None: 
             self.get_rxn_scores()
 
-        # self.problem = LpProblem("Route_Selection", LpMinimize)
         self.model = gp.Model("sparrow")
 
     def clean_target_dict(self, target_dict: Dict[str, float]) -> Dict[str, float]:
@@ -85,6 +91,7 @@ class RouteSelector:
         self.target_dict = {}
         
         c=0
+        old_smis = []
         for old_smi, reward in tqdm(target_dict.items(), desc='Checking targets and rewards'):
              
             try: 
@@ -97,11 +104,14 @@ class RouteSelector:
             node = self.graph.compound_nodes.get(old_smi, None)
             if node:
                 self.target_dict[node.id] = reward
+                old_smis.append(old_smi)
             else: 
                 clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
                 node = self.graph.compound_nodes.get(clean_smi, None)
+                
                 if node: 
-                    self.target_dict[node.id] = reward          
+                    self.target_dict[node.id] = reward
+                    old_smis.append(old_smi)          
                 else:       
                     warnings.warn(f'Target {old_smi} is not in routes and is being removed from target set')
                     c+=1
@@ -111,16 +121,37 @@ class RouteSelector:
             print(f'Saving {len(self.target_dict)} remaining targets, ids, and rewards to {p}')
 
             save_list = [
-                {'SMILES': self.graph.smiles_from_id(id), 'ID': id, 'Reward': reward,}
-                for id, reward in self.target_dict.items()
+                {'SMILES': self.graph.smiles_from_id(id), 'Old SMILES': old_smi, 'ID': id, 'Reward': reward}
+                for (id, reward), old_smi in zip(self.target_dict.items(), old_smis)
             ]
             
             with open(p, 'w') as csvfile: 
-                writer = csv.DictWriter(csvfile, fieldnames=['SMILES', 'ID', 'Reward'])
+                writer = csv.DictWriter(csvfile, fieldnames=['SMILES', 'Old SMILES', 'ID', 'Reward'])
                 writer.writeheader()
                 writer.writerows(save_list)
 
         return self.target_dict
+
+    def clean_clusters(self, clusters): 
+
+        clean_clusters = {}
+        for c_name, smis in clusters.items(): 
+            clean_smis = []
+            for old_smi in smis: 
+                node = self.graph.compound_nodes.get(old_smi, None)
+                if node:
+                    clean_smis.append(node.id)
+                else: 
+                    clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
+                    node = self.graph.compound_nodes.get(clean_smi, None)
+                    if node: 
+                        clean_smis.append(node.id)       
+                    else:       
+                        warnings.warn(f'Target {old_smi} is not in routes and is being removed from clusters')
+            
+            clean_clusters[c_name] = clean_smis     
+
+        return clean_clusters
 
     def get_recommendations(self): 
         """ Completes condition recommendation for any reaction node that does not have conditions """
@@ -173,11 +204,6 @@ class RouteSelector:
 
         # whether rxn is used 
         self.rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
-        # self.r = LpVariable.dicts(
-        #     "rxn", 
-        #     indices=rxn_ids, 
-        #     cat="Binary",
-        # )
         self.r = self.model.addVars(
             self.rxn_ids,
             vtype=GRB.BINARY,
@@ -186,11 +212,6 @@ class RouteSelector:
 
         # whether molecule is selected 
         mol_ids = [node.id for node in self.graph.compound_nodes_only()]
-        # self.m = LpVariable.dicts(
-        #     "mol", 
-        #     mol_ids, 
-        #     cat="Binary",
-        # )
         self.m = self.model.addVars(
             mol_ids,
             vtype=GRB.BINARY,
@@ -205,12 +226,13 @@ class RouteSelector:
         )
 
         # additional variables for nonlinearity 
+        sum_log_scores = np.log([node.score if node.score>0 else 1e-6 for node in self.graph.non_dummy_nodes()]).sum()
         self.usum = self.model.addVars(
             self.targets, 
             vtype=GRB.CONTINUOUS,  
             name="usum",
             ub=0,
-            lb=-1e20,
+            lb=sum_log_scores,
         )
         self.expusum = self.model.addVars(
             self.targets,
@@ -226,41 +248,33 @@ class RouteSelector:
             ub=1,
             lb=0,
         )
+        max_n_rxns = len(self.graph.non_dummy_nodes())
+        max_sm_costs = np.sum([self.cost_of_dummy(dummy) for dummy in self.graph.dummy_nodes_only()])
+        max_costs = max_n_rxns*self.cost_per_rxn + max_sm_costs
         self.allcosts = self.model.addVar(
             name="allcosts",
             vtype=GRB.CONTINUOUS,
-            ub=1e20,
+            ub=max_costs,
             lb=0,
         )
+        max_er = sum(self.target_dict.values())
         self.sumer = self.model.addVar(
             name="sumer",
             vtype=GRB.CONTINUOUS,
-            ub=1e20,
+            ub=max_er,
             lb=0,
         )
-        self.logsumer = self.model.addVar(
-            name="logsumer",
-            vtype=GRB.CONTINUOUS,
-            ub=1e20,
-            lb=0,
-        )
-        self.logallcosts = self.model.addVar(
-            name='logallcosts',
-            vtype=GRB.CONTINUOUS,
-            ub=1e20,
-            lb=0,
-        )
-        # self.invcosts = self.model.addVar(
-        #     name="invcosts",
+        # self.logsumer = self.model.addVar(
+        #     name="logsumer",
         #     vtype=GRB.CONTINUOUS,
-        #     lb=0,
         #     ub=1e20,
+        #     lb=0,
         # )
-        # self.erpercost = self.model.addVar(
-        #     name="erpercost",
+        # self.logallcosts = self.model.addVar(
+        #     name='logallcosts',
         #     vtype=GRB.CONTINUOUS,
-        #     lb=0,
         #     ub=1e20,
+        #     lb=0,
         # )
         
         return 
@@ -280,7 +294,10 @@ class RouteSelector:
             self.set_max_target_constraint()
         
         if self.constrain_all_targets:
-            self.set_constraint_all_targets()
+            self.set_constraint_n_targets(N=len(self.targets))
+
+        if self.clusters: 
+            self.set_cluster_constraints()
 
         self.set_nonlinear_constraints()
 
@@ -289,49 +306,45 @@ class RouteSelector:
     def set_nonlinear_constraints(self): 
         # sets exponential constraints for usum 
         # usum = sum_i u_i,j * log (Li)
-        log_scores = [log(node.score) if node.score>0 else -1e20 for node in self.graph.reaction_nodes_only()]
+        log_scores = np.log([node.score if node.score>0 else 1e-6 for node in self.graph.non_dummy_nodes()])
+        # log_scores = [log(node.score) if node.score>0 else -1e20 for node in self.graph.non_dummy_nodes()]
         for t in self.targets: 
             self.model.addConstr(
                 self.usum[t] == gp.quicksum(
                     self.u[node.id, t]*logscore 
-                    for logscore, node in zip(log_scores, self.graph.reaction_nodes_only())
+                    for logscore, node in zip(log_scores, self.graph.non_dummy_nodes())
                 ),
                 name=f'usumConstr_{t}'
             )
             self.model.addGenConstrExp(self.usum[t], self.expusum[t], name=f'expusumConstr_{t}')
             self.model.addConstr(
-                self.probsuccess[t]==self.expusum[t]*self.m[t]
+                self.probsuccess[t]==self.expusum[t]*self.m[t], 
+                name=f'probsuccessConstr_{t}'
             )
         
         self.model.addConstr(
             self.allcosts == gp.quicksum(
-                [self.weights[2]*gp.quicksum(self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()),
-                self.weights[1]*gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()),]
+                [self.cost_per_rxn*gp.quicksum(self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()),
+                gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()),]
             ),
+            name='allcosts_constr'
         )
         
         self.model.addConstr(
             self.sumer == gp.quicksum(
                 self.target_dict[t]*self.probsuccess[t] for t in self.targets
-            )
+            ),
+            name='sumER_constr'
         )
-        self.model.addGenConstrLog(
-            self.allcosts,
-            self.logallcosts,
-        )
-
-        self.model.addGenConstrLog(
-            self.sumer,
-            self.logsumer,            
-        )
-        # self.model.addConstr(
-        #     self.allcosts*self.invcosts == 1
+        # self.model.addGenConstrLog(
+        #     self.allcosts,
+        #     self.logallcosts,
+        #     name=''
         # )
-        # self.model.addConstr(
-        #     self.erpercost == self.invcosts*gp.quicksum(    
-        #         self.target_dict[t]*self.probsuccess[t]
-        #         for t in self.targets
-        #     )
+
+        # self.model.addGenConstrLog(
+        #     self.sumer,
+        #     self.logsumer,            
         # )
 
         return 
@@ -351,17 +364,18 @@ class RouteSelector:
                     name=f'rxnConstr_{node.id}_{par_id}'
                 )
 
-                # reaction for specific targets
-                self.model.addConstrs(
-                    (
-                        self.m[par_id] >= self.u[node.id, target]
-                        for target in self.targets 
-                    )
-                )
+                # # reaction for specific targets
+                # self.model.addConstrs(
+                #     (
+                #         self.m[par_id] >= self.u[node.id, target]
+                #         for target in self.targets 
+                #     ),
+                # )
             
             # if a reaction is used for a target, it is also used in general 
             self.model.addConstr(
-                len(self.targets)*self.r[node.id] >= gp.quicksum(self.u[node.id, tar] for tar in self.targets)
+                len(self.targets)*self.r[node.id] >= gp.quicksum(self.u[node.id, tar] for tar in self.targets),
+                name=f'rxnusedConstr_{node.id}'
             )
 
         return 
@@ -374,9 +388,6 @@ class RouteSelector:
                 self.m[node.id] <= gp.quicksum(self.r[par_id] for par_id in par_ids),
                 name=f'cpdConstr_{node.id}'
             )
-            # self.problem += (
-            #     self.m[node.id] <= lpSum(self.r[par_id] for par_id in parent_ids)
-            # )
         
         return 
 
@@ -390,9 +401,6 @@ class RouteSelector:
                 name=f'cycConstr_{c}'
             )
             c += 1
-            # self.problem += (
-            #     lpSum(self.r[rid] for rid in cyc) <= (len(cyc) - 1)
-            # )
 
         return 
     
@@ -402,24 +410,16 @@ class RouteSelector:
             gp.quicksum(self.m[target] for target in self.targets) <= self.max_targets,
             name='max_targets'
         )
-        # self.problem += (
-        #     lpSum(self.m[target] for target in self.targets) <= self.max_targets
-        # )
     
-    def set_constraint_all_targets(self): 
-        """ Constrains that all targets must be synthesized """
+    def set_constraint_n_targets(self, N): 
+        """ Constrains that n targets must be synthesized """
         
-        self.model.addConstrs(
-                (
-                    self.m[target] == 1
-                    for target in self.targets
-                ),
-                name='constrain_all'
-            )
-        # for target in self.targets: 
-        #     self.problem += (
-        #         self.m[target] == 1
-        #     )
+        self.model.addConstr(
+            gp.quicksum(self.m[target] for target in self.targets) == N,
+            name='constrain_n'
+        )
+
+        return 'constrain_n'
     
     def get_child_and_parent_ids(self, smi: str = None, id: str = None): 
         """ Returns list of child node smiles and parent node smiles for a given
@@ -450,75 +450,57 @@ class RouteSelector:
                 score = 10**6,
             )
     
-    def set_objective(self): 
+    def set_objective(self, cost_weight=0): 
         # TODO: Add consideration of conditions 
         print('Setting objective function ...')
 
-        # reward_mult = self.weights[0] 
-        # cost_mult = self.weights[1] 
-        # pen_mult = self.weights[2] 
+        self.model.ModelSense = GRB.MAXIMIZE
 
-        # NONLINEAR GUROBI 
-        # self.model.setObjective(self.erpercost, sense=GRB.MAXIMIZE)
-        # self.model.setObjective(self.allcosts - gp.quicksum(
-        #     self.target_dict[t]*self.probsuccess[t]
-        #     for t in self.targets
-        # ), sense=GRB.MINIMIZE)
-        self.model.setObjective(
-            self.logsumer - (self.weights[1]+self.weights[2])*self.logallcosts, sense=GRB.MAXIMIZE
-        )
-
-        # LINEAR GUROBI
-        # cost_sms = cost_mult*gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only())
-        # cost_rxns = pen_mult*gp.quicksum(self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes())
-        # rew = -1*reward_mult*gp.quicksum(float(self.target_dict[target])*self.m[target] for target in self.targets)
-        
-        # self.model.setObjective(gp.quicksum([cost_sms, cost_rxns, rew]))
-
-        # PULP 
-        # self.problem += -1*reward_mult*lpSum([float(self.target_dict[target])*self.m[target] for target in self.targets]) \
-        # + cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
-        # + pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
-        #     # reaction penalties, implement CSR later 
-        
-        if self.weights[3]>0: 
-            self.add_diversity_objective()
+        if cost_weight > 0:
+            self.model.setObjective(self.sumer - cost_weight*self.allcosts)
+        else: 
+            self.model.setObjective(self.sumer)
 
         return 
+    
+    def set_cluster_constraints(self): 
+        """ 
+        Constrains that every cluster must be represented by the selected set of candidates 
+        clusters: a list of lists
+                  each list represents a cluster, and each element of each list is a CompoundNode ID 
+                  corresponding to the target in that cluster 
+        """
+        
+        # self.crep = self.model.addVars(
+        #     list(self.clusters.keys()),
+        #     vtype=GRB.BINARY,
+        #     name="cluster"
+        # )
+
+        for name, ids in self.clusters.items(): 
+            self.model.addConstr(
+                gp.quicksum(self.m[nid] for nid in ids) >= 1,
+                name='cluster_represented'
+            )
+
+            # self.model.addConstr(
+            #     self.crep[name] == 1
+            # )
+
+    def set_total_cost_constraints(self, cost_min, cost_max):
+
+        self.model.addConstr(self.allcosts >= cost_min, name='min_cost')
+        self.model.addConstr(self.allcosts <= cost_max, name='max_cost')
+
+        return 'min_cost', 'max_cost'
 
     def add_diversity_objective(self): 
         """ Adds scalarization objective to increase the number of clusters represented, requires defining new variable """
         # NOT SUPPORTED WITH GUROBI 
+
         print("not supported with gurobi yet! ")
-        # print('Clustering molecules for diversity objective')
-        # cs_ind = cluster_smiles([self.graph.smiles_from_id(id) for id in self.targets], cutoff=self.cluster_cutoff)
-        # cs = [[self.targets[ind] for ind in cluster] for cluster in cs_ind]
-        
-        # cs_file = self.dir / 'clusters.json'
-        # print(f'Saving list of {len(cs)} clusters to {cs_file}')
-        
-        # with open(cs_file,'w') as f: 
-        #     json.dump(cs, f, indent='\t')
-
-        # # d_i : whether cluster i is represented by the selected set 
-        # self.d = LpVariable.dicts(
-        #     "cluster", 
-        #     indices=range(len(cs)), 
-        #     cat="Binary",
-        # )
-
-        # # constraint: d_i <= sum(c_j) for j in cluster i
-        # for i, ids_in_cluster in enumerate(cs): 
-        #     self.problem += (
-        #         self.d[i] <= lpSum(self.m[cpd_id] for cpd_id in ids_in_cluster)
-        #     )
-        
-        # # add objective 
-        # print(f'adding objective with {self.weights[3]}')
-        # self.problem += self.problem.objective - self.weights[3]*lpSum(self.d)
 
         return 
-
     
     def cost_of_dummy(self, dummy_node: ReactionNode = None, dummy_id: str = None) -> float:
         if dummy_node is None: 
@@ -527,31 +509,174 @@ class RouteSelector:
         start_node = list(dummy_node.children.values())[0]
         return start_node.cost_per_g 
 
-    def optimize(self, solver=None):
+    def optimize(self, savedir=None, solver=None):
 
         # self.problem.writeLP("RouteSelector.lp", max_length=300)
+        if not savedir: 
+            savedir = self.dir 
+
         print("Solving optimization problem...")
         opt_start = time.time()
 
-        # if solver == 'GUROBI': 
-        #     self.problem.solve(GUROBI(timeLimit=86400))
-        # else: 
-        #     self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
-        
         self.model.params.NonConvex = 2
         self.model.Params.TIME_LIMIT = 3*3600
         self.model.optimize()
-        print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds to solve")
+        print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds.")
         
         return 
     
-    def optimal_variables(self):
-        """ Returns nonzero variables """
-        nonzero_vars = [
-            var for var in self.problem.variables() if var.varValue > 0.01
-        ]
+    def optimize_MO(self, solver=None, set_cycle_constraints=True):
 
-        return nonzero_vars
+        self.model.params.outputflag = 0
 
-     
+        # first solve constraining all targets
+        solution_dir = self.dir / 'solution_constrain_all'
+        solution_dir.mkdir(exist_ok=True, parents=True)
+        status = 'failed'
+        N = len(self.targets)
+
+        while status == 'failed': 
+            constr_n = self.set_constraint_n_targets(N)
+            self.model.write(str(solution_dir/"multiobj.lp"))
+            self.set_objective(cost_weight=0.1)
+            self.optimize()
+            if self.model.SolCount > 0: 
+                status = 'solved'
+                cost_max = self.model.getVarByName('allcosts').X
+                print(f'solved, max reasonable cost is {self.model.getVarByName("allcosts").X:0.2f}')
+                self.extract_vars(solution_dir)
+            else:  
+                print(f'Could not solve constraining to {N} targets, reducing by 10%')
+                N = min(int(np.ceil(0.9*N)), N-1)
+            
+            self.model.remove(self.model.getConstrByName(constr_n))
+
+
+        # then solve constraining cost 
+        self.set_objective()
+        ranges = [[0.3, 0.5], [0.15, 0.3], [0.05, 0.15], [0, 0.05]]
+        names = ['very high', 'high', 'medium', 'low']
+        for name, range in zip(names, ranges): 
+            solution_dir = self.dir / f'solution_{name}'
+            solution_dir.mkdir(exist_ok=True, parents=True)
+            min_constr, max_constr = self.set_total_cost_constraints(
+                cost_min=range[0]*cost_max, 
+                cost_max=range[1]*cost_max
+            )
+            self.model.write(str(solution_dir/"multiobj.lp"))
+            self.optimize()
+            print(f'solved, cost is {self.model.getVarByName("allcosts").X:0.2f}')
+            self.extract_vars(solution_dir)
+            self.model.remove(self.model.getConstrByName(min_constr))
+            self.model.remove(self.model.getConstrByName(max_constr))
     
+    def extract_vars(self, output_dir, extract_routes=True):
+        nonzero_varnames = [
+                var.VarName for var in self.model.getVars() if var.X > 0.01
+            ]
+        rxn_ids = re.findall(r'rxn\[(.*?)\]', ' '.join(nonzero_varnames))
+        mol_ids = re.findall(r'mol\[(.*?)\]', ' '.join(nonzero_varnames))
+
+        dummy_ids = [rxn for rxn in rxn_ids if self.graph.node_from_id(rxn).dummy]
+        non_dummy_ids = [rxn for rxn in rxn_ids if self.graph.node_from_id(rxn).dummy == 0]
+
+        selected_targets = set(mol_ids) & set(self.targets)
+        selected_starting = set([self.graph.child_of_dummy(dummy) for dummy in dummy_ids])
+        print(f'{len(selected_targets)} targets selected using {len(non_dummy_ids)} reactions and {len(selected_starting)} starting materials')
+        self.export_selected_nodes(rxn_ids, selected_starting, selected_targets, output_dir)
+        
+        avg_rxn_score = np.mean([self.graph.node_from_id(rxn).score for rxn in non_dummy_ids]) if len(non_dummy_ids) > 0 else None
+
+        summary = {
+            'Cost/reaction weighting factor': self.cost_per_rxn,
+            'Number targets': len(selected_targets), 
+            'Fraction targets': len(selected_targets)/len(self.targets),
+            'Total reward': sum([self.target_dict[tar] for tar in selected_targets]),
+            'Possible reward': sum(self.target_dict.values()),
+            'Number starting materials': len(selected_starting),
+            'Cost starting materials': sum([self.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
+            'Number reaction steps': len(non_dummy_ids),
+            'Average reaction score': avg_rxn_score,
+        }
+
+        if extract_routes:
+            storage = {}
+            for target in tqdm(selected_targets, desc='Extracting routes'): 
+                store_dict = {'Compounds':[], 'Reactions':[]}
+                smi = self.graph.smiles_from_id(target)
+                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids)
+                storage[smi]['Reward'] = self.target_dict[target]
+
+            with open(output_dir/f'routes.json','w') as f: 
+                json.dump(storage, f, indent='\t')
+
+        with open(output_dir/'summary.json', 'w') as f:
+            json.dump(summary, f, indent='\t')
+
+        return summary 
+
+    def export_selected_nodes(self, rxn_list, starting_list, target_list, output_dir): 
+        storage = {'Starting Materials': [], 'Reactions': [], 'Targets': []}
+        graph = self.graph
+
+        for rxn_id in rxn_list:
+            node = graph.node_from_id(rxn_id)
+            if node.dummy: 
+                storage['Reactions'].append({
+                    'smiles': node.smiles,
+                    'starting material cost ($/g)': self.cost_of_dummy(node), 
+                })
+            else: 
+                storage['Reactions'].append({
+                    'smiles': node.smiles,
+                    'conditions': node.get_condition(1)[0], 
+                    'score': node.score,
+                })
+
+        for cpd_id in starting_list: 
+            node = graph.node_from_id(cpd_id)
+            storage['Starting Materials'].append({
+                'smiles': node.smiles,
+                'cost': node.cost_per_g
+            })
+
+        for cpd_id in target_list: 
+            node = graph.node_from_id(cpd_id)
+            storage['Targets'].append({
+                'smiles': node.smiles,
+                'reward': node.reward,
+            })
+        
+        with open(output_dir/'solution_list_format.json','w') as f:
+            json.dump(storage, f, indent='\t')
+
+        return storage 
+    
+    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns):
+
+        par_ids = [n.id for n in self.graph.node_from_id(rxn_id).parents.values()]
+        selected_pars = set(par_ids) & set(selected_mols)
+        for par in selected_pars: 
+            store_dict['Compounds'].append(self.graph.smiles_from_id(par))
+            store_dict = self.find_mol_parents(store_dict, par, selected_mols, selected_rxns)
+        return store_dict
+
+    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns): 
+
+        par_ids = [n.id for n in self.graph.node_from_id(mol_id).parents.values()]
+        selected_pars = set(par_ids) & set(selected_rxns)
+        for par in selected_pars: 
+            node = self.graph.node_from_id(par)
+            if node.dummy: 
+                store_dict['Reactions'].append({
+                    'smiles': node.smiles,
+                    'starting material cost ($/g)': self.cost_of_dummy(node), 
+                })
+            else: 
+                store_dict['Reactions'].append({
+                    'smiles': node.smiles,
+                    'conditions': node.get_condition(1)[0], 
+                    'score': node.score,
+                })
+            store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns)
+        return store_dict
