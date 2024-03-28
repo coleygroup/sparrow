@@ -297,9 +297,12 @@ class LookupCoster(Coster):
         print(f'Remaining {len(self.costs)-len(self.cost_map)} were either duplicates or unable to be canonicalized')
     
     def canon_library(self, smi_list: list) -> list:
+        from sparrow.utils import parallel_utils 
         from rdkit import RDLogger
         RDLogger.DisableLog('rdApp.*')
-        canon_smis = [self.canonicalize(smi) for smi in tqdm(smi_list, desc='Canonicalizing buyables...')]
+        fn = lambda x: self.canonicalize(x)
+        canon_smis = parallel_utils.chunked_parallel(smi_list, function=fn, chunks=8, desc='Canonicalizing buyables')
+        # canon_smis = [self.canonicalize(smi) for smi in tqdm(smi_list, desc='Canonicalizing buyables...')]
         return canon_smis
 
     def canonicalize(self, smi: str) -> str: 
@@ -307,7 +310,7 @@ class LookupCoster(Coster):
             smicanon = Chem.MolToSmiles(Chem.MolFromSmiles(smi))
         except: 
             smicanon = None
-            self.failures.append(smi)
+            # self.failures.append(smi)
         return smicanon 
 
     def get_buyable_and_cost(self, smiles: str) -> Tuple[bool, float]:
