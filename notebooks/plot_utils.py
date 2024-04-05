@@ -8,6 +8,7 @@ import networkx as nx
 from sparrow.route_graph import RouteGraph
 from tqdm import tqdm
 import random 
+import colorsys
 
 theme_colors = ['#405E90','#D45127','#AA2165','#818084']
 
@@ -203,6 +204,22 @@ def df_to_latex(df: pd.DataFrame, path: str):
     with open(path,'w') as f:
         f.writelines(str_df)
     return df
-    
 
-    
+def df_to_latex_baselines(df: pd.DataFrame, path: str): 
+    df = df.round({
+        # '$\lambda_1$':1,'$\lambda_2$':1,'$\lambda_3$':3, 
+        'Cumulative Reward':1, 'Starting Material Cost': 1,'Number of Reactions':0,"Average Reaction Score": 2})
+    str_df = df.to_latex(escape=False, index=False, multicolumn_format='c')
+    with open(path,'w') as f:
+        f.writelines(str_df)
+    return df
+
+def scale_lightness(rgb, scale_l):
+    # convert rgb to hls
+    h, l, s = colorsys.rgb_to_hls(*rgb)
+    # manipulate h, l, s values and return as rgb
+    return colorsys.hls_to_rgb(h, min(1, l * scale_l), s = s)
+
+def make_color_darker(scale, color: str): 
+    rgb = mpl.colors.ColorConverter.to_rgb(color)
+    return scale_lightness(rgb, scale)
