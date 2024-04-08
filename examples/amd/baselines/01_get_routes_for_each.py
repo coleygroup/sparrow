@@ -10,8 +10,8 @@ from sparrow.coster import ChemSpaceCoster
 from sparrow.condition_recommender import AskcosAPIRecommender
 from sparrow.scorer import AskcosAPIScorer
 
-chemspace_api_key = 'dZH7vZYK2JDKWxgMSCKIBQZcKfteL395UuYtCuHoVk1WUcpq1MIeiPn95mBLsXOh'
-host = 'https://3.145.60.105/'
+chemspace_api_key = ''
+host = ''
 urllib3.disable_warnings()
 
 def post_and_get(host, params, sleep_time = 10, timeout = 650):
