@@ -40,9 +40,10 @@ def optimize(selector, params):
     selector.set_constraints(set_cycle_constraints=not params['acyclic'])
     
     # solver = {'pulp': None, 'gurobi': 'GUROBI'}[params['solver']]
-    # selector.optimize(solver=solver) # solver='GUROBI' for GUROBI (license needed)
-    selector.optimize_MO()
+    selector.optimize() # solver='GUROBI' for GUROBI (license needed)
+    # selector.optimize_MO()
 
+    selector.extract_vars()
     return selector 
 
 
@@ -126,6 +127,8 @@ def build_selector(params, target_dict, storage_path, clusters):
         constrain_all_targets=params['constrain_all'],
         max_targets=params['max_targets'],
         custom_clusters=clusters,
+        max_rxns=params['max_rxns'],
+        sm_budget=params['starting_material_budget']
     )
 
     if storage_path is not None: 
