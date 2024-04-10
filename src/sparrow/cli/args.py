@@ -103,6 +103,10 @@ def add_optimization_args(parser: ArgumentParser):
                         help='whether to constrain that all candidates are selection')
     parser.add_argument('--max-targets', action='store', default=None, type=int,
                         help='maximum number of selected targets (useful if testing is a bottleneck)')
+    parser.add_argument('--max-rxns', action='store', type=int, default=None,
+                        help='maximum number of reaction steps to select')
+    parser.add_argument('--starting-material-budget', action='store', type=int, default=None,
+                        help='maximum budget on starting material costs (all on per g basis, does not consider amount needed!)')
     parser.add_argument('--cost_of_rxn_weight', action='store', type=float, default=100,
                         help='weighting factor for reaction objective')
     parser.add_argument('--diversity-weight', action='store', type=float, default=0,
