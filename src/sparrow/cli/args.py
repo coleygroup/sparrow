@@ -111,7 +111,7 @@ def add_optimization_args(parser: ArgumentParser):
                         help='weighting factor for diversity, encourages more clusters to be represented')
     parser.add_argument('--cluster-cutoff', action='store', type=float, default=0.7,
                         help='cutoff for Butina clustering algorithm (lower cutoff -> more small clusters)')
-    parser.add_argument('--solver', action='store', type=str, choices=['pulp, gurobi'],
+    parser.add_argument('--solver', action='store', type=str, choices=['pulp','gurobi'],
                         default='pulp', help='solver to use for linear optimization')
     parser.add_argument('--acyclic', action='store_true', default=False, 
                         help='if the reaction network graph is known to be acyclic')
