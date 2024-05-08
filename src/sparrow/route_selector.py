@@ -15,8 +15,9 @@ import warnings
 import csv 
 import re
 import json 
+import itertools
 import numpy as np 
-
+import scipy
 import gurobipy as gp 
 from gurobipy import GRB
 
@@ -43,12 +44,14 @@ class RouteSelector:
                  custom_clusters: dict = None,
                  max_rxns: int = None,
                  sm_budget: float = None,
+                 variable_costs: bool = False
                  ) -> None:
 
         self.dir = Path(output_dir)
         self.cost_per_rxn = cost_per_rxn
         self.max_rxns = max_rxns
         self.sm_budget = sm_budget
+        self.variable_costs = variable_costs
 
         self.graph = route_graph  
         if remove_dummy_rxns_first: 
@@ -224,18 +227,86 @@ class RouteSelector:
         )
 
         # whether rxn i is used for target j 
-        self.u = self.model.addVars(
-            self.rxn_ids, self.targets, 
-            vtype=GRB.BINARY,
-            name="rxnfor"
-        )
+        # UPDATE: only define this variable for dummy reaction nodes no this won't work
+        self.u = {}
+        self.cpdfor = {}
 
-        # whether compound j is used int he route to target j 
-        self.cpdfor = self.model.addVars(
-            mol_ids, self.targets,
-            vtype=GRB.BINARY,
-            name="cpdfor"
-        )
+        # A, id_to_ind = self.graph.compute_adjacency_matrix()
+        # ind_to_id = {ind: id for id, ind in id_to_ind.items()}
+        # target_inds = [id_to_ind[id] for id in self.targets]
+        # max_distance = 10
+        # pairs = set()
+
+        # for i in range(max_distance):
+        #     rows, cols, _ = scipy.sparse.find(A[target_inds,:]!=0)
+        #     pairs.update([(row, col) for row, col in zip(rows, cols)])
+        #     A = np.dot(A, A)
+
+        # for t_ind, n_ind in tqdm(pairs, desc='"for" constraints'):
+        #     t_id = self.targets[t_ind]
+        #     n_id = ind_to_id[n_ind] 
+        #     if n_id.startswith('C'):
+        #         if n_id not in self.cpdfor: 
+        #             self.cpdfor[n_id] = {}
+        #         self.cpdfor[n_id][t_id] = self.model.addVar(
+        #             vtype=GRB.BINARY,
+        #             name=f'cpdfor[{n_id}][{t_id}]'
+        #         )
+        #     elif n_id.startswith('R'): 
+        #         if n_id not in self.u: 
+        #             self.u[n_id] = {}
+        #         self.u[n_id][t_id] = self.model.addVar(
+        #             vtype=GRB.BINARY,
+        #             name=f'rxnfor[{n_id}][{t_id}]'
+        #         )
+                
+        for t_id in tqdm(self.targets, desc='"for" constraints'): 
+            connected_nodes = self.graph.get_connected_nodes(t_id, max_distance=6)
+            for n in connected_nodes: 
+                n_id = n.id
+                if n_id.startswith('C'):
+                    if n_id not in self.cpdfor: 
+                        self.cpdfor[n_id] = {}
+                    self.cpdfor[n_id][t_id] = self.model.addVar(
+                        vtype=GRB.BINARY,
+                        name=f'cpdfor[{n_id}][{t_id}]'
+                    )
+                elif n_id.startswith('R'): 
+                    if n_id not in self.u: 
+                        self.u[n_id] = {}
+                    self.u[n_id][t_id] = self.model.addVar(
+                        vtype=GRB.BINARY,
+                        name=f'rxnfor[{n_id}][{t_id}]'
+                    )
+        # for d_id in tqdm(dummy_ids):
+        #     self.u[r_id] = {}
+        #     for t_id in self.targets: 
+        #         if adj_power[id_to_ind[r_id], id_to_ind[t_id]] > 0.01: # self.graph.check_path_exists(r_id, t_id):    
+        #             continue
+        #             # self.u[r_id][t_id] = self.model.addVar(
+        #             #     vtype=GRB.BINARY,
+        #             #     name=f"rxnfor[{r_id}][{t_id}]"
+        #             # )
+
+        # whether compound j is used in the route to target j 
+
+        # UPDATE: variables for dummy costs 
+        dummy_ids = [dummy.id for dummy in self.graph.dummy_nodes_only()]
+        if self.variable_costs: 
+            self.ntimes_dummy = self.model.addVars(
+                dummy_ids,
+                vtype=GRB.INTEGER,
+                lb=0,
+                ub=len(self.targets),
+                name='ntimes_dummy'
+            )
+            self.dummy_cost = self.model.addVars(
+                dummy_ids,
+                vtype=GRB.CONTINUOUS,
+                lb=0,
+                ub=1000000,
+                name='cost_of_dummy'
+            )
 
         # additional variables for nonlinearity 
         sum_log_scores = np.log([node.score if node.score>0 else 1e-10 for node in self.graph.non_dummy_nodes()]).sum()
@@ -276,18 +347,6 @@ class RouteSelector:
             ub=max_er,
             lb=0,
         )
-        # self.logsumer = self.model.addVar(
-        #     name="logsumer",
-        #     vtype=GRB.CONTINUOUS,
-        #     ub=1e20,
-        #     lb=0,
-        # )
-        # self.logallcosts = self.model.addVar(
-        #     name='logallcosts',
-        #     vtype=GRB.CONTINUOUS,
-        #     ub=1e20,
-        #     lb=0,
-        # )
         
         return 
 
@@ -298,6 +357,10 @@ class RouteSelector:
 
         self.set_rxn_constraints()
         self.set_mol_constraints()
+        
+
+        if self.variable_costs:
+            self.set_dummy_cost_constraints()
 
         if set_cycle_constraints: 
             self.set_cycle_constraints()
@@ -318,50 +381,70 @@ class RouteSelector:
 
         return 
     
+    def set_dummy_cost_constraints(self): 
+        
+        for dummy in self.graph.dummy_nodes_only():
+            self.model.addConstr(
+               self.ntimes_dummy[dummy.id] == gp.quicksum(
+                   dummy_for for dummy_for in self.u[dummy.id].values()
+               )  
+            )
+
+            # cost_function 
+            x_points, y_points = list(dummy.children.values())[0].cost_function
+            amts = [0, 0.001]
+            costs = [0, y_points[0]]
+            for i in range(len(x_points)-1): 
+                amts.append(x_points[i])
+                costs.append(y_points[i])
+                amts.append(x_points[i]+0.001)
+                costs.append(y_points[i+1])
+            
+            amts.append(x_points[-1])
+            costs.append(y_points[-1])
+            amts.append(x_points[-1]+1)
+            costs.append(y_points[-1]+y_points[0]/x_points[0])
+
+            ntimes = [amt/0.025 for amt in amts]
+            # ASSUMING 25MG of BB for each target 
+            self.model.addGenConstrPWL(
+                self.ntimes_dummy[dummy.id], self.dummy_cost[dummy.id],
+                ntimes, costs,
+            )
+        
+        return
+            
     def set_nonlinear_constraints(self): 
         # sets exponential constraints for usum 
         # usum = sum_i u_i,j * log (Li)
-        log_scores = np.log([node.score if node.score>0 else 1e-10 for node in self.graph.non_dummy_nodes()])
-        # log_scores = [log(node.score) if node.score>0 else -1e20 for node in self.graph.non_dummy_nodes()]
-        for t in self.targets: 
-            self.model.addConstr(
-                self.usum[t] == gp.quicksum(
-                    self.u[node.id, t]*logscore 
-                    for logscore, node in zip(log_scores, self.graph.non_dummy_nodes())
-                ),
-                name=f'usumConstr_{t}',
-            )
-            self.model.addGenConstrExp(self.usum[t], self.expusum[t], name=f'expusumConstr_{t}',options="FuncPieces=-2 FuncPieceError=0.00001")
-            self.model.addQConstr(
-                self.probsuccess[t], GRB.LESS_EQUAL, self.expusum[t]*self.cpdfor[t, t], 
-                name=f'probsuccessConstr_{t}',
-            )
+        # log_scores = np.log([node.score if node.score>0 else 1e-10 for node in self.graph.non_dummy_nodes()])
+        # # log_scores = [log(node.score) if node.score>0 else -1e20 for node in self.graph.non_dummy_nodes()]
+        # for t in self.targets: 
+        #     self.model.addConstr(
+        #         self.usum[t] == gp.quicksum(
+        #             self.u[node.id, t]*logscore 
+        #             for logscore, node in zip(log_scores, self.graph.non_dummy_nodes())
+        #         ),
+        #         name=f'usumConstr_{t}',
+        #     )
+        #     self.model.addGenConstrExp(self.usum[t], self.expusum[t], name=f'expusumConstr_{t}',options="FuncPieces=-2 FuncPieceError=0.00001")
+        #     self.model.addQConstr(
+        #         self.probsuccess[t], GRB.LESS_EQUAL, self.expusum[t]*self.cpdfor[t, t], 
+        #         name=f'probsuccessConstr_{t}',
+        #     )
         
-        # self.model.addConstr(
-        #     self.allcosts == gp.quicksum(
-        #         [self.cost_per_rxn*gp.quicksum(self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()),
-        #         gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()),]
+        # self.model.addQConstr(
+        #     self.sumer, GRB.LESS_EQUAL, gp.quicksum(
+        #         self.target_dict[t]*self.probsuccess[t] for t in self.targets
         #     ),
-        #     name='allcosts_constr'
+        #     name='sumER_constr',
         # )
-        
-        self.model.addQConstr(
-            self.sumer, GRB.LESS_EQUAL, gp.quicksum(
-                self.target_dict[t]*self.probsuccess[t] for t in self.targets
-            ),
-            name='sumER_constr',
+
+        self.model.addConstr(
+            self.sumer == gp.quicksum(
+                self.m[t]*self.target_dict[t] for t in self.targets
+            )
         )
-        # self.model.addGenConstrLog(
-        #     self.allcosts,
-        #     self.logallcosts,
-        #     name=''
-        # )
-
-        # self.model.addGenConstrLog(
-        #     self.sumer,
-        #     self.logsumer,            
-        # )
-
         return 
     
     def set_rxn_constraints(self): 
@@ -392,21 +475,24 @@ class RouteSelector:
                 # )
                 
                 # if a reaction is selected, every parent (reactant) must also be selected 
-                self.model.addConstrs(
-                    self.cpdfor[par_id, t] >= self.u[node.id, t]
-                    for t in self.targets
-                )
+                if node.id in self.u and par_id in self.cpdfor:
+                    ts = self.cpdfor[par_id].keys() & self.u[node.id].keys()
+                    self.model.addConstrs(
+                        self.cpdfor[par_id][t] >= self.u[node.id][t] for t in ts
+                    )
 
             # if a reaction is used for a target, it is also used in general 
-            self.model.addConstr(
-                len(self.targets)*self.r[node.id] >= gp.quicksum(self.u[node.id, tar] for tar in self.targets),
-                name=f'rxnusedConstr_{node.id}'
-            )
+            if node.id in self.u: 
+                
+                self.model.addConstr(
+                    len(self.targets)*self.r[node.id] >= gp.quicksum(self.u[node.id].values()),
+                    name=f'rxnusedConstr_{node.id}'
+                )
 
-            self.model.addConstr(
-                self.r[node.id] <= gp.quicksum(self.u[node.id, tar] for tar in self.targets),
-                name=f'rxnusedConstr2_{node.id}'
-            )
+                self.model.addConstr(
+                    self.r[node.id] <= gp.quicksum(self.u[node.id].values()),
+                    name=f'rxnusedConstr2_{node.id}'
+                )
 
         return 
     
@@ -414,7 +500,7 @@ class RouteSelector:
         
         for t in self.targets: 
             self.model.addConstr(
-                self.cpdfor[t, t] == self.m[t]
+                self.cpdfor[t][t] == self.m[t]
             )
 
         for node in tqdm(self.graph.compound_nodes_only(), 'Compound constraints'): 
@@ -425,21 +511,28 @@ class RouteSelector:
             )
 
             # if a compound is used for a target, at least one parent reaction must also be used for that target 
-            self.model.addConstrs(
-                self.cpdfor[node.id, t] <= gp.quicksum(self.u[par_id, t] for par_id in par_ids) 
-                for t in self.targets
-            )
+            if node.id in self.cpdfor:
+                for t in self.cpdfor[node.id].keys():
+                    par_idss = [par_id for par_id in par_ids if par_id in self.u and t in self.u[par_id]]
+                    self.model.addConstr(
+                        self.cpdfor[node.id][t] <= gp.quicksum(self.u[par_id][t] for par_id in par_idss) 
+                    )
 
-            # if a compound is used for a target, it is also used in general 
-            self.model.addConstr(
-                len(self.targets)*self.m[node.id] >= gp.quicksum(self.cpdfor[node.id, tar] for tar in self.targets),
-                name=f'molusedConstr_{node.id}'
-            )     
+            # self.model.addConstrs(
+            #     self.cpdfor[node.id, t] <= gp.quicksum(self.u[par_id, t] for par_id in par_ids) 
+            #     for t in self.targets
+            # )
 
-            self.model.addConstr(
-                self.m[node.id] <= gp.quicksum(self.cpdfor[node.id, tar] for tar in self.targets),
-                name=f'molusedConstr_{node.id}'
-            )      
+                # if a compound is used for a target, it is also used in general 
+                self.model.addConstr(
+                    len(self.targets)*self.m[node.id] >= gp.quicksum(self.cpdfor[node.id].values()),
+                    name=f'molusedConstr_{node.id}'
+                )     
+
+                self.model.addConstr(
+                    self.m[node.id] <= gp.quicksum(self.cpdfor[node.id].values()),
+                    name=f'molusedConstr_{node.id}'
+                )      
         
         return 
 
@@ -503,9 +596,14 @@ class RouteSelector:
             )
     
     def set_budget_constraint(self): 
-        self.model.addConstr(
-            gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()) <= self.sm_budget
-        )
+        if self.variable_costs: 
+            self.model.addConstr(
+                gp.quicksum(self.dummy_cost[dummy.id] for dummy in self.graph.dummy_nodes_only()) <= self.sm_budget
+            )           
+        else:
+            self.model.addConstr(
+                gp.quicksum(self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()) <= self.sm_budget
+            ) 
 
     def set_objective(self, cost_weight=0): 
         # TODO: Add consideration of conditions 
@@ -514,6 +612,12 @@ class RouteSelector:
         self.model.ModelSense = GRB.MAXIMIZE
 
         if cost_weight > 0:
+            self.model.addConstr(
+                self.allcosts == 
+                self.cost_per_rxn*gp.quicksum([self.r[r_id] for r_id in self.graph.non_dummy_nodes()]) + gp.quicksum([
+                    self.cost_of_dummy(d_node) for d_node in self.graph.dummy_nodes_only()
+                ])
+            )
             self.model.setObjective(self.sumer - cost_weight*self.allcosts)
         else: 
             self.model.setObjective(self.sumer)
@@ -564,7 +668,11 @@ class RouteSelector:
             dummy_node = self.graph.node_from_id(dummy_id)
 
         start_node = list(dummy_node.children.values())[0]
-        return start_node.cost_per_g 
+        if start_node.cost_function is None: 
+            return start_node.cost_per_g 
+        
+        max_cost = max(start_node.cost_function[1])
+        return max(max_cost, start_node.cost_per_g)
 
     def optimize(self, savedir=None, solver=None):
 
@@ -577,8 +685,12 @@ class RouteSelector:
 
         self.model.params.NonConvex = 2
         self.model.Params.TIME_LIMIT = 3*3600
+        self.model.Params.PRESOLVE = 1
+        self.model.Params.PreSparsify = 1
         self.model.optimize()
         print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds.")
+        
+        self.extract_vars(savedir)
         
         return 
     
@@ -627,35 +739,34 @@ class RouteSelector:
             self.model.remove(self.model.getConstrByName(min_constr))
             self.model.remove(self.model.getConstrByName(max_constr))
     
-    def extract_vars(self, output_dir=None, extract_routes=True):
-        if output_dir is None: 
-            output_dir = self.dir / 'solution'
-
-        output_dir.mkdir(exist_ok=True, parents=True)    
+    def extract_vars(self, output_dir, extract_routes=True):
         nonzero_varnames = [
                 var.VarName for var in self.model.getVars() if var.X > 0.01
             ]
         rxn_ids = re.findall(r'rxn\[(.*?)\]', ' '.join(nonzero_varnames))
         mol_ids = re.findall(r'mol\[(.*?)\]', ' '.join(nonzero_varnames))
 
-        dummy_ids = [rxn for rxn in rxn_ids if self.graph.node_from_id(rxn).dummy]
+        # dummy_ids = [rxn for rxn in rxn_ids if self.graph.node_from_id(rxn).dummy]
+        dummy_data = [(d_id, self.ntimes_dummy[d_id].X, self.dummy_cost[d_id].X) 
+                      for d_id in rxn_ids 
+                      if self.graph.node_from_id(d_id).dummy and self.ntimes_dummy[d_id].X > 0]
+        d_info = {d_id: [n_times, cost] for d_id, n_times, cost in dummy_data}
         non_dummy_ids = [rxn for rxn in rxn_ids if self.graph.node_from_id(rxn).dummy == 0]
 
         selected_targets = set(mol_ids) & set(self.targets)
-        selected_starting = set([self.graph.child_of_dummy(dummy) for dummy in dummy_ids])
+        selected_starting = set([self.graph.child_of_dummy(dummy[0]) for dummy in dummy_data])
         print(f'{len(selected_targets)} targets selected using {len(non_dummy_ids)} reactions and {len(selected_starting)} starting materials')
-        self.export_selected_nodes(rxn_ids, selected_starting, selected_targets, output_dir)
+        self.export_selected_nodes(rxn_ids, selected_starting, selected_targets, d_info, output_dir)
         
         avg_rxn_score = np.mean([self.graph.node_from_id(rxn).score for rxn in non_dummy_ids]) if len(non_dummy_ids) > 0 else None
 
         summary = {
-            'Cost/reaction weighting factor': self.cost_per_rxn,
             'Number targets': len(selected_targets), 
             'Fraction targets': len(selected_targets)/len(self.targets),
             'Total reward': sum([self.target_dict[tar] for tar in selected_targets]),
             'Possible reward': sum(self.target_dict.values()),
             'Number starting materials': len(selected_starting),
-            'Cost starting materials': sum([self.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
+            'Cost starting materials': sum([d[2] for d in dummy_data]),
             'Number reaction steps': len(non_dummy_ids),
             'Average reaction score': avg_rxn_score,
         }
@@ -665,7 +776,7 @@ class RouteSelector:
             for target in tqdm(selected_targets, desc='Extracting routes'): 
                 store_dict = {'Compounds':[], 'Reactions':[]}
                 smi = self.graph.smiles_from_id(target)
-                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids)
+                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids, d_info)
                 storage[smi]['Reward'] = self.target_dict[target]
 
             with open(output_dir/f'routes.json','w') as f: 
@@ -676,16 +787,18 @@ class RouteSelector:
 
         return summary 
 
-    def export_selected_nodes(self, rxn_list, starting_list, target_list, output_dir): 
+    def export_selected_nodes(self, rxn_list, starting_list, target_list, d_info, output_dir): 
         storage = {'Starting Materials': [], 'Reactions': [], 'Targets': []}
         graph = self.graph
 
         for rxn_id in rxn_list:
             node = graph.node_from_id(rxn_id)
-            if node.dummy: 
+            if node.dummy and d_info[node.id][0]>0: 
                 storage['Reactions'].append({
                     'smiles': node.smiles,
-                    'starting material cost ($/g)': self.cost_of_dummy(node), 
+                    'amount spent ($)': d_info[node.id][1], 
+                    'in route to N targets': int(d_info[node.id][0]),
+                    'number of grams needed (g)': d_info[node.id][0]*0.05
                 })
             else: 
                 storage['Reactions'].append({
@@ -696,33 +809,43 @@ class RouteSelector:
 
         for cpd_id in starting_list: 
             node = graph.node_from_id(cpd_id)
+            d_id = list(node.parents.values())[0].id
             storage['Starting Materials'].append({
                 'smiles': node.smiles,
-                'cost': node.cost_per_g
+                'amount spent ($)': d_info[d_id][1], 
+                'in route to N targets': int(d_info[d_id][0]),
+                'number of grams needed (g)': d_info[d_id][0]*0.05
             })
 
         for cpd_id in target_list: 
             node = graph.node_from_id(cpd_id)
-            storage['Targets'].append({
-                'smiles': node.smiles,
-                'reward': node.reward,
-            })
+            if self.clusters: 
+                storage['Targets'].append({
+                    'smiles': node.smiles,
+                    'reward': node.reward,
+                    'clusters': self.id_to_clusters[cpd_id]
+                })
+            else: 
+                storage['Targets'].append({
+                    'smiles': node.smiles,
+                    'reward': node.reward,
+                })
         
         with open(output_dir/'solution_list_format.json','w') as f:
             json.dump(storage, f, indent='\t')
 
         return storage 
     
-    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns):
+    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns, d_info):
 
         par_ids = [n.id for n in self.graph.node_from_id(rxn_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_mols)
         for par in selected_pars: 
             store_dict['Compounds'].append(self.graph.smiles_from_id(par))
-            store_dict = self.find_mol_parents(store_dict, par, selected_mols, selected_rxns)
+            store_dict = self.find_mol_parents(store_dict, par, selected_mols, selected_rxns, d_info)
         return store_dict
 
-    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns): 
+    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns, d_info): 
 
         par_ids = [n.id for n in self.graph.node_from_id(mol_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_rxns)
@@ -731,7 +854,9 @@ class RouteSelector:
             if node.dummy: 
                 store_dict['Reactions'].append({
                     'smiles': node.smiles,
-                    'starting material cost ($/g)': self.cost_of_dummy(node), 
+                    'amount spent ($)': d_info[node.id][1], 
+                    'in route to N targets': int(d_info[node.id][0]),
+                    'number of grams needed (g)': d_info[node.id][0]*0.05
                 })
             else: 
                 store_dict['Reactions'].append({
@@ -739,5 +864,5 @@ class RouteSelector:
                     'conditions': node.get_condition(1)[0], 
                     'score': node.score,
                 })
-            store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns)
-        return store_dict
+            store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns, d_info)
+        return store_dict    
