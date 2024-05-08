@@ -78,6 +78,10 @@ def add_coster_args(parser: ArgumentParser):
     parser.add_argument('--skip-canon', action='store_true', default=False,
                         help='whether to skip canonicalization of smiles in the inventory set')
     
+    # optimization side of costing 
+    parser.add_argument('--variable-costs', action='store_true', default=False,
+                        help='whether to use a cost function of quantity instead of constant cost for buyables')
+    
     return parser
 
 def add_scorer_args(parser: ArgumentParser): 
