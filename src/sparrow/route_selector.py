@@ -411,7 +411,12 @@ class RouteSelector:
                 self.ntimes_dummy[dummy.id], self.dummy_cost[dummy.id],
                 ntimes, costs,
             )
-        
+
+            # r and ntimes_dummy
+            self.model.addConstr(
+                self.r[dummy.id] <= self.ntimes_dummy[dummy.id]
+            )
+            
         return
             
     def set_nonlinear_constraints(self): 
