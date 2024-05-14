@@ -16,7 +16,7 @@ from pathlib import Path
 urllib3.disable_warnings()
 
 def post_and_get(host_post, host_results, params, sleep_time = 10, timeout = 650):
-    req = requests.post(host_post, data=params, verify=False)
+    req = requests.post(host_post, json=params, verify=False)
     try:
         task_id = req.json()['task_id']
     except KeyError:
