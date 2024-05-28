@@ -8,8 +8,8 @@ from tqdm import tqdm
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
 from sparrow.route_selector import RouteSelector
-from sparrow.condition_recommender import AskcosRecommender, AskcosAPIRecommender
-from sparrow.scorer import AskcosScorer, AskcosAPIScorer
+from sparrow.condition_recommender import AskcosAPIRecommender
+from sparrow.scorer import AskcosAPIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
 from sparrow.cli.args import get_args
 
@@ -166,8 +166,6 @@ def build_recommender(params):
     rec = params['recommender']
     if rec == 'api': 
         return AskcosAPIRecommender(host=params['context_host'])
-    elif rec == 'local': 
-        return AskcosRecommender(askcos_path=params['askcos_path'])
     elif rec is None: 
         return None    
     elif rec == 'lookup': 
@@ -179,8 +177,6 @@ def build_scorer(params):
     rec = params['scorer']
     if rec == 'api': 
         return AskcosAPIScorer(host=params['scorer_host'])
-    elif rec == 'local': 
-        return AskcosScorer(askcos_path=params['askcos_path'])
     elif rec is None: 
         return None  
     elif rec == 'lookup': 

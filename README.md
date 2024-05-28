@@ -76,15 +76,15 @@ If more than one run is performed on the same set of compounds, and only the wei
  - `--max-ppg`: maximum price per gram in dollars for starting materials for ASKCOS MCTS tree search
  - `--max-branching`: maximum branch factor for ASKCOS MCTS tree search
  - `--tree-host`: host address for tree builder, if using ASKCOS API path finder
- - `--recommender {lookup,local,api}`: type of context recommender to use
+ - `--recommender {lookup,api}`: type of context recommender to use
  - `--context-host`: host address for context recommender, if using API recommender
  - `--context-lookup`: path of lookup csv file for lookup context recommender
-  - `--scorer {lookup,local,api}`: type of scorer to use
+  - `--scorer {lookup,api}`: type of scorer to use
  - `--scorer-host`: host address for reaction scorer, if using API recommender
  - `--scorer-lookup`: path of reaction scorer csv file for lookup reaction scorer (not implemented yet)
  - `--coster {lookup, naive, chemspace}`: type of compound coster to use
  - `--key-path` path that includes the file keys.py with chemspace api key
- - `--coster-lookup`: path of lookup file for lookup cost and buyability
+ - `--inventory`: path of lookup file for lookup cost and buyability (if using lookup coster)
 
 **A note about required arguments:** The only required argument in SPARROW in `--target-csv`. However, providing this alone will not be sufficient to run SPARROW. In addition to candidates and rewards, SPARROW's optimization requires a set of potential reactions and scores for each reaction. If a provided `--graph` argument corresponds to a file that includes both potential reactions as a retrosynthesis tree _and_ reaction scores, that is sufficient to run SPARROW. However, if the file only contains a retrosynthesis tree, without reaction scores, SPARROW will require a `--recommender` argument. Likewise, if no `--graph` is provided, a valid entry for `--path-finder` (and any corresponding arguments) are required. We are currently working on expanding the documentation for SPARROW and improving its usability.
 
