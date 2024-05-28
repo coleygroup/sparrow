@@ -217,6 +217,7 @@ def build_selector(params, target_dict, storage_path):
         weights=weights,
         constrain_all_targets=params['constrain_all'],
         max_targets=params['max_targets'],
+        dont_buy_targets=params['dont_buy_targets'],
     )
 
     if storage_path is not None: 

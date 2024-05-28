@@ -36,6 +36,7 @@ class RouteSelector:
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
                  cluster_cutoff: float = 0.7,
+                 dont_buy_targets: bool = False,
                  ) -> None:
 
         self.dir = Path(output_dir)
@@ -60,6 +61,9 @@ class RouteSelector:
         self.targets = list(self.target_dict.keys())
 
         self.target_dict = self.graph.set_compound_types(self.target_dict, coster=coster, save_dir=self.dir/'chkpts')
+
+        if dont_buy_targets: 
+            self.graph.remove_dummies_to(id_list=self.targets)
 
         self.rxn_scorer = rxn_scorer
         self.condition_recommender = condition_recommender
