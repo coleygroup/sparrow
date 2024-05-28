@@ -25,36 +25,6 @@ class Scorer(ABC):
     def __call__(self, rxn_smi, condition: List = None) -> float: 
         score = self.score_rxn(rxn_smi, condition)
         return score
-    
-
-class AskcosScorer(Scorer): 
-    """ 
-    Scores reactions using local ASKCOS 
-    """
-    def __init__(self, askcos_path = None):
-
-        if askcos_path is not None: 
-            import sys
-            sys.path.append(askcos_path) 
-        
-        from askcos.synthetic.evaluation.evaluator import Evaluator
-
-        self.requires_contexts = True 
-        self.scorer = Evaluator()
-    
-    def score_rxn(self, rxn_smi: str, condition: List = None) -> float: 
-        """ Scores a single reaction with a single set of conditions ('condition') """
-        reactant_smi, product_smi = rxn_smi.split('>>')
-
-        evaluation_results = self.scorer.evaluate(
-            reactant_smiles=reactant_smi, 
-            target=product_smi, 
-            contexts=condition,
-        )
-
-        score = evaluation_results[0]['target']['prob']
-
-        return score 
 
 
 class AskcosAPIScorer(Scorer): 
