@@ -176,7 +176,6 @@ class LinearSelector(Selector):
     
     def optimize(self, solver=None):
 
-        # self.problem.writeLP("RouteSelector.lp", max_length=300)
         print("Solving optimization problem...")
         opt_start = time.time()
         if solver == 'GUROBI': 

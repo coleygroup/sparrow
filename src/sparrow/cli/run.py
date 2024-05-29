@@ -71,8 +71,6 @@ def build_recommender(params):
     rec = params['recommender']
     if rec == 'api': 
         return AskcosAPIRecommender(host=params['context_host'])
-    elif rec == 'local': 
-        return AskcosRecommender(askcos_path=params['askcos_path'])
     elif rec is None: 
         return None    
     elif rec == 'lookup': 
@@ -84,8 +82,6 @@ def build_scorer(params):
     rec = params['scorer']
     if rec == 'api': 
         return AskcosAPIScorer(host=params['scorer_host'])
-    elif rec == 'local': 
-        return AskcosScorer(askcos_path=params['askcos_path'])
     elif rec is None: 
         return None  
     elif rec == 'lookup': 

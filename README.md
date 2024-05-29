@@ -84,18 +84,19 @@ If more than one run is performed on the same set of compounds, and only the wei
  - `--max-ppg`: maximum price per gram in dollars for starting materials for ASKCOS MCTS tree search
  - `--max-branching`: maximum branch factor for ASKCOS MCTS tree search
  - `--tree-host`: host address for tree builder, if using ASKCOS API path finder
- - `--recommender {lookup,local,api}`: type of context recommender to use
+ - `--recommender {lookup,api}`: type of context recommender to use
  - `--context-host`: host address for context recommender, if using API recommender
  - `--context-lookup`: path of lookup csv file for lookup context recommender
-  - `--scorer {lookup,local,api}`: type of scorer to use
+ - `--scorer {lookup,api}`: type of scorer to use
  - `--scorer-host`: host address for reaction scorer, if using API recommender
  - `--scorer-lookup`: path of reaction scorer csv file for lookup reaction scorer (not implemented yet)
  - `--coster {lookup, naive, chemspace}`: type of compound coster to use
  - `--key-path` path that includes the file keys.py with chemspace api key
- - `--coster-lookup`: path of lookup file for lookup cost and buyability
+ - `--inventory`: path to CSV file with SMILES strings and costs, if using lookup coster
+ - `--dont-buy-targets`: ensures that solution does not propose directly buying any target
  - `--solver {pulp, gurobi}` (default: `pulp`): the solver to use
 
-**A note about required arguments:** The only required argument in SPARROW in `--target-csv`. However, providing this alone will not be sufficient to run SPARROW. In addition to candidates and rewards, SPARROW's optimization requires a set of potential reactions and scores for each reaction. If a provided `--graph` argument corresponds to a file that includes both potential reactions as a retrosynthesis tree _and_ reaction scores, that is sufficient to run SPARROW. However, if the file only contains a retrosynthesis tree, without reaction scores, SPARROW will require a `--recommender` argument. Likewise, if no `--graph` is provided, a valid entry for `--path-finder` (and any corresponding arguments) are required. We are currently working on expanding the documentation for SPARROW and improving its usability.
+**A note about required arguments:** The only required argument in SPARROW in `--target-csv`. However, providing this alone will not be sufficient to run SPARROW. In addition to candidates and rewards, SPARROW's optimization requires a set of potential reactions and scores for each reaction. If a provided `--graph` argument corresponds to a file that includes both potential reactions as a retrosynthesis tree _and_ reaction scores, that is sufficient to run SPARROW. However, if the file only contains a retrosynthesis tree, without reaction scores, SPARROW will require a `--scorer` argument. Likewise, if no `--graph` is provided, a valid entry for `--path-finder` (and any corresponding arguments) are required. We are currently working on expanding the documentation for SPARROW and improving its usability.
 
 #### Outputs
 SPARROW outputs a set of results files, and checkpoints if relevant, to the specified output directory (`--output-dir`). All parameters used for that run are output in `params.ini`. A summary of SPARROW's output, including the number of candidates, reactions, and starting materials selected, is included in `summary.json`. The selected routes are provided in two separate formats, both json files. `routes.json` provides the synthetic route to each selected candidate, and `solution_list_format.json` individually lists the selected candidates, selected reactions, and selected buyable materials. A pruned target SMILES/rewards csv file will also be output by SPARROW _if_ at least one target cannot be found in the retrosynthetic graph.

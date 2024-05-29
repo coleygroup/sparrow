@@ -284,7 +284,7 @@ class LookupCoster(Coster):
         self.buyables = self.data.iloc[:, smis_col]
         self.failures = []
 
-        if self.canonicalize: 
+        if canonicalize: 
             self.buyables = self.canon_library(self.buyables)
             
         self.costs = self.data.iloc[:, cost_col]

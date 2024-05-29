@@ -8,10 +8,6 @@ def get_args(args: str = None):
     parser.add_argument('--target-csv', action='store', type=str, required=True, help="the filepath of the target csv file")
     parser.add_argument('--output-dir', action='store', type=str, default='sparrow_results')
     parser.add_argument('--no-routes', action='store_true', default=False)
-
-    # local askcos implementation (applies to local scorer and local context recommender)
-    parser.add_argument('--askcos-path', action='store', default=None, type=str,
-                    help='path where askcos exists if using askcos local modules')
     
     # path to graph object if just rerunning optimization 
     parser.add_argument('--graph', type=str, action='store', default=None, 
@@ -47,14 +43,12 @@ def add_tree_build_args(parser: ArgumentParser):
 
 def add_condition_rec_args(parser: ArgumentParser):    
     parser.add_argument('--recommender', default=None, action='store', type=str,
-                        choices=['lookup', 'local', 'api'], 
+                        choices=['lookup', 'api'], 
                         help='type of context recommender to use')
     
     # API Recommender 
     parser.add_argument('--context-host', action='store', default=None, type=str,
                         help='host address for context recommender, if using API recommender')
-
-    # Local Recommender (--askcos-path in main function)
     
     # Lookup Recommender
     parser.add_argument('--context-lookup', action='store', default=None, type=str,
@@ -67,7 +61,7 @@ def add_coster_args(parser: ArgumentParser):
                         help='type of compound coster to use')
     parser.add_argument('--dont-buy-targets', action='store_true', default=False, 
                         help="ensures that the solution does not propose directly buying a target compound")
-       
+        
     # Naive Coster - no arguments 
 
     # Chemspace coster
@@ -84,14 +78,12 @@ def add_coster_args(parser: ArgumentParser):
 
 def add_scorer_args(parser: ArgumentParser): 
     parser.add_argument('--scorer', default=None, action='store', type=str,
-                        choices=['lookup', 'local', 'api'], 
+                        choices=['lookup', 'api'], 
                         help='type of scorer to use')    
     
     # API Scorer 
     parser.add_argument('--scorer-host', action='store', default=None, type=str,
                         help='host address for reaction scorer, if using API recommender')
-
-    # Local Scorer (--askcos-path in main function)
     
     # Lookup Recommender
     parser.add_argument('--scorer-lookup', action='store', default=None, type=str,

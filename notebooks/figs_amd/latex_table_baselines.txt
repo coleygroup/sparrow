@@ -1,0 +1,39 @@
+\begin{tabular}{lrrrrr}
+\toprule
+      strategy &   N &  Cumulative Reward &  Starting Material Cost &  Number of Reactions &  Average Reaction Score \\
+\midrule
+   Reward Only &   1 &                1.0 &                     3.0 &                    4 &                    0.69 \\
+   Reward Only &  11 &               11.0 &                   531.5 &                   40 &                    0.81 \\
+   Reward Only &  21 &               21.0 &                   575.8 &                   65 &                    0.76 \\
+   Reward Only &  31 &               30.5 &                   883.6 &                   97 &                    0.68 \\
+   Reward Only &  41 &               39.7 &                  1046.1 &                  130 &                    0.70 \\
+   Reward Only &  51 &               48.8 &                  1140.9 &                  158 &                    0.65 \\
+   Reward Only &  61 &               57.2 &                  1164.4 &                  178 &                    0.65 \\
+   Reward Only &  71 &               64.5 &                  1375.5 &                  195 &                    0.62 \\
+   Reward Only &  81 &               70.4 &                  1404.9 &                  205 &                    0.62 \\
+   Reward Only &  91 &               74.8 &                  1435.9 &                  213 &                    0.62 \\
+   Reward Only & 101 &               77.8 &                  1461.5 &                  225 &                    0.62 \\
+ SA Score Only &   1 &                0.2 &                    77.3 &                    1 &                    0.00 \\
+ SA Score Only &  11 &                4.8 &                   121.5 &                   13 &                    0.55 \\
+ SA Score Only &  21 &               11.0 &                   151.0 &                   28 &                    0.59 \\
+ SA Score Only &  31 &               17.7 &                   274.3 &                   45 &                    0.62 \\
+ SA Score Only &  41 &               25.6 &                   381.7 &                   69 &                    0.58 \\
+ SA Score Only &  51 &               31.8 &                   541.6 &                   83 &                    0.60 \\
+ SA Score Only &  61 &               40.1 &                   601.0 &                  105 &                    0.58 \\
+ SA Score Only &  71 &               48.8 &                   809.7 &                  134 &                    0.59 \\
+ SA Score Only &  81 &               57.7 &                   973.9 &                  158 &                    0.62 \\
+ SA Score Only &  91 &               65.7 &                   990.4 &                  185 &                    0.60 \\
+ SA Score Only & 101 &               74.7 &                  1470.1 &                  221 &                    0.62 \\
+Combined Score &   1 &                0.9 &                     4.5 &                    1 &                    1.00 \\
+Combined Score &  11 &                8.7 &                   130.9 &                   19 &                    0.57 \\
+Combined Score &  21 &               14.6 &                   197.8 &                   34 &                    0.59 \\
+Combined Score &  31 &               22.5 &                   244.1 &                   55 &                    0.58 \\
+Combined Score &  41 &               28.9 &                   325.6 &                   74 &                    0.57 \\
+Combined Score &  51 &               36.9 &                   696.2 &                  101 &                    0.61 \\
+Combined Score &  61 &               45.8 &                   844.0 &                  127 &                    0.61 \\
+Combined Score &  71 &               54.5 &                   900.7 &                  154 &                    0.62 \\
+Combined Score &  81 &               59.8 &                   960.0 &                  167 &                    0.63 \\
+Combined Score &  91 &               68.1 &                  1232.2 &                  193 &                    0.63 \\
+Combined Score & 101 &               75.9 &                  1469.5 &                  222 &                    0.62 \\
+\bottomrule
+\end{tabular}

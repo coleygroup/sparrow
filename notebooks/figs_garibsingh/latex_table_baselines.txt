@@ -1,0 +1,48 @@
+\begin{tabular}{lrrrrr}
+\toprule
+      strategy &  N &  Cumulative Reward &  Starting Material Cost &  Number of Reactions &  Average Reaction Score \\
+\midrule
+   Reward Only &  1 &                1.0 &                     9.7 &                    5 &                    0.71 \\
+   Reward Only &  2 &                1.7 &                    17.2 &                   10 &                    0.84 \\
+   Reward Only &  3 &                2.3 &                   117.6 &                   12 &                    0.86 \\
+   Reward Only &  4 &                2.9 &                   119.4 &                   15 &                    0.88 \\
+   Reward Only &  5 &                3.5 &                   143.0 &                   18 &                    0.89 \\
+   Reward Only &  6 &                4.0 &                   143.6 &                   20 &                    0.87 \\
+   Reward Only &  7 &                4.5 &                   174.6 &                   25 &                    0.89 \\
+   Reward Only &  8 &                4.9 &                   201.8 &                   29 &                    0.85 \\
+   Reward Only &  9 &                5.3 &                   203.2 &                   34 &                    0.78 \\
+   Reward Only & 10 &                5.7 &                   276.9 &                   39 &                    0.75 \\
+   Reward Only & 11 &                6.0 &                   281.3 &                   41 &                    0.75 \\
+   Reward Only & 12 &                6.2 &                   322.6 &                   44 &                    0.76 \\
+   Reward Only & 13 &                6.2 &                   323.8 &                   46 &                    0.76 \\
+   Reward Only & 14 &                6.2 &                   331.3 &                   50 &                    0.73 \\
+ SA Score Only &  1 &                0.1 &                     1.8 &                    2 &                    0.64 \\
+ SA Score Only &  2 &                0.6 &                    25.4 &                    4 &                    0.64 \\
+ SA Score Only &  3 &                0.6 &                    32.9 &                    8 &                    0.54 \\
+ SA Score Only &  4 &                1.2 &                    33.7 &                   11 &                    0.65 \\
+ SA Score Only &  5 &                1.6 &                    64.1 &                   15 &                    0.64 \\
+ SA Score Only &  6 &                2.3 &                   170.5 &                   18 &                    0.70 \\
+ SA Score Only &  7 &                2.7 &                   204.2 &                   23 &                    0.76 \\
+ SA Score Only &  8 &                3.0 &                   208.6 &                   25 &                    0.76 \\
+ SA Score Only &  9 &                3.6 &                   210.4 &                   28 &                    0.78 \\
+ SA Score Only & 10 &                4.3 &                   214.4 &                   33 &                    0.81 \\
+ SA Score Only & 11 &                4.5 &                   255.7 &                   36 &                    0.82 \\
+ SA Score Only & 12 &                4.9 &                   329.4 &                   41 &                    0.78 \\
+ SA Score Only & 13 &                5.9 &                   329.9 &                   45 &                    0.77 \\
+ SA Score Only & 14 &                6.2 &                   331.3 &                   50 &                    0.73 \\
+Combined Score &  1 &                0.6 &                    24.2 &                    2 &                    0.63 \\
+Combined Score &  2 &                1.6 &                    33.9 &                    7 &                    0.69 \\
+Combined Score &  3 &                1.6 &                    35.1 &                    9 &                    0.68 \\
+Combined Score &  4 &                2.3 &                   135.5 &                   11 &                    0.73 \\
+Combined Score &  5 &                2.8 &                   136.3 &                   14 &                    0.78 \\
+Combined Score &  6 &                3.5 &                   143.0 &                   19 &                    0.83 \\
+Combined Score &  7 &                4.1 &                   144.8 &                   22 &                    0.84 \\
+Combined Score &  8 &                4.6 &                   175.8 &                   27 &                    0.87 \\
+Combined Score &  9 &                5.0 &                   203.0 &                   31 &                    0.84 \\
+Combined Score & 10 &                5.0 &                   210.5 &                   35 &                    0.79 \\
+Combined Score & 11 &                5.3 &                   214.9 &                   37 &                    0.79 \\
+Combined Score & 12 &                5.7 &                   288.6 &                   42 &                    0.76 \\
+Combined Score & 13 &                6.1 &                   290.0 &                   47 &                    0.72 \\
+Combined Score & 14 &                6.2 &                   331.3 &                   50 &                    0.73 \\
+\bottomrule
+\end{tabular}
