@@ -93,7 +93,7 @@ def add_scorer_args(parser: ArgumentParser):
 
 def add_optimization_args(parser: ArgumentParser): 
 
-    parser.add_argument('--formulation', action='store', default='linear', type='str', choices=['linear', 'expected_reward'],
+    parser.add_argument('--formulation', action='store', default='linear', type=str, choices=['linear', 'expected_reward'],
                         help='whether to optimize the linear or expected reward formulation, latter requirs Gurobi license')
     parser.add_argument('--constrain-all', action='store_true', default=False,
                         help='whether to constrain that all candidates are selection')

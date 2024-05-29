@@ -100,7 +100,7 @@ class Selector(ABC):
         self.problem = self.initialize_problem()
 
     @abstractmethod
-    def initialize_problem(self) -> LpProblem | gp.Model :
+    def initialize_problem(self) -> Problem:
         """ Initialize a PuLP LpProblem or Gurobi Model """
     
     def add_dummy_starting_rxn_nodes(self): 

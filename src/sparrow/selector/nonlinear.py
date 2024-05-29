@@ -329,7 +329,7 @@ class ExpectedRewardSelector(Selector):
     
     def extract_selected_ids(self):
         nonzero_varnames = [
-            var.VarName for var in self.model.getVars() if var.X > 0.01
+            var.VarName for var in self.problem.getVars() if var.X > 0.01
         ]
         rxn_ids = re.findall(r'rxn\[(.*?)\]', ' '.join(nonzero_varnames))
         mol_ids = re.findall(r'mol\[(.*?)\]', ' '.join(nonzero_varnames))

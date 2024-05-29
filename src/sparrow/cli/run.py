@@ -7,8 +7,8 @@ from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
 from sparrow.selector.linear import LinearSelector
 from sparrow.selector.nonlinear import ExpectedRewardSelector
-from sparrow.condition_recommender import AskcosRecommender, AskcosAPIRecommender
-from sparrow.scorer import AskcosScorer, AskcosAPIScorer
+from sparrow.condition_recommender import AskcosAPIRecommender
+from sparrow.scorer import AskcosAPIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
 from sparrow.cli.args import get_args
 
@@ -129,7 +129,6 @@ def build_selector(params, target_dict, storage_path, clusters):
             dont_buy_targets=params['dont_buy_targets']
         )
     else: 
-        
         weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
         
         selector = LinearSelector(
