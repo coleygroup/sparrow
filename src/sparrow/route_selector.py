@@ -490,8 +490,7 @@ class RouteSelector:
         return parent_ids, child_ids
     
     def add_dummy_starting_rxn_nodes(self): 
-        """ Adds reaction nodes that form all starting materials, as described in 
-        TODO: describe this in README """
+        """ Adds reaction nodes that form all starting materials """
         for start_node in self.graph.buyable_nodes(): 
             dummy_rxn_smiles = f">>{start_node.smiles}"
             self.graph.add_reaction_node(

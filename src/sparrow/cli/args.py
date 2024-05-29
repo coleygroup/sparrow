@@ -65,7 +65,9 @@ def add_coster_args(parser: ArgumentParser):
     parser.add_argument('--coster', default=None, action='store', type=str,
                         choices=['naive', 'chemspace', 'lookup'], 
                         help='type of compound coster to use')
-    
+    parser.add_argument('--dont-buy-targets', action='store_true', default=False, 
+                        help="ensures that the solution does not propose directly buying a target compound")
+       
     # Naive Coster - no arguments 
 
     # Chemspace coster
@@ -99,18 +101,12 @@ def add_scorer_args(parser: ArgumentParser):
 
 def add_optimization_args(parser: ArgumentParser): 
 
+    parser.add_argument('--formulation', action='store', default='linear', type='str', choices=['linear', 'expected_reward'],
+                        help='whether to optimize the linear or expected reward formulation, latter requirs Gurobi license')
     parser.add_argument('--constrain-all', action='store_true', default=False,
                         help='whether to constrain that all candidates are selection')
     parser.add_argument('--max-targets', action='store', default=None, type=int,
                         help='maximum number of selected targets (useful if testing is a bottleneck)')
-    parser.add_argument('--max-rxns', action='store', type=int, default=None,
-                        help='maximum number of reaction steps to select')
-    parser.add_argument('--starting-material-budget', action='store', type=int, default=None,
-                        help='maximum budget on starting material costs (all on per g basis, does not consider amount needed!)')
-    parser.add_argument('--cost_of_rxn_weight', action='store', type=float, default=100,
-                        help='weighting factor for reaction objective')
-    parser.add_argument('--diversity-weight', action='store', type=float, default=0,
-                        help='weighting factor for diversity, encourages more clusters to be represented')
     parser.add_argument('--cluster-cutoff', action='store', type=float, default=0.7,
                         help='cutoff for Butina clustering algorithm (lower cutoff -> more small clusters)')
     parser.add_argument('--solver', action='store', type=str, choices=['pulp', 'gurobi'],
@@ -119,6 +115,24 @@ def add_optimization_args(parser: ArgumentParser):
                         help='if the reaction network graph is known to be acyclic')
     parser.add_argument('--custom-cluster', action='store_true', default=False,
                         help='To use custom clusters. Target csv file must include a "Cluster" column' )
-
+    
+    # Specific to linear formulation 
+    parser.add_argument('--reward-weight', action='store', type=float, default=1,
+                        help='weighting factor for reward objective')
+    parser.add_argument('--start-cost-weight', action='store', type=float, default=1,
+                        help='weighting factor for starting material cost objective')
+    parser.add_argument('--reaction-weight', action='store', type=float, default=1,
+                        help='weighting factor for reaction objective')
+    parser.add_argument('--diversity-weight', action='store', type=float, default=0,
+                        help='weighting factor for diversity, encourages more clusters to be represented')
+    
+    # specific to expected reward maximization
+    parser.add_argument('--cost_of_rxn_weight', action='store', type=float, default=100,
+                    help='weighting factor for reaction objective')
+    parser.add_argument('--max-rxns', action='store', type=int, default=None,
+                        help='maximum number of reaction steps to select')
+    parser.add_argument('--starting-material-budget', action='store', type=int, default=None,
+                        help='maximum budget on starting material costs (all on per g basis, does not consider amount needed!)')
+    
     return parser
 

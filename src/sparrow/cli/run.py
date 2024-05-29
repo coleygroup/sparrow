@@ -5,7 +5,8 @@ import numpy as np
 
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
-from sparrow.route_selector import RouteSelector
+from sparrow.selector.linear import LinearSelector
+from sparrow.selector.nonlinear import ExpectedRewardSelector
 from sparrow.condition_recommender import AskcosRecommender, AskcosAPIRecommender
 from sparrow.scorer import AskcosScorer, AskcosAPIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
@@ -45,7 +46,6 @@ def optimize(selector, params):
 
     selector.extract_vars()
     return selector 
-
 
 def get_path_storage(params, targets): 
     if params['graph'] is not None: 
@@ -115,21 +115,41 @@ def build_selector(params, target_dict, storage_path, clusters):
         graph = RouteGraph(node_filename=storage_path)
 
     # weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
-
-    selector = RouteSelector(
-        target_dict=target_dict,
-        route_graph=graph, 
-        condition_recommender=build_recommender(params), 
-        output_dir=Path(params['output_dir']),
-        rxn_scorer=build_scorer(params),
-        coster=build_coster(params),
-        cost_per_rxn=params['cost_of_rxn_weight'],
-        constrain_all_targets=params['constrain_all'],
-        max_targets=params['max_targets'],
-        custom_clusters=clusters,
-        max_rxns=params['max_rxns'],
-        sm_budget=params['starting_material_budget']
-    )
+    if params['formulation'] == 'expected_reward':
+        selector = ExpectedRewardSelector(
+            route_graph=graph,
+            target_dict=target_dict,
+            rxn_scorer=build_scorer(params),
+            condition_recommender=build_recommender(params),
+            constrain_all_targets=params['constrain_all'],
+            max_targets=params['max_targets'],
+            coster=build_coster(params),
+            cost_per_rxn=params['cost_of_rxn_weight'],
+            output_dir=Path(params['output_dir']),
+            cluster_cutoff=params['cluster_cutoff'],
+            custom_clusters=clusters,
+            max_rxns=params['max_rxns'],
+            sm_budget=params['starting_material_budget'],
+            dont_buy_targets=params['dont_buy_targets']
+        )
+    else: 
+        
+        weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
+        
+        selector = LinearSelector(
+            route_graph=graph,
+            target_dict=target_dict,
+            rxn_scorer=build_scorer(params),
+            condition_recommender=build_recommender(params),
+            constrain_all_targets=params['constrain_all'],
+            max_targets=params['max_targets'],
+            coster=build_coster(params),
+            weights=weights,
+            output_dir=Path(params['output_dir']),
+            cluster_cutoff=params['cluster_cutoff'],
+            custom_clusters=clusters,
+            dont_buy_targets=params['dont_buy_targets']
+        )
 
     if storage_path is not None: 
         filepath = Path(params['output_dir'])/'trees_w_info.json'
