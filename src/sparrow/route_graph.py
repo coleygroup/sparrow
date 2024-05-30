@@ -16,7 +16,7 @@ def find_cycles_nx(adjacency_matrix):
     cycles = list(nx.simple_cycles(G))
     # filtered_cycles = [cycle for cycle in cycles if len(cycle) <= k]
 
-    return cycles
+    return cycles, G
 
 class RouteGraph: 
     """
@@ -32,6 +32,8 @@ class RouteGraph:
         
         self.compound_nodes = {}
         self.reaction_nodes = {}
+        self.nx_graph = None 
+        self.id_to_ind = None
         
         if node_filename:
 
@@ -343,6 +345,32 @@ class RouteGraph:
         reagents = set([i for cond in conditions for i in cond])
         return reagents    
 
+    def compute_adjacency_matrix_undirected(self) -> csr_matrix: 
+        id_to_ind = {node.id: ind for ind, node in enumerate(self.nodes().values())}
+
+        rows = []
+        cols = []
+
+        for ind, node in enumerate(self.nodes().values()):
+            child_ids = [child.id for child in node.children.values()]
+            # par_ids = [child.id for child in node.parents.values()]
+            for id in child_ids: 
+                rows.append(id_to_ind[id])
+                cols.append(ind)
+                rows.append(ind)
+                cols.append(id_to_ind[id])
+            # for id in par_ids: 
+            #     rows.append(id_to_ind[id])
+            #     cols.append(ind)
+            #     rows.append(ind)
+            #     cols.append(id_to_ind[id])
+        
+        data = (np.ones(len(rows)), (np.array(rows), np.array(cols)) )
+         
+        A = csr_matrix( data, shape=(len(id_to_ind), len(id_to_ind)) )        
+
+        return A, id_to_ind
+    
     def compute_adjacency_matrix(self) -> csr_matrix: 
         id_to_ind = {node.id: ind for ind, node in enumerate(self.nodes().values())}
 
@@ -363,7 +391,7 @@ class RouteGraph:
 
     def dfs_find_cycles_nx(self) -> list: 
         A, id_to_ind = self.compute_adjacency_matrix()
-        cycles = find_cycles_nx(A)
+        cycles, self.nx_graph = find_cycles_nx(A)
         ind_to_id = {ind: idd for idd, ind in id_to_ind.items()}
         cycless = [[ind_to_id[ind] for ind in cyc if ind_to_id[ind].startswith('R') ] for cyc in cycles]
         return cycless 
@@ -405,9 +433,33 @@ class RouteGraph:
                 )
         
         return
+    
+    def create_nx_graph(self):
+        if self.nx_graph is None or self.id_to_ind is None:
+            A, self.id_to_ind = self.compute_adjacency_matrix()
+            self.nx_graph = nx.DiGraph(A)
+        return self.nx_graph, self.id_to_ind
 
+    def check_path_exists(self, id1, id2): 
+        """ Check if a path exists in the directed graph from id1 to id2 """
+        has_path = nx.has_path(self.nx_graph, self.id_to_ind[id1], self.id_to_ind[id2])
+        return has_path
+    
+    def get_connected_nodes(self, target_id: str, max_distance: int): 
+        """ Returns node ids that LEAD TO the target_id within a max_distance """
+        def return_parents(node, depth=0, connected_nodes=[]): 
+            if depth > max_distance: 
+                return connected_nodes
+            
+            for parent in node.parents.values(): 
+                connected_nodes.append(parent)
+                connected_nodes = return_parents(parent, depth=depth+1, connected_nodes=connected_nodes)
 
-
+            return connected_nodes
+        
+        node = self.node_from_id(target_id)
+        return return_parents(node, connected_nodes=[node])
+    
     
 def load_route_graph(filename: Union[str, Path]) -> RouteGraph:
     """ Loads route graph from pickle file """

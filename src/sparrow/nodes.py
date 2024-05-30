@@ -68,6 +68,7 @@ class CompoundNode(Node):
                 children: List[Node] = None,
                 buyable: bool = None, 
                 cost_per_g: float = None, 
+                cost_function: list = None,
                 reward: float = None,
                 is_target: bool = False,  
                 is_intermediate: bool = False,
@@ -83,13 +84,15 @@ class CompoundNode(Node):
         self.is_target = None 
         self.is_intermediate = None 
         self.cost_set = False 
+        self.cost_function = None
 
         self.update(
             buyable=buyable, 
             cost_per_g=cost_per_g,
             reward=reward,
             is_target=is_target,
-            is_intermediate=is_intermediate
+            is_intermediate=is_intermediate,
+            cost_function=cost_function
         )
         
         return
@@ -114,7 +117,8 @@ class CompoundNode(Node):
             'reward': self.reward, 
             'is_target': self.is_target, 
             'is_intermediate': self.is_intermediate,
-            'cost_set': self.cost_set
+            'cost_set': self.cost_set,
+            'cost_function': self.cost_function,
         }
         return {**node_info, **cmd_info}
     
@@ -126,6 +130,9 @@ class CompoundNode(Node):
             self.cost_per_g = None
         return self.cost_per_g
     
+    def update_cost_function(self, amounts_in_g, prices_in_usd):
+        self.cost_function = [amounts_in_g, prices_in_usd]
+    
     def update(self,
                parents: List[Node] = None, 
                children: List[Node] = None, 
@@ -134,6 +141,7 @@ class CompoundNode(Node):
                reward: float = None,
                is_target: bool = None,  
                is_intermediate: bool = None,
+               cost_function: list = None,
                **kwargs,
                ) -> None:
         
@@ -161,6 +169,9 @@ class CompoundNode(Node):
                 self.is_intermediate = {0: False, 1: True}[is_intermediate]
             else: 
                 self.is_intermediate = is_intermediate
+        
+        if cost_function is not None: 
+            self.update_cost_function(cost_function[0], cost_function[1])
 
         return 
 
@@ -262,4 +273,3 @@ class ReactionNode(Node):
             return self.condition[:n_c]
         else: 
             return [[] for _ in range(n_c)]
-        
