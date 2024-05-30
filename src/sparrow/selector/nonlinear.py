@@ -52,7 +52,6 @@ class ExpectedRewardSelector(Selector):
         return gp.Model("sparrow")
 
     def define_variables(self): 
-
         # whether rxn is used 
         self.rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
         self.r = self.problem.addVars(
@@ -334,3 +333,14 @@ class ExpectedRewardSelector(Selector):
         rxn_ids = re.findall(r'rxn\[(.*?)\]', ' '.join(nonzero_varnames))
         mol_ids = re.findall(r'mol\[(.*?)\]', ' '.join(nonzero_varnames))
         return mol_ids, rxn_ids
+    
+class QuantityAwareERSelector(Selector): 
+    """ 
+    A selector that optimizes expected reward, but approximates the amount of 
+    SM needed in the cost function. Assumes that the minimum required quanttiy of starting material j 
+    equals T*m, where T is the number of targets whose routes use the starting material j and m is 
+    a constant parameter with units mass/target. This class also requires a cost function for 
+    starting materials, i.e., a list of quantities and corresponding costs. This can be 
+    addressed using the QuantityLookupCoster, or by including the cost function in the 
+    provided graph. 
+    """
