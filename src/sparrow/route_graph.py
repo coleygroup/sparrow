@@ -141,8 +141,8 @@ class RouteGraph:
             child = list(node.children.values())[0]
             if not child.buyable: 
                 self.remove_rxn_node(node.smiles)
-        return         
-
+        return     
+        
     def remove_dummies_to(self, id_list: list = []) -> None: 
         """ Removes dummy reaction nodes that produce nodes with ids in id_list """
         remove_smis = []
@@ -155,7 +155,7 @@ class RouteGraph:
             self.remove_rxn_node(smi)
 
         return 
-
+        
     def remove_rxn_node(self, smi) -> None: 
         self.reaction_nodes.pop(smi)
 

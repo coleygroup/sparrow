@@ -31,7 +31,7 @@ SPARROW has been tested on Python version 3.7 and 3.8 and on Linux and Windows m
 
 ## Installation
 
-On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. 
+On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. If you are using Gurobi, obtain a Gurobi license and follow the instructions below to use with SPARROW. 
 
 ```
 mamba env create -f environment.yml
@@ -49,8 +49,16 @@ If on Linux with x86 cores:
 wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh
 bash Mambaforge-Linux-x86_64.sh
 ```
-Otherwise, use the correct link from [Mambaforge installation page](https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh).
+Otherwise, use the correct link from [Mambaforge installation page](https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh). 
 
+#### Installing and using Gurobi 
+If you intend to use Gurobi to solve the optimization, first ensure that you have [obtained a Gurobi license](https://www.gurobi.com/solutions/licensing/). Then, in the relevant conda environment, install Gurobi using the following: 
+```
+conda config --add channels https://conda.anaconda.org/gurobi
+conda install gurobi
+grbgetkey <your key>
+```
+You can check the status and expiration date of your license using `gurobi_cl --license`. 
 
 ## Running SPARROW
 The general command to run SPARROW is:
@@ -86,6 +94,7 @@ If more than one run is performed on the same set of compounds, and only the wei
  - `--key-path` path that includes the file keys.py with chemspace api key
  - `--inventory`: path to CSV file with SMILES strings and costs, if using lookup coster
  - `--dont-buy-targets`: ensures that solution does not propose directly buying any target
+ - `--solver {pulp, gurobi}` (default: `pulp`): the solver to use
 
 **A note about required arguments:** The only required argument in SPARROW in `--target-csv`. However, providing this alone will not be sufficient to run SPARROW. In addition to candidates and rewards, SPARROW's optimization requires a set of potential reactions and scores for each reaction. If a provided `--graph` argument corresponds to a file that includes both potential reactions as a retrosynthesis tree _and_ reaction scores, that is sufficient to run SPARROW. However, if the file only contains a retrosynthesis tree, without reaction scores, SPARROW will require a `--scorer` argument. Likewise, if no `--graph` is provided, a valid entry for `--path-finder` (and any corresponding arguments) are required. We are currently working on expanding the documentation for SPARROW and improving its usability.
 
