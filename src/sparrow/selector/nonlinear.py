@@ -333,6 +333,198 @@ class ExpectedRewardSelector(Selector):
         rxn_ids = re.findall(r'rxn\[(.*?)\]', ' '.join(nonzero_varnames))
         mol_ids = re.findall(r'mol\[(.*?)\]', ' '.join(nonzero_varnames))
         return mol_ids, rxn_ids
+
+class PrunedERSelector(ExpectedRewardSelector): 
+    def __init__(self, 
+                 route_graph: RouteGraph, 
+                 target_dict: Dict[str, float], 
+                 rxn_scorer: Scorer = None, 
+                 condition_recommender: Recommender = None, 
+                 constrain_all_targets: bool = False, 
+                 max_targets: int = None, 
+                 coster: Coster = None, 
+                 cost_per_rxn: float = 100, 
+                 output_dir: str = 'debug', 
+                 remove_dummy_rxns_first: bool = False, 
+                 cluster_cutoff: float = 0.7, 
+                 custom_clusters: dict = None, 
+                 max_rxns: int = None, 
+                 sm_budget: float = None, 
+                 dont_buy_targets: bool = False,
+                 prune_distance: int = 10, 
+                 ) -> None:
+        
+        super().__init__(
+            route_graph=route_graph, target_dict=target_dict, 
+            rxn_scorer=rxn_scorer, condition_recommender=condition_recommender, 
+            constrain_all_targets=constrain_all_targets, max_targets=max_targets, 
+            coster=coster, cost_per_rxn=cost_per_rxn, output_dir=output_dir, 
+            remove_dummy_rxns_first=remove_dummy_rxns_first, cluster_cutoff=cluster_cutoff, 
+            custom_clusters=custom_clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
+            dont_buy_targets=dont_buy_targets
+            )  
+
+        self.prune_distance = prune_distance # TODO: make this an argument   
+        
+    def define_variables(self): 
+        # whether rxn is used 
+        self.rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
+        self.r = self.model.addVars(
+            self.rxn_ids,
+            vtype=GRB.BINARY,
+            name="rxn",
+        )
+
+        # whether molecule is selected 
+        mol_ids = [node.id for node in self.graph.compound_nodes_only()]
+        self.m = self.model.addVars(
+            mol_ids,
+            vtype=GRB.BINARY,
+            name="mol"
+        )
+
+        # whether rxn i is used for target j 
+        # whether compound j is used in the route to target j 
+        # only define this variable for reactions that are within some directed distance of targets
+        self.u = {}
+        self.cpdfor = {}
+                
+        for t_id in tqdm(self.targets, desc='"for" constraints'): 
+            connected_nodes = self.graph.get_connected_nodes(t_id, max_distance=self.prune_distance)
+            for n in connected_nodes: 
+                n_id = n.id
+                if n_id.startswith('C'):
+                    if n_id not in self.cpdfor: 
+                        self.cpdfor[n_id] = {}
+                    self.cpdfor[n_id][t_id] = self.model.addVar(
+                        vtype=GRB.BINARY,
+                        name=f'cpdfor[{n_id}][{t_id}]'
+                    )
+                elif n_id.startswith('R'): 
+                    if n_id not in self.u: 
+                        self.u[n_id] = {}
+                    self.u[n_id][t_id] = self.model.addVar(
+                        vtype=GRB.BINARY,
+                        name=f'rxnfor[{n_id}][{t_id}]'
+                    )
+
+        # additional variables for nonlinearity 
+        sum_log_scores = np.log([node.score if node.score>0 else 1e-10 for node in self.graph.non_dummy_nodes()]).sum()
+        self.usum = self.model.addVars(
+            self.targets, 
+            vtype=GRB.CONTINUOUS,  
+            name="usum",
+            ub=0,
+            lb=sum_log_scores,
+        )
+        self.expusum = self.model.addVars(
+            self.targets,
+            vtype=GRB.CONTINUOUS,
+            name="expusum",
+            ub=1,
+            lb=0
+        )
+        self.probsuccess = self.model.addVars(
+            self.targets, 
+            vtype=GRB.CONTINUOUS,
+            name="probsuccess",
+            ub=1,
+            lb=0,
+        )
+        max_n_rxns = len(self.graph.non_dummy_nodes())
+        max_sm_costs = np.sum([self.cost_of_dummy(dummy) for dummy in self.graph.dummy_nodes_only()])
+        max_costs = max_n_rxns*self.cost_per_rxn + max_sm_costs
+        self.allcosts = self.model.addVar(
+            name="allcosts",
+            vtype=GRB.CONTINUOUS,
+            ub=max_costs,
+            lb=0,
+        )
+        max_er = sum(self.target_dict.values())
+        self.sumer = self.model.addVar(
+            name="sumer",
+            vtype=GRB.CONTINUOUS,
+            ub=max_er,
+            lb=0,
+        )
+        
+        return 
+
+    def set_rxn_constraints(self):
+        # TODO: consider redudancy in these constraints and simplify problem 
+        
+        if self.max_rxns: 
+            self.model.addConstr(
+                self.max_rxns >= gp.quicksum(self.r[node.id] for node in self.graph.non_dummy_nodes())
+            )
+
+        for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'): 
+            if node.dummy: 
+                continue 
+            par_ids = [par.id for par in node.parents.values()]
+            for par_id in par_ids:
+                # whether reaction selected at all
+                self.model.addConstr(
+                    self.m[par_id] >= self.r[node.id],
+                    name=f'rxnConstr_{node.id}_{par_id}'
+                )
+                
+                # if a reaction is selected, every parent (reactant) must also be selected 
+                if node.id in self.u and par_id in self.cpdfor:
+                    ts = self.cpdfor[par_id].keys() & self.u[node.id].keys()
+                    self.model.addConstrs(
+                        self.cpdfor[par_id][t] >= self.u[node.id][t] for t in ts
+                    )
+
+            # if a reaction is used for a target, it is also used in general 
+            if node.id in self.u: 
+                
+                self.model.addConstr(
+                    len(self.targets)*self.r[node.id] >= gp.quicksum(self.u[node.id].values()),
+                    name=f'rxnusedConstr_{node.id}'
+                )
+
+                self.model.addConstr(
+                    self.r[node.id] <= gp.quicksum(self.u[node.id].values()),
+                    name=f'rxnusedConstr2_{node.id}'
+                )
+
+        return 
+    
+    def set_mol_constraints(self): 
+        
+        for t in self.targets: 
+            self.model.addConstr(
+                self.cpdfor[t][t] == self.m[t]
+            )
+
+        for node in tqdm(self.graph.compound_nodes_only(), 'Compound constraints'): 
+            par_ids = [par.id for par in node.parents.values()]
+            self.model.addConstr(
+                self.m[node.id] <= gp.quicksum(self.r[par_id] for par_id in par_ids),
+                name=f'cpdConstr_{node.id}'
+            )
+
+            # if a compound is used for a target, at least one parent reaction must also be used for that target 
+            if node.id in self.cpdfor:
+                for t in self.cpdfor[node.id].keys():
+                    par_idss = [par_id for par_id in par_ids if par_id in self.u and t in self.u[par_id]]
+                    self.model.addConstr(
+                        self.cpdfor[node.id][t] <= gp.quicksum(self.u[par_id][t] for par_id in par_idss) 
+                    )
+
+                # if a compound is used for a target, it is also used in general 
+                self.model.addConstr(
+                    len(self.targets)*self.m[node.id] >= gp.quicksum(self.cpdfor[node.id].values()),
+                    name=f'molusedConstr_{node.id}'
+                )     
+
+                self.model.addConstr(
+                    self.m[node.id] <= gp.quicksum(self.cpdfor[node.id].values()),
+                    name=f'molusedConstr_{node.id}'
+                )      
+        
+        return 
     
 class QuantityAwareERSelector(Selector): 
     """ 
@@ -344,3 +536,31 @@ class QuantityAwareERSelector(Selector):
     addressed using the QuantityLookupCoster, or by including the cost function in the 
     provided graph. 
     """
+    def __init__(self, 
+                 route_graph: RouteGraph, 
+                 target_dict: Dict[str, float], 
+                 rxn_scorer: Scorer = None, 
+                 condition_recommender: Recommender = None, 
+                 constrain_all_targets: bool = False, 
+                 max_targets: int = None, 
+                 coster: Coster = None, 
+                 cost_per_rxn: float = 100, 
+                 output_dir: str = 'debug', 
+                 remove_dummy_rxns_first: bool = False, 
+                 cluster_cutoff: float = 0.7, 
+                 custom_clusters: dict = None, 
+                 max_rxns: int = None, 
+                 sm_budget: float = None, 
+                 dont_buy_targets: bool = False
+                 ) -> None:
+        
+        super().__init__(
+            route_graph=route_graph, target_dict=target_dict, 
+            rxn_scorer=rxn_scorer, condition_recommender=condition_recommender, 
+            constrain_all_targets=constrain_all_targets, max_targets=max_targets, 
+            coster=coster, cost_per_rxn=cost_per_rxn, output_dir=output_dir, 
+            remove_dummy_rxns_first=remove_dummy_rxns_first, cluster_cutoff=cluster_cutoff, 
+            custom_clusters=custom_clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
+            dont_buy_targets=dont_buy_targets
+            )
+        
