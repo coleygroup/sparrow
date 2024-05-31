@@ -1,5 +1,5 @@
 from sparrow import ReactionNode, CompoundNode, Node
-from sparrow.coster import Coster
+from sparrow.coster import Coster, QuantityLookupCoster
 from typing import Iterable, Dict, Union, Optional, List
 from pathlib import Path
 from tqdm import tqdm
@@ -240,12 +240,20 @@ class RouteGraph:
                 continue 
 
             coster.status_log.set_description_str(f'Searching for {node.smiles}')
-
             buyable, cost = coster.get_buyable_and_cost(node.smiles)
-            node.update(
-                buyable=buyable, 
-                cost_per_g=cost,
-            )
+            
+            if type(coster) == QuantityLookupCoster:
+                cost_function = coster.get_cost_function(node.smiles)
+                node.update(
+                    buyable=buyable, 
+                    cost_per_g=cost,
+                    cost_function=cost_function,
+                )                
+            else:                 
+                node.update(
+                    buyable=buyable, 
+                    cost_per_g=cost,
+                )
             c += 1
             prog_bar.update(1)
 

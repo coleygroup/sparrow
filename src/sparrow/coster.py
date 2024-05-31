@@ -4,7 +4,7 @@ import time
 import pprint
 from typing import List, Tuple, Dict, Union
 from pathlib import Path 
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from rdkit import Chem
 from tqdm import tqdm
