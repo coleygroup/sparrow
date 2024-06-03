@@ -6,7 +6,7 @@ import numpy as np
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
 from sparrow.selector.linear import LinearSelector
-from sparrow.selector.nonlinear import ExpectedRewardSelector
+from sparrow.selector.nonlinear import ExpectedRewardSelector, PrunedERSelector
 from sparrow.condition_recommender import AskcosAPIRecommender
 from sparrow.scorer import AskcosAPIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
@@ -39,12 +39,9 @@ def optimize(selector, params):
     selector.define_variables()
     selector.set_objective()
     selector.set_constraints(set_cycle_constraints=not params['acyclic'])
-    
-    # solver = {'pulp': None, 'gurobi': 'GUROBI'}[params['solver']]
-    selector.optimize() # solver='GUROBI' for GUROBI (license needed)
-    # selector.optimize_MO()
-
+    selector.optimize() 
     selector.extract_vars()
+    
     return selector 
 
 def get_path_storage(params, targets): 
@@ -111,7 +108,7 @@ def build_selector(params, target_dict, storage_path, clusters):
         graph = RouteGraph(node_filename=storage_path)
 
     # weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
-    if params['formulation'] == 'expected_reward':
+    if params['formulation'] == 'expected_reward' and params['prune_distance'] is None:
         selector = ExpectedRewardSelector(
             route_graph=graph,
             target_dict=target_dict,
@@ -128,6 +125,24 @@ def build_selector(params, target_dict, storage_path, clusters):
             sm_budget=params['starting_material_budget'],
             dont_buy_targets=params['dont_buy_targets']
         )
+    elif params['formulation'] == 'expected_reward': 
+        selector = PrunedERSelector(
+            route_graph=graph,
+            target_dict=target_dict,
+            rxn_scorer=build_scorer(params),
+            condition_recommender=build_recommender(params),
+            constrain_all_targets=params['constrain_all'],
+            max_targets=params['max_targets'],
+            coster=build_coster(params),
+            cost_per_rxn=params['cost_of_rxn_weight'],
+            output_dir=Path(params['output_dir']),
+            cluster_cutoff=params['cluster_cutoff'],
+            custom_clusters=clusters,
+            max_rxns=params['max_rxns'],
+            sm_budget=params['starting_material_budget'],
+            dont_buy_targets=params['dont_buy_targets'],
+            prune_distance=params['prune_distance']
+        )        
     else: 
         weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
         
@@ -143,7 +158,8 @@ def build_selector(params, target_dict, storage_path, clusters):
             output_dir=Path(params['output_dir']),
             cluster_cutoff=params['cluster_cutoff'],
             custom_clusters=clusters,
-            dont_buy_targets=params['dont_buy_targets']
+            dont_buy_targets=params['dont_buy_targets'],
+            solver=params['solver'],
         )
 
     if storage_path is not None: 

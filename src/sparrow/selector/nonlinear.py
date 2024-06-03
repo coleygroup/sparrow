@@ -335,6 +335,22 @@ class ExpectedRewardSelector(Selector):
         return mol_ids, rxn_ids
 
 class PrunedERSelector(ExpectedRewardSelector): 
+    """ 
+    This is an ExpectedRewardSelector that reduces the total number of decision variables
+    that are defined in the optimization. Specifically, the ExpectedRewardSelector defines 
+    the decision variable self.u to have Nr (number of reactions in the graph) * Nt (number of targets) 
+    elements and the decision array self.cpdfor to have Nc (number of compounds in the graph) * Nt 
+    elements. For large graphs this is prohibitive. A PrunedERSelector instead identifies which 
+    nodes are within some distance (prune_distance) away from each target and only defines the 
+    relevant decision variables for those connected nodes. For low prune_distance, this reduces the 
+    time to define the problem and to optimize. For large prune_distance, the time to define the 
+    problem may increase, but solving time will either remain the same or decrease. 
+    
+    NOTE: This selector should return the same results as ExpectedRewardSelector for large prune_distance
+    (greater than 2*longest_route+1). However, we are currently observing discrepancies between solutions. 
+    For example, we've observed that this selector achieves ~2% lower cumulative expected reward than 
+    ExpectedRewardSelector for otherwise identical arguments. Please take note and use cautiously. 
+    """
     def __init__(self, 
                  route_graph: RouteGraph, 
                  target_dict: Dict[str, float], 
@@ -369,7 +385,7 @@ class PrunedERSelector(ExpectedRewardSelector):
     def define_variables(self): 
         # whether rxn is used 
         self.rxn_ids = [node.id for node in self.graph.reaction_nodes_only()]
-        self.r = self.model.addVars(
+        self.r = self.problem.addVars(
             self.rxn_ids,
             vtype=GRB.BINARY,
             name="rxn",
@@ -377,7 +393,7 @@ class PrunedERSelector(ExpectedRewardSelector):
 
         # whether molecule is selected 
         mol_ids = [node.id for node in self.graph.compound_nodes_only()]
-        self.m = self.model.addVars(
+        self.m = self.problem.addVars(
             mol_ids,
             vtype=GRB.BINARY,
             name="mol"
@@ -396,35 +412,35 @@ class PrunedERSelector(ExpectedRewardSelector):
                 if n_id.startswith('C'):
                     if n_id not in self.cpdfor: 
                         self.cpdfor[n_id] = {}
-                    self.cpdfor[n_id][t_id] = self.model.addVar(
+                    self.cpdfor[n_id][t_id] = self.problem.addVar(
                         vtype=GRB.BINARY,
                         name=f'cpdfor[{n_id}][{t_id}]'
                     )
                 elif n_id.startswith('R'): 
                     if n_id not in self.u: 
                         self.u[n_id] = {}
-                    self.u[n_id][t_id] = self.model.addVar(
+                    self.u[n_id][t_id] = self.problem.addVar(
                         vtype=GRB.BINARY,
                         name=f'rxnfor[{n_id}][{t_id}]'
                     )
 
         # additional variables for nonlinearity 
         sum_log_scores = np.log([node.score if node.score>0 else 1e-10 for node in self.graph.non_dummy_nodes()]).sum()
-        self.usum = self.model.addVars(
+        self.usum = self.problem.addVars(
             self.targets, 
             vtype=GRB.CONTINUOUS,  
             name="usum",
             ub=0,
             lb=sum_log_scores,
         )
-        self.expusum = self.model.addVars(
+        self.expusum = self.problem.addVars(
             self.targets,
             vtype=GRB.CONTINUOUS,
             name="expusum",
             ub=1,
             lb=0
         )
-        self.probsuccess = self.model.addVars(
+        self.probsuccess = self.problem.addVars(
             self.targets, 
             vtype=GRB.CONTINUOUS,
             name="probsuccess",
@@ -434,14 +450,14 @@ class PrunedERSelector(ExpectedRewardSelector):
         max_n_rxns = len(self.graph.non_dummy_nodes())
         max_sm_costs = np.sum([self.cost_of_dummy(dummy) for dummy in self.graph.dummy_nodes_only()])
         max_costs = max_n_rxns*self.cost_per_rxn + max_sm_costs
-        self.allcosts = self.model.addVar(
+        self.allcosts = self.problem.addVar(
             name="allcosts",
             vtype=GRB.CONTINUOUS,
             ub=max_costs,
             lb=0,
         )
         max_er = sum(self.target_dict.values())
-        self.sumer = self.model.addVar(
+        self.sumer = self.problem.addVar(
             name="sumer",
             vtype=GRB.CONTINUOUS,
             ub=max_er,
@@ -454,7 +470,7 @@ class PrunedERSelector(ExpectedRewardSelector):
         # TODO: consider redudancy in these constraints and simplify problem 
         
         if self.max_rxns: 
-            self.model.addConstr(
+            self.problem.addConstr(
                 self.max_rxns >= gp.quicksum(self.r[node.id] for node in self.graph.non_dummy_nodes())
             )
 
@@ -464,7 +480,7 @@ class PrunedERSelector(ExpectedRewardSelector):
             par_ids = [par.id for par in node.parents.values()]
             for par_id in par_ids:
                 # whether reaction selected at all
-                self.model.addConstr(
+                self.problem.addConstr(
                     self.m[par_id] >= self.r[node.id],
                     name=f'rxnConstr_{node.id}_{par_id}'
                 )
@@ -472,19 +488,19 @@ class PrunedERSelector(ExpectedRewardSelector):
                 # if a reaction is selected, every parent (reactant) must also be selected 
                 if node.id in self.u and par_id in self.cpdfor:
                     ts = self.cpdfor[par_id].keys() & self.u[node.id].keys()
-                    self.model.addConstrs(
+                    self.problem.addConstrs(
                         self.cpdfor[par_id][t] >= self.u[node.id][t] for t in ts
                     )
 
             # if a reaction is used for a target, it is also used in general 
             if node.id in self.u: 
                 
-                self.model.addConstr(
+                self.problem.addConstr(
                     len(self.targets)*self.r[node.id] >= gp.quicksum(self.u[node.id].values()),
                     name=f'rxnusedConstr_{node.id}'
                 )
 
-                self.model.addConstr(
+                self.problem.addConstr(
                     self.r[node.id] <= gp.quicksum(self.u[node.id].values()),
                     name=f'rxnusedConstr2_{node.id}'
                 )
@@ -494,13 +510,13 @@ class PrunedERSelector(ExpectedRewardSelector):
     def set_mol_constraints(self): 
         
         for t in self.targets: 
-            self.model.addConstr(
+            self.problem.addConstr(
                 self.cpdfor[t][t] == self.m[t]
             )
 
         for node in tqdm(self.graph.compound_nodes_only(), 'Compound constraints'): 
             par_ids = [par.id for par in node.parents.values()]
-            self.model.addConstr(
+            self.problem.addConstr(
                 self.m[node.id] <= gp.quicksum(self.r[par_id] for par_id in par_ids),
                 name=f'cpdConstr_{node.id}'
             )
@@ -509,21 +525,51 @@ class PrunedERSelector(ExpectedRewardSelector):
             if node.id in self.cpdfor:
                 for t in self.cpdfor[node.id].keys():
                     par_idss = [par_id for par_id in par_ids if par_id in self.u and t in self.u[par_id]]
-                    self.model.addConstr(
+                    self.problem.addConstr(
                         self.cpdfor[node.id][t] <= gp.quicksum(self.u[par_id][t] for par_id in par_idss) 
                     )
 
                 # if a compound is used for a target, it is also used in general 
-                self.model.addConstr(
+                self.problem.addConstr(
                     len(self.targets)*self.m[node.id] >= gp.quicksum(self.cpdfor[node.id].values()),
                     name=f'molusedConstr_{node.id}'
                 )     
 
-                self.model.addConstr(
+                self.problem.addConstr(
                     self.m[node.id] <= gp.quicksum(self.cpdfor[node.id].values()),
                     name=f'molusedConstr_{node.id}'
                 )      
         
+        return 
+    
+    def set_nonlinear_constraints(self):
+
+        log_scores = np.log([node.score if node.score>0 else 1e-10 for node in self.graph.non_dummy_nodes()])
+        log_scores = {node.id: score for node, score in zip(self.graph.non_dummy_nodes(), log_scores)}
+        
+        for t in self.targets: 
+            nids = [node.id for node in self.graph.non_dummy_nodes()
+                    if node.id in self.u and t in self.u[node.id]]
+            self.problem.addConstr(
+                self.usum[t] == gp.quicksum(
+                    self.u[nid][t]*log_scores[nid] 
+                    for nid in nids
+                ),
+                name=f'usumConstr_{t}',
+            )
+            self.problem.addGenConstrExp(self.usum[t], self.expusum[t], name=f'expusumConstr_{t}',options="FuncPieces=-2 FuncPieceError=0.00001")
+            self.problem.addQConstr(
+                self.probsuccess[t], GRB.LESS_EQUAL, self.expusum[t]*self.cpdfor[t][t], 
+                name=f'probsuccessConstr_{t}',
+            )
+        
+        self.problem.addQConstr(
+            self.sumer, GRB.LESS_EQUAL, gp.quicksum(
+                self.target_dict[t]*self.probsuccess[t] for t in self.targets
+            ),
+            name='sumER_constr',
+        )
+
         return 
     
 class QuantityAwareERSelector(Selector): 
