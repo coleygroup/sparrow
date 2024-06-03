@@ -266,10 +266,10 @@ class Selector(ABC):
         avg_rxn_score = np.mean([self.graph.node_from_id(rxn).score for rxn in non_dummy_ids]) if len(non_dummy_ids) > 0 else None
 
         summary = {
-            'Cost/reaction weighting factor': self.cost_per_rxn,
+            # 'Cost/reaction weighting factor': self.cost_per_rxn,
             'Number targets': len(selected_targets), 
-            'Fraction targets': len(selected_targets)/len(self.targets),
-            'Total reward': sum([self.target_dict[tar] for tar in selected_targets]),
+            'Fraction targets selected': len(selected_targets)/len(self.targets),
+            'Cumulative reward of selected compounds': sum([self.target_dict[tar] for tar in selected_targets]),
             'Possible reward': sum(self.target_dict.values()),
             'Number starting materials': len(selected_starting),
             'Cost starting materials': sum([self.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
@@ -278,15 +278,21 @@ class Selector(ABC):
         }
 
         if extract_routes:
+            summary['Expected Reward'] = 0
             storage = {}
             for target in tqdm(selected_targets, desc='Extracting routes'): 
                 store_dict = {'Compounds':[], 'Reactions':[]}
                 smi = self.graph.smiles_from_id(target)
                 storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids)
                 storage[smi]['Reward'] = self.target_dict[target]
+                er = self.target_dict[target]*np.prod(np.array([entry['score'] for entry in storage[smi]['Reactions'] if 'score' in entry]))
+                storage[smi]['Expected Reward'] = er
+                summary['Expected Reward'] += er
 
             with open(output_dir/f'routes.json','w') as f: 
                 json.dump(storage, f, indent='\t')
+
+            print(f'Total expected reward: {summary["Expected Reward"]:0.2f}')
 
         with open(output_dir/'summary.json', 'w') as f:
             json.dump(summary, f, indent='\t')
