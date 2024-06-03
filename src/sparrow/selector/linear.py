@@ -28,7 +28,8 @@ class LinearSelector(Selector):
                  remove_dummy_rxns_first: bool = False, 
                  cluster_cutoff: float = 0.7, 
                  custom_clusters: dict = None, 
-                 dont_buy_targets: bool = False
+                 dont_buy_targets: bool = False,
+                 solver: str = 'pulp'
                  ) -> None:
         
         super().__init__(
@@ -39,6 +40,7 @@ class LinearSelector(Selector):
             remove_dummy_rxns_first=remove_dummy_rxns_first, cluster_cutoff=cluster_cutoff, 
             custom_clusters=custom_clusters, dont_buy_targets=dont_buy_targets
             )
+        self.solver = solver 
         
     def initialize_problem(self) -> LpProblem:
         return LpProblem("Route_Selection", LpMinimize)
@@ -174,11 +176,11 @@ class LinearSelector(Selector):
 
         return 
     
-    def optimize(self, solver=None):
+    def optimize(self):
 
         print("Solving optimization problem...")
         opt_start = time.time()
-        if solver == 'GUROBI': 
+        if self.solver == 'GUROBI' or self.solver == 'gurobi': 
             self.problem.solve(GUROBI(timeLimit=86400))
         else: 
             self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
