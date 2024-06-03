@@ -187,8 +187,7 @@ class ExpectedRewardSelector(Selector):
             )
 
         for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'): 
-            if node.dummy: 
-                continue 
+
             par_ids = [par.id for par in node.parents.values()]
             for par_id in par_ids:
                 # whether reaction selected at all
@@ -345,11 +344,6 @@ class PrunedERSelector(ExpectedRewardSelector):
     relevant decision variables for those connected nodes. For low prune_distance, this reduces the 
     time to define the problem and to optimize. For large prune_distance, the time to define the 
     problem may increase, but solving time will either remain the same or decrease. 
-    
-    NOTE: This selector should return the same results as ExpectedRewardSelector for large prune_distance
-    (greater than 2*longest_route+1). However, we are currently observing discrepancies between solutions. 
-    For example, we've observed that this selector achieves ~2% lower cumulative expected reward than 
-    ExpectedRewardSelector for otherwise identical arguments. Please take note and use cautiously. 
     """
     def __init__(self, 
                  route_graph: RouteGraph, 
@@ -475,8 +469,7 @@ class PrunedERSelector(ExpectedRewardSelector):
             )
 
         for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'): 
-            if node.dummy: 
-                continue 
+
             par_ids = [par.id for par in node.parents.values()]
             for par_id in par_ids:
                 # whether reaction selected at all
