@@ -101,7 +101,7 @@ All arguments and descriptions can be viewed by running `sparrow --help`. Below 
  - `--key-path` path that includes the file keys.py with chemspace api key
  - `--inventory`: path to CSV file with SMILES strings and costs, if using lookup coster
  - `--dont-buy-targets`: ensures that solution does not propose directly buying any target
- - `--solver {pulp, gurobi}` (default: `pulp`) <sup>L<\sup>: the solver to use. The expected reward formulation requires and defaults to Gurobi. 
+ - `--solver {pulp, gurobi}` (default: `pulp`) <sup>L</sup>: the solver to use. The expected reward formulation requires and defaults to Gurobi. 
 <sup>L<\sup> only used in the linear formulation
 <sup>E</sup> only used in the expected reward formulation
 
