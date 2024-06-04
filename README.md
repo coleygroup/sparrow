@@ -84,7 +84,7 @@ All arguments and descriptions can be viewed by running `sparrow --help`. Below 
  - `--starting-material-budget` <sup>E</sup>: maximum starting material cost 
  - `--cluster {custom, similarity}` (default: `None`): How to define clusters if desired. If `custom`, they must be defined in the `target-csv` file. If `similarity`, they are automatically defined using Tanimoto similarity-based clusters with a maximum cutoff of `--cluster-cutoff` (default: `0.7`).
  - `--N-per-cluster`: Constrains that all clusters are represented by at least `N` compounds 
- - `--diversity-weight` (default: `0`) <sup>L<\sup>: A weighting factor that encourages selection of many similarity-based clusters. 
+ - `--diversity-weight` (default: `0`) <sup>L</sup>: A weighting factor that encourages selection of many similarity-based clusters. 
  - `--path-finder {lookup,api}`: type of tree builder to use
  - `--tree-lookup-dir`: path of lookup json file with combined retrosynthesis tree
  - `--time-per-target`: expansion time in seconds for each target
