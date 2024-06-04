@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd 
 import sys 
 import numpy as np 
+import json 
 
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
@@ -11,28 +12,54 @@ from sparrow.condition_recommender import AskcosAPIRecommender
 from sparrow.scorer import AskcosAPIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
 from sparrow.cli.args import get_args
+from sparrow.utils import cluster_utils
 
-def get_target_dict(filepath: Path, clusters: bool = False): 
+def get_target_dict(filepath: Path): 
     df = pd.read_csv(filepath)
     target_dict = {
         smiles: reward
         for smiles, reward in zip(df['SMILES'], df['Reward'])
     }
+    return target_dict, list(df['SMILES'])
 
-    if not clusters: 
-        return target_dict, list(df['SMILES']), None
-    
-    if 'Cluster' not in df: 
-        print(f'No "Cluster" column in {filepath}, but custom cluster argument was specified')
-        print('Continuing without clusters')
-        return target_dict, list(df['SMILES']), None
+def get_clusters(cluster_type, filepath, cutoff, outdir=None): 
+    if cluster_type is None: 
+        return None 
+    elif cluster_type == 'custom':
+        df = pd.read_csv(filepath)
+        if 'Cluster' not in df: 
+            print(f'No "Cluster" column in {filepath}, treating each additional column as a cluster group')
+            c_names = set(df.columns)
+            c_names.remove('SMILES')
+            c_names.remove('Reward')
+            cluster_smis = {
+                c_name: list(df.loc[df[c_name]==True]['SMILES'])
+                for c_name in c_names
+            }
+            return cluster_smis
 
-    c_names = set([c for c in df['Cluster'] if not np.isnan(c)])
-    cluster_smis = {
-        c: list(df.loc[df.Cluster==c]['SMILES'])
-        for c in c_names
-    }
-    return target_dict, list(df['SMILES']), cluster_smis
+        c_names = set([c for c in df['Cluster'] if not np.isnan(c)])
+        cluster_smis = {
+            c: list(df.loc[df.Cluster==c]['SMILES'])
+            for c in c_names
+        }
+        return cluster_smis
+    elif cluster_type == 'similarity': 
+        df = pd.read_csv(filepath)
+        smis = list(df['SMILES'])
+        clusters = cluster_utils.cluster_smiles(smis, cutoff=cutoff)
+        cluster_smis = {
+            f'SimCluster_{i}': [smis[j] for j in clusters[i]]
+            for i in range(len(clusters))
+        }
+        
+        cs_file = Path(outdir) / 'clusters.json'
+        print(f'Saving list of {len(cluster_smis)} clusters to {cs_file}')
+        
+        with open(cs_file,'w') as f: 
+            json.dump(cluster_smis, f, indent='\t')
+
+        return cluster_smis
 
 def optimize(selector, params):
 
@@ -122,11 +149,11 @@ def build_selector(params, target_dict, storage_path, clusters):
             coster=build_coster(params),
             cost_per_rxn=params['cost_of_rxn_weight'],
             output_dir=Path(params['output_dir']),
-            cluster_cutoff=params['cluster_cutoff'],
-            custom_clusters=clusters,
+            clusters=clusters,
             max_rxns=params['max_rxns'],
             sm_budget=params['starting_material_budget'],
-            dont_buy_targets=params['dont_buy_targets']
+            dont_buy_targets=params['dont_buy_targets'],
+            N_per_cluster=params['N_per_cluster']
         )
     else: 
         weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
@@ -141,9 +168,9 @@ def build_selector(params, target_dict, storage_path, clusters):
             coster=build_coster(params),
             weights=weights,
             output_dir=Path(params['output_dir']),
-            cluster_cutoff=params['cluster_cutoff'],
-            custom_clusters=clusters,
-            dont_buy_targets=params['dont_buy_targets']
+            clusters=clusters,
+            dont_buy_targets=params['dont_buy_targets'],
+            N_per_cluster=params['N_per_cluster']
         )
 
     if storage_path is not None: 
@@ -175,7 +202,16 @@ def run():
     
     save_args(params)
 
-    target_dict, targets, clusters = get_target_dict(params['target_csv'], clusters=params['custom_cluster']) 
+    target_dict, targets = get_target_dict(params['target_csv']) 
+    if params['diversity_weight'] > 0: 
+        print(f'Overwriting parameter "--cluster" to be similarity for diversity objective')
+        params['cluster'] = 'similarity'
+    clusters = get_clusters(
+        cluster_type=params['cluster'], 
+        filepath=params['target_csv'], 
+        cutoff=params['cluster_cutoff'], 
+        outdir=params['output_dir']
+    )
     storage_path = get_path_storage(params, targets)
     selector = build_selector(params, target_dict, storage_path, clusters)
     selector = optimize(selector, params)

@@ -17,6 +17,7 @@ def get_args(args: str = None):
     parser = add_condition_rec_args(parser)
     parser = add_coster_args(parser)
     parser = add_scorer_args(parser)
+    parser = add_cluster_args(parser)
     parser = add_optimization_args(parser)
 
     return parser.parse_args(args)
@@ -99,15 +100,11 @@ def add_optimization_args(parser: ArgumentParser):
                         help='whether to constrain that all candidates are selection')
     parser.add_argument('--max-targets', action='store', default=None, type=int,
                         help='maximum number of selected targets (useful if testing is a bottleneck)')
-    parser.add_argument('--cluster-cutoff', action='store', type=float, default=0.7,
-                        help='cutoff for Butina clustering algorithm (lower cutoff -> more small clusters)')
     parser.add_argument('--solver', action='store', type=str, choices=['pulp', 'gurobi'],
                         default='pulp', help='solver to use for linear optimization')
     parser.add_argument('--acyclic', action='store_true', default=False, 
                         help='if the reaction network graph is known to be acyclic')
-    parser.add_argument('--custom-cluster', action='store_true', default=False,
-                        help='To use custom clusters. Target csv file must include a "Cluster" column' )
-    
+
     # Specific to linear formulation 
     parser.add_argument('--reward-weight', action='store', type=float, default=1,
                         help='weighting factor for reward objective')
@@ -115,9 +112,7 @@ def add_optimization_args(parser: ArgumentParser):
                         help='weighting factor for starting material cost objective')
     parser.add_argument('--reaction-weight', action='store', type=float, default=1,
                         help='weighting factor for reaction objective')
-    parser.add_argument('--diversity-weight', action='store', type=float, default=0,
-                        help='weighting factor for diversity, encourages more clusters to be represented')
-    
+
     # specific to expected reward maximization
     parser.add_argument('--cost_of_rxn_weight', action='store', type=float, default=100,
                     help='weighting factor for reaction objective')
@@ -128,3 +123,18 @@ def add_optimization_args(parser: ArgumentParser):
     
     return parser
 
+def add_cluster_args(parser: ArgumentParser): 
+    # currently specific to linear optimization 
+    parser.add_argument('--diversity-weight', action='store', type=float, default=0,
+                    help='weighting factor for diversity, automatically clusters by Tanimoto similarity and encourages many clusters to be represented')
+
+    # not specific to any formulation 
+    parser.add_argument('--cluster', action='store', default=None, choices=[None, 'custom', 'similarity'],
+                        help='How to define clusters. If "custom", should be included in targets.csv file ')
+    # parser.add_argument('--custom-cluster', action='store_true', default=False,
+    #                     help='To use custom clusters. Target csv file must include a "Cluster" column' )
+    parser.add_argument('--cluster-cutoff', action='store', type=float, default=0.7,
+                        help='if using automatic clustering, cutoff for Butina clustering algorithm (lower cutoff -> more small clusters)') 
+    parser.add_argument('--N-per-cluster', action='store', type=int, default=None,
+                        help='To constrain that N compounds per cluster will be selected')
+    return parser
