@@ -1,5 +1,5 @@
 from typing import Dict, List
-from pulp import LpProblem, LpMinimize, LpVariable, lpSum, GUROBI
+from pulp import LpProblem, LpMinimize, LpVariable, lpSum, GUROBI, LpStatus
 from pulp.apis import PULP_CBC_CMD
 from tqdm import tqdm 
 
@@ -26,8 +26,8 @@ class LinearSelector(Selector):
                  weights: List = [1, 1, 1, 1], 
                  output_dir: str = 'debug', 
                  remove_dummy_rxns_first: bool = False, 
-                 cluster_cutoff: float = 0.7, 
-                 custom_clusters: dict = None, 
+                 clusters: dict = None, 
+                 N_per_cluster: int = 1,
                  dont_buy_targets: bool = False,
                  solver: str = 'pulp'
                  ) -> None:
@@ -37,8 +37,8 @@ class LinearSelector(Selector):
             rxn_scorer=rxn_scorer, condition_recommender=condition_recommender, 
             constrain_all_targets=constrain_all_targets, max_targets=max_targets, 
             coster=coster, weights=weights, output_dir=output_dir, 
-            remove_dummy_rxns_first=remove_dummy_rxns_first, cluster_cutoff=cluster_cutoff, 
-            custom_clusters=custom_clusters, dont_buy_targets=dont_buy_targets
+            remove_dummy_rxns_first=remove_dummy_rxns_first, 
+            clusters=clusters, N_per_cluster=N_per_cluster, dont_buy_targets=dont_buy_targets
             )
         self.solver = solver 
         
@@ -78,6 +78,9 @@ class LinearSelector(Selector):
         
         if self.constrain_all_targets:
             self.set_constraint_all_targets()
+        
+        if self.N_per_cluster is not None and self.N_per_cluster > 0:
+            self.set_cluster_constraints()
 
         return 
     
@@ -127,6 +130,19 @@ class LinearSelector(Selector):
                 self.m[target] == 1
             )
 
+    def set_cluster_constraints(self): 
+        # check that self.N_per_cluster >= minimum cluster size 
+        min_clus_size = min([len(clus) for clus in self.clusters.values()])
+        if self.N_per_cluster > min_clus_size: 
+            print(f'Smallest cluster has {min_clus_size} compounds, but N_per_cluster is {self.N_per_cluster}')
+            print(f'Switching N_per_cluster to {min_clus_size}')
+            self.N_per_cluster = min_clus_size
+        
+        for cname, ids in self.clusters.items(): 
+            self.problem += (
+                lpSum(self.m[nid] for nid in ids) >= self.N_per_cluster
+            )
+
     def set_objective(self): 
         # TODO: Add consideration of conditions 
         print('Setting objective function ...')
@@ -147,31 +163,22 @@ class LinearSelector(Selector):
 
     def add_diversity_objective(self): 
         """ Adds scalarization objective to increase the number of clusters represented, requires defining new variable """
-        print('Clustering molecules for diversity objective')
-        cs_ind = cluster_smiles([self.graph.smiles_from_id(id) for id in self.targets], cutoff=self.cluster_cutoff)
-        cs = [[self.targets[ind] for ind in cluster] for cluster in cs_ind]
-        
-        cs_file = self.dir / 'clusters.json'
-        print(f'Saving list of {len(cs)} clusters to {cs_file}')
-        
-        with open(cs_file,'w') as f: 
-            json.dump(cs, f, indent='\t')
 
         # d_i : whether cluster i is represented by the selected set 
         self.d = LpVariable.dicts(
             "cluster", 
-            indices=range(len(cs)), 
+            indices=range(len(self.clusters)), 
             cat="Binary",
         )
 
         # constraint: d_i <= sum(c_j) for j in cluster i
-        for i, ids_in_cluster in enumerate(cs): 
+        for i, ids_in_cluster in enumerate(self.clusters.values()): 
             self.problem += (
                 self.d[i] <= lpSum(self.m[cpd_id] for cpd_id in ids_in_cluster)
             )
         
         # add objective 
-        print(f'adding objective with {self.weights[3]}')
+        print(f'adding diversity objective with weight {self.weights[3]}')
         self.problem += self.problem.objective - self.weights[3]*lpSum(self.d)
 
         return 
@@ -185,6 +192,9 @@ class LinearSelector(Selector):
         else: 
             self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
 
+        if self.problem.status == -1: 
+            raise RuntimeError('Problem is infeasible. To fix, try relaxing constraints.')
+        
         print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds to solve")
         
         return 

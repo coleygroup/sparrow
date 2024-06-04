@@ -16,7 +16,16 @@ def run_from_config(path_to_config):
     
     save_args(params)
 
-    target_dict, targets, clusters = get_target_dict(params['target_csv'], clusters=params['custom_cluster']) 
+    target_dict, targets = get_target_dict(params['target_csv']) 
+    if params['diversity_weight'] > 0: 
+        print(f'Overwriting parameter "--cluster" to be similarity for diversity objective')
+        params['cluster'] = 'similarity'
+    clusters = get_clusters(
+        cluster_type=params['cluster'], 
+        filepath=params['target_csv'], 
+        cutoff=params['cluster_cutoff'], 
+        outdir=params['output_dir']
+    )
     storage_path = get_path_storage(params, targets)
     selector = build_selector(params, target_dict, storage_path, clusters)
     selector = optimize(selector, params)
