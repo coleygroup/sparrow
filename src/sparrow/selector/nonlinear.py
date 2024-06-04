@@ -32,7 +32,7 @@ class ExpectedRewardSelector(Selector):
                  output_dir: str = 'debug', 
                  remove_dummy_rxns_first: bool = False, 
                  clusters: dict = None, 
-                 N_per_cluster: int = 1, 
+                 N_per_cluster: int = 0, 
                  max_rxns: int = None, 
                  sm_budget: float = None, 
                  dont_buy_targets: bool = False
@@ -369,8 +369,8 @@ class PrunedERSelector(ExpectedRewardSelector):
                  cost_per_rxn: float = 100, 
                  output_dir: str = 'debug', 
                  remove_dummy_rxns_first: bool = False, 
-                 cluster_cutoff: float = 0.7, 
-                 custom_clusters: dict = None, 
+                 clusters: dict = None, 
+                 N_per_cluster: int = 1, 
                  max_rxns: int = None, 
                  sm_budget: float = None, 
                  dont_buy_targets: bool = False,
@@ -382,8 +382,8 @@ class PrunedERSelector(ExpectedRewardSelector):
             rxn_scorer=rxn_scorer, condition_recommender=condition_recommender, 
             constrain_all_targets=constrain_all_targets, max_targets=max_targets, 
             coster=coster, cost_per_rxn=cost_per_rxn, output_dir=output_dir, 
-            remove_dummy_rxns_first=remove_dummy_rxns_first, cluster_cutoff=cluster_cutoff, 
-            custom_clusters=custom_clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
+            remove_dummy_rxns_first=remove_dummy_rxns_first, N_per_cluster=N_per_cluster,
+            clusters=clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
             dont_buy_targets=dont_buy_targets
             )  
 
