@@ -45,12 +45,13 @@ class Selector(ABC):
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
                  cluster_cutoff: float = 0.7,
-                 custom_clusters: dict = None,
+                 clusters: dict = None,
+                 N_per_cluster: int = 1, 
                  max_rxns: int = None,
                  sm_budget: float = None,
                  dont_buy_targets: bool = False, 
                  ) -> None:
-        
+
         self.dir = Path(output_dir)
         self.cost_per_rxn = cost_per_rxn
         self.max_rxns = max_rxns
@@ -73,10 +74,11 @@ class Selector(ABC):
         self.clean_target_dict(target_dict)
         self.targets = list(self.target_dict.keys())
 
-        if custom_clusters: 
-            self.clusters = self.clean_clusters(custom_clusters) 
+        if clusters: 
+            self.clusters, self.id_to_clusters = self.clean_clusters(clusters) 
         else: 
-            self.clusters = None
+            self.clusters = self.id_to_clusters = None
+        self.N_per_cluster = N_per_cluster
 
         self.target_dict = self.graph.set_compound_types(self.target_dict, coster=coster, save_dir=self.dir/'chkpts')
         
@@ -180,7 +182,12 @@ class Selector(ABC):
             
             clean_clusters[c_name] = clean_smis     
 
-        return clean_clusters
+        id_to_clusters = {tid: [] for tid in self.targets}
+        for c_name, tids in clean_clusters.items():
+            for tid in tids: 
+                id_to_clusters[tid].append(c_name)
+
+        return clean_clusters, id_to_clusters
 
     def get_recommendations(self): 
         """ Completes condition recommendation for any reaction node that does not have conditions """
@@ -266,7 +273,6 @@ class Selector(ABC):
         avg_rxn_score = np.mean([self.graph.node_from_id(rxn).score for rxn in non_dummy_ids]) if len(non_dummy_ids) > 0 else None
 
         summary = {
-            'Cost/reaction weighting factor': self.cost_per_rxn,
             'Number targets': len(selected_targets), 
             'Fraction targets': len(selected_targets)/len(self.targets),
             'Total reward': sum([self.target_dict[tar] for tar in selected_targets]),
@@ -324,10 +330,17 @@ class Selector(ABC):
 
         for cpd_id in target_list: 
             node = graph.node_from_id(cpd_id)
-            storage['Targets'].append({
-                'smiles': node.smiles,
-                'reward': node.reward,
-            })
+            if self.clusters: 
+                storage['Targets'].append({
+                    'smiles': node.smiles,
+                    'reward': node.reward,
+                    'clusters': self.id_to_clusters[cpd_id]
+                })
+            else:
+                storage['Targets'].append({
+                    'smiles': node.smiles,
+                    'reward': node.reward,
+                })
         
         with open(output_dir/'solution_list_format.json','w') as f:
             json.dump(storage, f, indent='\t')

@@ -31,8 +31,8 @@ class ExpectedRewardSelector(Selector):
                  cost_per_rxn: float = 100, 
                  output_dir: str = 'debug', 
                  remove_dummy_rxns_first: bool = False, 
-                 cluster_cutoff: float = 0.7, 
-                 custom_clusters: dict = None, 
+                 clusters: dict = None, 
+                 N_per_cluster: int = 1, 
                  max_rxns: int = None, 
                  sm_budget: float = None, 
                  dont_buy_targets: bool = False
@@ -43,9 +43,9 @@ class ExpectedRewardSelector(Selector):
             rxn_scorer=rxn_scorer, condition_recommender=condition_recommender, 
             constrain_all_targets=constrain_all_targets, max_targets=max_targets, 
             coster=coster, cost_per_rxn=cost_per_rxn, output_dir=output_dir, 
-            remove_dummy_rxns_first=remove_dummy_rxns_first, cluster_cutoff=cluster_cutoff, 
-            custom_clusters=custom_clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
-            dont_buy_targets=dont_buy_targets
+            remove_dummy_rxns_first=remove_dummy_rxns_first,
+            clusters=clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
+            dont_buy_targets=dont_buy_targets, N_per_cluster=N_per_cluster,
             )
         
     def initialize_problem(self) -> gp.Model:
@@ -142,7 +142,7 @@ class ExpectedRewardSelector(Selector):
         if self.constrain_all_targets:
             self.set_constraint_n_targets(N=len(self.targets))
 
-        if self.clusters: 
+        if self.N_per_cluster is not None and self.N_per_cluster > 0:
             self.set_cluster_constraints()
 
         if self.sm_budget: 
@@ -187,9 +187,7 @@ class ExpectedRewardSelector(Selector):
                 self.max_rxns >= gp.quicksum(self.r[node.id] for node in self.graph.non_dummy_nodes())
             )
 
-        for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'): 
-            if node.dummy: 
-                continue 
+        for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'):  
             par_ids = [par.id for par in node.parents.values()]
             for par_id in par_ids:
                 # whether reaction selected at all
@@ -292,12 +290,21 @@ class ExpectedRewardSelector(Selector):
                   each list represents a cluster, and each element of each list is a CompoundNode ID 
                   corresponding to the target in that cluster 
         """
-
+        # check that self.N_per_cluster >= minimum cluster size 
+        min_clus_size = min([len(clus) for clus in self.clusters.values()])
+        if self.N_per_cluster > min_clus_size: 
+            print(f'Smallest cluster has {min_clus_size} compounds, but N_per_cluster is {self.N_per_cluster}')
+            print(f'Switching N_per_cluster to {min_clus_size}')
+            self.N_per_cluster = min_clus_size
+        i=0
         for cname, ids in self.clusters.items(): 
+            if i > 12: 
+                continue 
             self.problem.addConstr(
-                gp.quicksum(self.m[nid] for nid in ids) >= 1,
+                gp.quicksum(self.m[nid] for nid in ids) >= self.N_per_cluster,
                 name=f'cluster_represented_{cname}'
             )
+            i+=1
     
     def set_objective(self, cost_weight=0): 
 
@@ -323,6 +330,10 @@ class ExpectedRewardSelector(Selector):
         self.problem.params.NonConvex = 2
         self.problem.Params.TIME_LIMIT = 3*3600
         self.problem.optimize()
+
+        if self.problem.status == 3: 
+            raise RuntimeError('Problem is infeasible. To fix, try relaxing constraints.')
+    
         print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds.")
         
         return 
