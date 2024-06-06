@@ -27,7 +27,7 @@ class LinearSelector(Selector):
                  output_dir: str = 'debug', 
                  remove_dummy_rxns_first: bool = False, 
                  clusters: dict = None, 
-                 N_per_cluster: int = 1,
+                 N_per_cluster: int = 0,
                  dont_buy_targets: bool = False,
                  solver: str = 'pulp'
                  ) -> None:

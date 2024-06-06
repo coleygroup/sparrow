@@ -409,7 +409,7 @@ class PrunedERSelector(ExpectedRewardSelector):
                  output_dir: str = 'debug', 
                  remove_dummy_rxns_first: bool = False, 
                  clusters: dict = None, 
-                 N_per_cluster: int = 1, 
+                 N_per_cluster: int = 0, 
                  max_rxns: int = None, 
                  sm_budget: float = None, 
                  dont_buy_targets: bool = False,

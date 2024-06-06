@@ -171,7 +171,7 @@ def build_selector(params, target_dict, storage_path, clusters):
         )      
     else: 
         weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
-        
+
         selector = LinearSelector(
             route_graph=graph,
             target_dict=target_dict,
@@ -182,8 +182,7 @@ def build_selector(params, target_dict, storage_path, clusters):
             coster=build_coster(params),
             weights=weights,
             output_dir=Path(params['output_dir']),
-            cluster_cutoff=params['cluster_cutoff'],
-            custom_clusters=clusters,
+            clusters=clusters,
             dont_buy_targets=params['dont_buy_targets'],
             solver=params['solver'],
         )
