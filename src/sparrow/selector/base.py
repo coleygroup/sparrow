@@ -274,25 +274,40 @@ class Selector(ABC):
 
         summary = {
             'Number targets': len(selected_targets), 
-            'Fraction targets': len(selected_targets)/len(self.targets),
-            'Total reward': sum([self.target_dict[tar] for tar in selected_targets]),
+            'Fraction targets selected': len(selected_targets)/len(self.targets),
+            'Cumulative reward of selected compounds': sum([self.target_dict[tar] for tar in selected_targets]),
             'Possible reward': sum(self.target_dict.values()),
-            'Number starting materials': len(selected_starting),
-            'Cost starting materials': sum([self.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
-            'Number reaction steps': len(non_dummy_ids),
-            'Average reaction score': avg_rxn_score,
+            'Number starting materials (some may be unused)': len(selected_starting),
+            'Cost starting materials (some may be unused)': sum([self.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
+            'Number reaction steps (some may be unused)': len(non_dummy_ids),
+            'Average reaction score (some may be unused)': avg_rxn_score,
         }
 
         if extract_routes:
+            summary['Expected Reward'] = 0
             storage = {}
             for target in tqdm(selected_targets, desc='Extracting routes'): 
                 store_dict = {'Compounds':[], 'Reactions':[]}
                 smi = self.graph.smiles_from_id(target)
-                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids)
+                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids, target=target)
                 storage[smi]['Reward'] = self.target_dict[target]
+                er = self.target_dict[target]*np.prod(np.array([entry['score'] for entry in storage[smi]['Reactions'] if 'score' in entry]))
+                storage[smi]['Expected Reward'] = er
+                summary['Expected Reward'] += er
 
             with open(output_dir/f'routes.json','w') as f: 
                 json.dump(storage, f, indent='\t')
+
+            print(f'Total expected reward: {summary["Expected Reward"]:0.2f}')
+
+            # calculate actually used starting materials and reactions 
+            all_rxns = [[rentry['smiles'] for rentry in entry['Reactions']] for entry in storage.values()]
+            all_rxns = set([rxn for entry in all_rxns for rxn in entry])
+            rxn_steps = [rxn for rxn in all_rxns if not rxn.startswith('>>')]
+            starting_materials = [rxn.split('>>')[1] for rxn in all_rxns if rxn.startswith('>>')]
+            summary['Number reaction steps (actual)'] = len(rxn_steps)
+            summary['Number starting materials (actual)'] = len(starting_materials)
+            summary['Average reaction score (actual)'] =  np.mean([self.graph.node_from_smiles(rxn).score for rxn in rxn_steps]) if len(rxn_steps) > 0 else None
 
         with open(output_dir/'summary.json', 'w') as f:
             json.dump(summary, f, indent='\t')
@@ -347,7 +362,7 @@ class Selector(ABC):
 
         return storage 
 
-    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns):
+    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns, target=None):
 
         par_ids = [n.id for n in self.graph.node_from_id(rxn_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_mols)
@@ -356,7 +371,7 @@ class Selector(ABC):
             store_dict = self.find_mol_parents(store_dict, par, selected_mols, selected_rxns)
         return store_dict
 
-    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns): 
+    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns, target=None): 
 
         par_ids = [n.id for n in self.graph.node_from_id(mol_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_rxns)

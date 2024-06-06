@@ -4,7 +4,7 @@ import time
 import pprint
 from typing import List, Tuple, Dict, Union
 from pathlib import Path 
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 from requests.packages.urllib3.exceptions import InsecureRequestWarning
 from rdkit import Chem
 from tqdm import tqdm
@@ -267,8 +267,8 @@ class ChemSpaceCoster(Coster):
 class LookupCoster(Coster): 
     """ 
     Determines if a molecule is buyable and what its cost is 
-    by looking up the smiles in a csv file 
-    TODO: implement this 
+    by looking up the smiles in a csv file. By default, assumes the zeroth column 
+    contains SMILES strings and the first column contains costs. 
     """
     def __init__(self, 
                  lookup_file: Union[str, Path], 
@@ -333,3 +333,59 @@ class LookupCoster(Coster):
                 buyables.add(smiles)
         
         return costs, buyables 
+    
+class QuantityLookupCoster(LookupCoster, Coster): 
+    """ 
+    Similar to a LookupCoster, this Coster references a CSV file with a list of SMILES and their 
+    costs. A QuantityAwareERSelector will use 
+    a QuantityLookupCoster to get cost as a function of quantity.  
+
+    In this Coster, though, the CSV file should contain multiple columns corresponding to
+    different quantities. NaN or None entries are acceptable, but not as column names. 
+    The zeroth row is assumed to be a header row. The zeroth column is assumed to contain 
+    SMILES strings of buyable compounds. The header for each subsequent column should be 
+    interpretable as a float and is assumed to be in grams. For example, this class 
+    currently does not support headers such as '50mg' or '0.05g'. Instead use '0.05' as 
+    the header for the column which contains costs for 50mg. 
+
+    To return a single cost, this Coster returns the $/g for the smallest quantity. 
+    """
+    def __init__(self, 
+                 lookup_file: Union[str, Path],
+                 smis_col: int = 0,
+                 canonicalize: bool = True
+                 ):
+        
+        try:
+            self.data = pd.read_csv(lookup_file)
+        except: 
+            self.data = pd.read_csv(lookup_file, lineterminator='\n')
+
+        self.buyables_precanon = self.data.iloc[:, smis_col]
+        self.failures = []
+
+        if canonicalize: 
+            self.buyables = self.canon_library(self.buyables)
+        else: 
+            self.buyables = self.buyables_precanon
+        
+        self.inventory = {
+            canon_smi: dict(self.data.loc[smi]) 
+            for canon_smi, smi in zip(self.buyables, self.buyables_precanon)
+        }
+
+        print(f'Inventory loaded with {len(self.inventory)} compounds')
+        print(f'Remaining {len(self.buyables_precanon)-len(self.inventory)} were either duplicates or unable to be canonicalized')
+
+    def get_buyable_and_cost(self, smiles):
+        costs = self.get_cost_function(smiles)
+        if costs is None or len(costs) == 0: 
+            return False, None
+        return True, costs[0][1]/costs[0][0]
+    
+    def get_cost_function(self, smiles): 
+        if smiles in self.inventory: 
+            costs = [(float(amt), cost) for amt, cost in self.inventory[smiles].items() if str(cost) != 'nan']
+            costs = sorted(costs)
+            return costs            
+        return None
