@@ -519,7 +519,7 @@ class PrunedERSelector(ExpectedRewardSelector):
         
         if self.max_rxns: 
             self.problem.addConstr(
-                self.max_rxns >= gp.quicksum(self.r[node.id] for node in self.graph.non_dummy_nodes())
+                self.max_rxns >= gp.quicksum(self.r[rid] for rid in self.r.keys())
             )
 
         for rid in tqdm(self.u.keys(), desc='Reaction constraints'): 
