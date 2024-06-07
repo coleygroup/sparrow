@@ -44,7 +44,6 @@ class Selector(ABC):
                  weights: List = [1,1,1,1],
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
-                 cluster_cutoff: float = 0.7,
                  clusters: dict = None,
                  N_per_cluster: int = 1, 
                  max_rxns: int = None,
@@ -90,7 +89,6 @@ class Selector(ABC):
               
         self.constrain_all_targets = constrain_all_targets
         self.weights = weights
-        self.cluster_cutoff = cluster_cutoff
         self.max_targets = max_targets
         
         if self.condition_recommender is not None: 
