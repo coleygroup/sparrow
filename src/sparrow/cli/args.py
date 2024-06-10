@@ -116,7 +116,7 @@ def add_optimization_args(parser: ArgumentParser):
                         help='weighting factor for reaction objective')
     parser.add_argument('--max-rxns', action='store', type=int, default=None,
                         help='maximum number of reaction steps to select')
-    parser.add_argument('--starting-material-budget', action='store', type=int, default=None,
+    parser.add_argument('--starting-material-budget', action='store', type=float, default=None,
                         help='maximum budget on starting material costs (all on per g basis, does not consider amount needed!)')
     parser.add_argument('--prune-distance', '--prune', action='store', type=int, default=None,
                         help='To reduce the number of variables that is defined (and speed up solving), set this to a nonzero integer (~2X max route length)')

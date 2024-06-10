@@ -195,7 +195,9 @@ class LinearSelector(Selector):
         if self.problem.status == -1: 
             raise RuntimeError('Problem is infeasible. To fix, try relaxing constraints.')
         
-        print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds to solve")
+        self.runtime = time.time()-opt_start
+
+        print(f"Optimization problem completed. Took {self.runtime:0.2f} seconds to solve")
         
         return 
     

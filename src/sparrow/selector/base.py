@@ -55,6 +55,7 @@ class Selector(ABC):
         self.cost_per_rxn = cost_per_rxn
         self.max_rxns = max_rxns
         self.sm_budget = sm_budget
+        self.runtime = None
 
         self.graph = route_graph  
         if remove_dummy_rxns_first: 
@@ -279,6 +280,7 @@ class Selector(ABC):
             'Cost starting materials (some may be unused)': sum([self.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
             'Number reaction steps (some may be unused)': len(non_dummy_ids),
             'Average reaction score (some may be unused)': avg_rxn_score,
+            'Run time': self.runtime,
         }
 
         if extract_routes:
