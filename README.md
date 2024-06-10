@@ -52,10 +52,8 @@ bash Mambaforge-Linux-x86_64.sh
 Otherwise, use the correct link from [Mambaforge installation page](https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh). 
 
 #### Installing and using Gurobi 
-If you intend to use Gurobi to solve the optimization, first ensure that you have [obtained a Gurobi license](https://www.gurobi.com/solutions/licensing/). Then, in the relevant conda environment, install Gurobi using the following: 
+If you intend to use Gurobi to solve the optimization, first ensure that you have [obtained a Gurobi license](https://www.gurobi.com/solutions/licensing/). Then, in the relevant conda environment, install your Gurobi license using the following: 
 ```
-conda config --add channels https://conda.anaconda.org/gurobi
-conda install gurobi
 grbgetkey <your key>
 ```
 You can check the status and expiration date of your license using `gurobi_cl --license`. 

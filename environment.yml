@@ -1,5 +1,7 @@
 name: sparrow
 channels:
   - conda-forge
+  - gurobi
 dependencies:
   - python==3.11
+  - gurobi::gurobi=11.0
