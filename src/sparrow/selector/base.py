@@ -281,6 +281,8 @@ class Selector(ABC):
             'Number reaction steps (some may be unused)': len(non_dummy_ids),
             'Average reaction score (some may be unused)': avg_rxn_score,
             'Run time': self.runtime,
+            'Number of variables': self.get_num_variables(),
+            'Number of constraints': self.get_num_constraints(),
         }
 
         if extract_routes:
@@ -390,3 +392,11 @@ class Selector(ABC):
                 })
             store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns)
         return store_dict
+
+    @abstractmethod
+    def get_num_variables(self):
+        """ Returns the number of variables in the optimization problem """
+
+    @abstractmethod
+    def get_num_constraints(self): 
+        """ Returns the number of constraints in the optimization problem """

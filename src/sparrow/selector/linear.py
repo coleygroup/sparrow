@@ -212,4 +212,10 @@ class LinearSelector(Selector):
         mol_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('mol')]
 
         return mol_ids, rxn_ids
+    
+    def get_num_variables(self): 
+        return self.problem.numVariables()
+    
+    def get_num_constraints(self):
+        return self.problem.numConstraints()
          

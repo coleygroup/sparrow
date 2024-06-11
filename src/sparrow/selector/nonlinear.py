@@ -339,10 +339,12 @@ class ExpectedRewardSelector(Selector):
         self.problem.Params.TIME_LIMIT = 3*3600
         self.problem.optimize()
 
+        self.runtime = time.time()-opt_start
+
         if self.problem.status == 3: 
             raise RuntimeError('Problem is infeasible. To fix, try relaxing constraints.')
     
-        print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds.")
+        print(f"Optimization problem completed. Took {self.runtime:0.2f} seconds.")
         
         return 
     
@@ -384,6 +386,12 @@ class ExpectedRewardSelector(Selector):
                     })
                 store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns, target=target)
         return store_dict
+
+    def get_num_variables(self): 
+        return len(self.problem.getVars())
+    
+    def get_num_constraints(self):
+        return len(self.problem.getConstrs())
 
 class PrunedERSelector(ExpectedRewardSelector): 
     """ 
