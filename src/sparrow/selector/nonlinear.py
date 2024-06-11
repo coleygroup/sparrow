@@ -327,7 +327,7 @@ class ExpectedRewardSelector(Selector):
 
         return 
     
-    def optimize(self, savedir=None, solver=None):
+    def optimize(self, savedir=None, solver=None, max_seconds=None):
 
         if not savedir: 
             savedir = self.dir 
@@ -336,7 +336,7 @@ class ExpectedRewardSelector(Selector):
         opt_start = time.time()
 
         self.problem.params.NonConvex = 2
-        self.problem.Params.TIME_LIMIT = 3*3600
+        self.problem.Params.TIME_LIMIT = max_seconds
         self.problem.optimize()
 
         self.runtime = time.time()-opt_start
@@ -591,7 +591,7 @@ class PrunedERSelector(ExpectedRewardSelector):
 
         for cid in tqdm(self.m.keys(), 'Compound constraints'): 
             node = self.graph.node_from_id(cid)
-            par_ids = [par.id for par in node.parents.values()]
+            par_ids = [par.id for par in node.parents.values() if par.id in self.r]
             self.problem.addConstr(
                 self.m[cid] <= gp.quicksum(self.r[par_id] for par_id in par_ids),
                 name=f'cpdConstr_{node.id}'

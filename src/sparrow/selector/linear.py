@@ -183,14 +183,14 @@ class LinearSelector(Selector):
 
         return 
     
-    def optimize(self):
+    def optimize(self, max_seconds=None):
 
         print("Solving optimization problem...")
         opt_start = time.time()
         if self.solver == 'GUROBI' or self.solver == 'gurobi': 
-            self.problem.solve(GUROBI(timeLimit=86400))
+            self.problem.solve(GUROBI(timeLimit=max_seconds))
         else: 
-            self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False))
+            self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False, timeLimit=max_seconds))
 
         if self.problem.status == -1: 
             raise RuntimeError('Problem is infeasible. To fix, try relaxing constraints.')

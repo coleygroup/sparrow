@@ -66,7 +66,7 @@ def optimize(selector, params):
     selector.define_variables()
     selector.set_objective()
     selector.set_constraints(set_cycle_constraints=not params['acyclic'])
-    selector.optimize() 
+    selector.optimize(max_seconds=params['time_limit']*3600) 
     selector.extract_vars()
     
     return selector 

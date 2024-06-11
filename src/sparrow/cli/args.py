@@ -128,6 +128,8 @@ def add_optimization_args(parser: ArgumentParser):
                         help='maximum number of selected targets (useful if testing is a bottleneck)')
     parser.add_argument('--acyclic', action='store_true', default=False, 
                         help='if the reaction network graph is known to be acyclic')
+    parser.add_argument('--time-limit', action='store', default=12, type=float,
+                        help='time limit on solving the optimization, in hours')
     
     return parser
 

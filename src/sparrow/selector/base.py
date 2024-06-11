@@ -250,8 +250,8 @@ class Selector(ABC):
         """ Sets objective function for self.problem """
 
     @abstractmethod
-    def optimize(self): 
-        """ Optimizes self.problem """
+    def optimize(self, max_seconds): 
+        """ Optimizes self.problem, with a time limit of max_seconds """
 
     def extract_vars(self, output_dir=None, extract_routes=True):
         if output_dir is None: 
