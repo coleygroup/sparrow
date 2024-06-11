@@ -167,7 +167,8 @@ def build_selector(params, target_dict, storage_path, clusters):
             max_rxns=params['max_rxns'],
             sm_budget=params['starting_material_budget'],
             dont_buy_targets=params['dont_buy_targets'],
-            N_per_cluster=params['N_per_cluster']
+            N_per_cluster=params['N_per_cluster'],
+            prune_distance=params['prune_distance'],
         )      
     else: 
         weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
