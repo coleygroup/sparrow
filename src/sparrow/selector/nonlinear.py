@@ -183,7 +183,7 @@ class ExpectedRewardSelector(Selector):
         
         if self.max_rxns: 
             self.problem.addConstr(
-                self.max_rxns >= gp.quicksum(self.r[node.id] for node in self.graph.non_dummy_nodes())
+                self.max_rxns >= gp.quicksum(self.r[rid] for rid in self.r.keys() if not self.graph.smiles_from_id(rid).startswith('>>'))
             )
 
         for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'): 
@@ -527,7 +527,7 @@ class PrunedERSelector(ExpectedRewardSelector):
         
         if self.max_rxns: 
             self.problem.addConstr(
-                self.max_rxns >= gp.quicksum(self.r[rid] for rid in self.r.keys())
+                self.max_rxns >= gp.quicksum(self.r[rid] for rid in self.r.keys() if not self.graph.smiles_from_id(rid).startswith('>>'))
             )
 
         for rid in tqdm(self.u.keys(), desc='Reaction constraints'): 
