@@ -13,21 +13,25 @@ df['SA Score'] = [round(sascorer.calculateScore(Chem.MolFromSmiles(smi)), 4) for
 df['Combined Score'] = [round(rew-sa , 4) for sa, rew in zip(df['SA Score'], df['Reward'])]
 df['#'] = [i for i in range(len(df))]
 
-def cost_from_trees(trees): 
+def cost_from_trees(trees, rewards): 
     # creat set of reactions 
     reactions = {}
     bbs = {}
-    for tree in trees: 
+    expected_reward = 0
+    for tree, rew in zip(trees, rewards): 
+        p_success = 1
         for rnode in tree['Reaction Nodes']: 
             reactions[rnode['smiles']] = rnode['score']
+            p_success = p_success*rnode['score']
         for cnode in tree['Compound Nodes']: 
             if 'terminal' in cnode:
                 bbs[cnode['smiles']] = cnode['cost']
+        expected_reward += p_success*rew
 
     N_rxns = len(reactions)
     average_rxn_score = sum(reactions.values())/N_rxns
     bb_cost = sum(bbs.values())
-    return N_rxns, average_rxn_score, bb_cost
+    return N_rxns, average_rxn_score, bb_cost, expected_reward
 
 tree_dir = Path('examples/garibsingh/baselines/trees')
 all_trees = []
@@ -46,8 +50,9 @@ entries = []
 for strategy, data in zip(strategies, dfs):
     for N in range(1,len(df)+1): 
         compounds = data['#'][:N]
+        rewards = data['Reward'][:N]
         trees = [all_trees[i] for i in compounds]
-        N_rxns, average_rxn_score, bb_cost = cost_from_trees(trees)
+        N_rxns, average_rxn_score, bb_cost, expected_reward = cost_from_trees(trees, rewards)
         entries.append({
             'strategy': strategy,
             'N': N,
@@ -55,6 +60,7 @@ for strategy, data in zip(strategies, dfs):
             'Cost': bb_cost,
             'N_rxns': N_rxns,
             'Average reaction score': average_rxn_score,
+            'Expected Reward': expected_reward, 
         })
 
 results = pd.DataFrame.from_dict(entries)
