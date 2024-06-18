@@ -181,7 +181,7 @@ class ExpectedRewardSelector(Selector):
     def set_rxn_constraints(self): 
         # TODO: consider redudancy in these constraints and simplify problem 
         
-        if self.max_rxns: 
+        if self.max_rxns is not None: 
             self.problem.addConstr(
                 self.max_rxns >= gp.quicksum(self.r[rid] for rid in self.r.keys() if not self.graph.smiles_from_id(rid).startswith('>>'))
             )
@@ -525,7 +525,7 @@ class PrunedERSelector(ExpectedRewardSelector):
     def set_rxn_constraints(self):
         # TODO: consider redudancy in these constraints and simplify problem 
         
-        if self.max_rxns: 
+        if self.max_rxns is not None: 
             self.problem.addConstr(
                 self.max_rxns >= gp.quicksum(self.r[rid] for rid in self.r.keys() if not self.graph.smiles_from_id(rid).startswith('>>'))
             )
