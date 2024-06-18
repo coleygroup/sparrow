@@ -5,14 +5,14 @@ import numpy as np
 
 def opt_grid(min_rxns=10, max_rxns=210, n_rxn=11, min_budget=10, max_budget=210, n_budget=11):
     """ Optimizes and saves results for Case 1 in preprint (Garibsingh et al DOI:10.1073/pnas.2104093118) """
-    conf_path = Path('examples/button_alectinib/config_opt.ini')
+    conf_path = Path('examples/amd/config_opt.ini')
 
     cmds = []
 
     n_rxns = np.linspace(min_rxns, max_rxns, n_rxn, dtype = int)
     budgets = np.linspace(min_budget, max_budget, n_budget)
     
-    out_dir = Path(f'results/button_grid_nonlinear')
+    out_dir = Path(f'results/amd_grid_nonlinear')
     for max_rxn in n_rxns: 
         for budget in budgets: 
             out_folder = out_dir / f'rxn_{max_rxn}_budget_{budget}'

@@ -1,6 +1,6 @@
 from sparrow.cli.run import * 
 
-path_to_config = ''
+path_to_config = '/home/jfromer/sparrow/examples/nonlinear_test/config_opt.ini'
 
 
 def run_from_config(path_to_config):

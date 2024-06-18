@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import json 
 import pandas as pd 
+import numpy as np 
 from pathlib import Path 
 import networkx as nx 
 from sparrow.route_graph import RouteGraph
@@ -71,7 +72,20 @@ def set_size(w, h, ax=None):
     figh = float(h) / (t - b)
     ax.figure.set_size_inches(figw, figh)
 
-def df_from_dir(results_dir):
+def calc_expected_reward(route_file: Path):
+
+    with open(route_file, 'r') as f: 
+        routes = json.load(f)
+
+    expected_reward = 0
+    for entry in routes.values(): 
+        rew = entry['Reward']
+        rxn_scores = [rentry['score'] for rentry in entry['Reactions'] if 'score' in rentry]
+        expected_reward += rew*np.prod(rxn_scores)
+
+    return expected_reward
+
+def df_from_dir_void(results_dir):
     result_dir = Path(results_dir)
     summaries = []
     for dir in sorted(list(result_dir.glob('lam*'))): 
@@ -82,7 +96,24 @@ def df_from_dir(results_dir):
         summ['Utility Weight'] = l1
         summ['Starting Material Weight'] = l2
         summ['Reaction Weight'] = l3
+        summ['Expected Reward'] = calc_expected_reward(dir / 'routes.json')
+        summaries.append(summ)
 
+    df = pd.DataFrame.from_dict(summaries)
+    return df
+
+def df_from_dir(results_dir):
+    result_dir = Path(results_dir)
+    summaries = []
+    for dir in sorted(list(result_dir.glob('*'))): 
+        with open(dir / 'solution' / 'summary.json', 'r') as f:
+            summ = json.load(f)
+        
+        # l1, l2, l3 = summ.pop('Weights')
+        # summ['Utility Weight'] = l1
+        # summ['Starting Material Weight'] = l2
+        # summ['Reaction Weight'] = l3
+        summ['Expected Reward'] = calc_expected_reward(dir / 'solution' / 'routes.json')
         summaries.append(summ)
 
     df = pd.DataFrame.from_dict(summaries)
