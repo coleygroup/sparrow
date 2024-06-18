@@ -186,6 +186,8 @@ def build_selector(params, target_dict, storage_path, clusters):
             clusters=clusters,
             dont_buy_targets=params['dont_buy_targets'],
             solver=params['solver'],
+            max_rxns=params['max_rxns'],
+            sm_budget=params['starting_material_budget'],
         )
 
     if storage_path is not None: 

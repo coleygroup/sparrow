@@ -29,7 +29,9 @@ class LinearSelector(Selector):
                  clusters: dict = None, 
                  N_per_cluster: int = 0,
                  dont_buy_targets: bool = False,
-                 solver: str = 'pulp'
+                 solver: str = 'pulp',
+                 max_rxns: int = None, 
+                 sm_budget: float = None, 
                  ) -> None:
         
         super().__init__(
@@ -38,7 +40,8 @@ class LinearSelector(Selector):
             constrain_all_targets=constrain_all_targets, max_targets=max_targets, 
             coster=coster, weights=weights, output_dir=output_dir, 
             remove_dummy_rxns_first=remove_dummy_rxns_first, 
-            clusters=clusters, N_per_cluster=N_per_cluster, dont_buy_targets=dont_buy_targets
+            clusters=clusters, N_per_cluster=N_per_cluster, dont_buy_targets=dont_buy_targets,
+            max_rxns=max_rxns, sm_budget=sm_budget,
             )
         self.solver = solver 
         
@@ -82,9 +85,17 @@ class LinearSelector(Selector):
         if self.N_per_cluster is not None and self.N_per_cluster > 0:
             self.set_cluster_constraints()
 
+        if self.sm_budget: 
+            self.set_budget_constraint()
+
         return 
     
     def set_rxn_constraints(self): 
+
+        if self.max_rxns is not None: 
+            self.problem += (
+                self.max_rxns >= lpSum(self.r[rid] for rid in self.r.keys() if not self.graph.smiles_from_id(rid).startswith('>>'))
+            )
 
         for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'): 
             if node.dummy: 
@@ -142,6 +153,12 @@ class LinearSelector(Selector):
             self.problem += (
                 lpSum(self.m[nid] for nid in ids) >= self.N_per_cluster
             )
+
+    def set_budget_constraint(self):
+        dummies_in_r = [dummy.id for dummy in self.graph.dummy_nodes_only() if dummy.id in self.r]
+        self.problem += (
+            lpSum(self.cost_of_dummy(dummy_id=dummy)*self.r[dummy] for dummy in dummies_in_r) <= self.sm_budget
+        )
 
     def set_objective(self): 
         # TODO: Add consideration of conditions 
