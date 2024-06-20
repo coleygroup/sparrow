@@ -7,10 +7,11 @@ import json
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
 from sparrow.selector.linear import LinearSelector
-from sparrow.selector.nonlinear import ExpectedRewardSelector, PrunedERSelector
+# from sparrow.selector.nonlinear import ExpectedRewardSelector, PrunedERSelector
 from sparrow.condition_recommender import AskcosAPIRecommender
 from sparrow.scorer import AskcosAPIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
+from sparrow.rxn_coster import NameRxnClass, LookupClass
 from sparrow.cli.args import get_args
 from sparrow.utils import cluster_utils
 
@@ -62,13 +63,23 @@ def get_clusters(cluster_type, filepath, cutoff, outdir=None):
         return cluster_smis
 
 def optimize(selector, params):
-
     selector.define_variables()
     selector.set_objective()
     selector.set_constraints(set_cycle_constraints=not params['acyclic'])
     selector.optimize() 
-    selector.extract_vars()
     
+    output_dir = None
+    extract_routes = True
+    post_opt_class_score = None
+    if params['output_dir'] != None and params['output_dir'] != '':
+        output_dir = params['output_dir']
+    if 'extract_routes' in params and params['extract_routes'].lower() == 'false':
+        extract_routes = False
+    if 'rxn_classifier_path' in params and params['rxn_classifier_path'] != '' and params['rxn_classifier_path'] != None:
+        post_opt_class_score = params['rxn_classifier_path']
+
+    selector.post_processing(output_dir=output_dir, extract_routes=extract_routes, post_opt_class_score=post_opt_class_score) 
+
     return selector 
 
 def get_path_storage(params, targets): 
@@ -127,66 +138,108 @@ def build_coster(params):
         return None  
     else:
         raise NotImplementedError(f'Scorer {rec} not implemented')
+    
+def build_classes(params, graph: RouteGraph):
+    rec = params['rxn_classifier_path']
+    classifier = None
+    if rec != None:
+        if 'HazELNut' in rec or 'namerxn' in rec:
+            classifier = NameRxnClass(rec)
+        elif 'csv' in rec:
+            classifier = LookupClass(rec)
+
+    # if classifier != None:
+    #     rxn_class_file = Path('../sparrow/sparrow_results/chkpts') / 'rxn_class_smiles.smi'
+
+    #     with open(rxn_class_file,'w') as f:
+    #         for rxn in graph.non_dummy_nodes():
+    #             if rxn.smiles[0] != '>':
+    #                 f.write(rxn.smiles + "\n")
+    #     f.close()
+
+    #     rxn_classes = classifier.get_rxn_classes(rxn_class_file)
+    #     return rxn_classes
+
+    if classifier != None:
+        rxn_classes = {}
+        for rxn in graph.non_dummy_nodes():
+            c = classifier.get_rxn_class(rxn.smiles)
+            if c in rxn_classes.keys():
+                rxn_classes[c].append(rxn.smiles)
+            else:
+                rxn_classes[c] = [rxn.smiles]
+
+        return rxn_classes
+    return None
      
 def build_selector(params, target_dict, storage_path, clusters):
+    # storage_path is a dict of SMILES to reward
     if storage_path is None: 
         graph = RouteGraph(node_filename=params['graph'])
     else: 
         graph = RouteGraph(node_filename=storage_path)
 
-    # weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
-    if params['formulation'] == 'expected_reward' and params['prune_distance'] is None:
-        selector = ExpectedRewardSelector(
-            route_graph=graph,
-            target_dict=target_dict,
-            rxn_scorer=build_scorer(params),
-            condition_recommender=build_recommender(params),
-            constrain_all_targets=params['constrain_all'],
-            max_targets=params['max_targets'],
-            coster=build_coster(params),
-            cost_per_rxn=params['cost_of_rxn_weight'],
-            output_dir=Path(params['output_dir']),
-            clusters=clusters,
-            max_rxns=params['max_rxns'],
-            sm_budget=params['starting_material_budget'],
-            dont_buy_targets=params['dont_buy_targets'],
-            N_per_cluster=params['N_per_cluster']
-        )
-    elif params['formulation'] == 'expected_reward': 
-        selector = PrunedERSelector(
-            route_graph=graph,
-            target_dict=target_dict,
-            rxn_scorer=build_scorer(params),
-            condition_recommender=build_recommender(params),
-            constrain_all_targets=params['constrain_all'],
-            max_targets=params['max_targets'],
-            coster=build_coster(params),
-            cost_per_rxn=params['cost_of_rxn_weight'],
-            output_dir=Path(params['output_dir']),
-            clusters=clusters,
-            max_rxns=params['max_rxns'],
-            sm_budget=params['starting_material_budget'],
-            dont_buy_targets=params['dont_buy_targets'],
-            N_per_cluster=params['N_per_cluster']
-        )      
-    else: 
-        weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
+    weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight'], params['rxn_class_weight']]
+    # if params['formulation'] == 'expected_reward' and params['prune_distance'] is None:
+    #     selector = ExpectedRewardSelector(
+    #         route_graph=graph,
+    #         target_dict=target_dict,
+    #         rxn_scorer=build_scorer(params),
+    #         condition_recommender=build_recommender(params),
+    #         constrain_all_targets=params['constrain_all'],
+    #         max_targets=params['max_targets'],
+    #         coster=build_coster(params),
+    #         cost_per_rxn=params['cost_of_rxn_weight'],
+    #         output_dir=Path(params['output_dir']),
+    #         clusters=clusters,
+    #         # rxn_classes=build_classes(params, graph),
+    #         # rxn_classifier_dir = params['rxn_classifier_path'],
+    #         # max_rxn_classes=params['max_rxn_classes'],
+    #         max_rxns=params['max_rxns'],
+    #         sm_budget=params['starting_material_budget'],
+    #         dont_buy_targets=params['dont_buy_targets'],
+    #         N_per_cluster=params['N_per_cluster']
+    #     )
+    # elif params['formulation'] == 'expected_reward': 
+    #     selector = PrunedERSelector(
+    #         route_graph=graph,
+    #         target_dict=target_dict,
+    #         rxn_scorer=build_scorer(params),
+    #         condition_recommender=build_recommender(params),
+    #         constrain_all_targets=params['constrain_all'],
+    #         max_targets=params['max_targets'],
+    #         coster=build_coster(params),
+    #         cost_per_rxn=params['cost_of_rxn_weight'],
+    #         output_dir=Path(params['output_dir']),
+    #         clusters=clusters,
+    #         # rxn_classes=build_classes(params, graph),
+    #         # rxn_classifier_dir = params['rxn_classifier_path'],
+    #         # max_rxn_classes=params['max_rxn_classes'],
+    #         max_rxns=params['max_rxns'],
+    #         sm_budget=params['starting_material_budget'],
+    #         dont_buy_targets=params['dont_buy_targets'],
+    #         N_per_cluster=params['N_per_cluster']
+    #     )      
+    # else: 
+    selector = LinearSelector(
+        route_graph=graph,
+        target_dict=target_dict,
+        rxn_scorer=build_scorer(params),
+        condition_recommender=build_recommender(params),
+        constrain_all_targets=params['constrain_all'],
+        max_targets=params['max_targets'],
+        coster=build_coster(params),
+        weights=weights,
+        output_dir=Path(params['output_dir']),
+        clusters=clusters,
+        rxn_classes=build_classes(params, graph) if 'rxn_classifier_path' in params else None,
+        rxn_classifier_dir = params['rxn_classifier_path'] if 'rxn_classifier_path' in params else None,
+        max_rxn_classes=params['max_rxn_classes'] if 'max_rxn_classes' in params else None,
+        dont_buy_targets=params['dont_buy_targets'],
+        solver=params['solver'],
+    )
 
-        selector = LinearSelector(
-            route_graph=graph,
-            target_dict=target_dict,
-            rxn_scorer=build_scorer(params),
-            condition_recommender=build_recommender(params),
-            constrain_all_targets=params['constrain_all'],
-            max_targets=params['max_targets'],
-            coster=build_coster(params),
-            weights=weights,
-            output_dir=Path(params['output_dir']),
-            clusters=clusters,
-            dont_buy_targets=params['dont_buy_targets'],
-            solver=params['solver'],
-        )
-
+    # if no graph is given, creates graph from the info file path
     if storage_path is not None: 
         filepath = Path(params['output_dir'])/'trees_w_info.json'
         print(f'Saving route graph with contexts, reaction scores, and costs to {filepath}')
