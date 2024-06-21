@@ -58,6 +58,30 @@ grbgetkey <your key>
 ```
 You can check the status and expiration date of your license using `gurobi_cl --license`. 
 
+#### Installing NameRxn
+
+Instructions from Next Move Software are available at https://www.nextmovesoftware.com/downloads/hazelnut/documentation/
+
+1. Download the two tar.gz files at https://www.nextmovesoftware.com/downloads/hazelnut/releases/LATEST/. You will need the ID and password (credentials associated with your license).
+2. Unzip with command
+```
+  $ tar -xf <filename>
+```
+3. Move to HazELNut/ and verify that rdkit has been installed
+4. Tun the commands:
+```
+  $ cmake .
+  $ make
+```
+5. Check the install by running
+```
+		$ namerxn
+```
+Otherwise, try 
+```
+  $ ./namerxn
+```
+
 ## Running SPARROW
 The general command to run SPARROW is:
 `sparrow --target-csv <path/to/target_csv> --path-finder {api, lookup} --recommender {api, lookup} --coster {naive, chemspace} [additional arguments]`
