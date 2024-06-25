@@ -46,7 +46,6 @@ class LinearSelector(Selector):
             dont_buy_targets=dont_buy_targets
             )
         self.solver = solver 
-        # print("in linear: " + str(self.rxn_class_dict))
         
     def initialize_problem(self) -> LpProblem:
         return LpProblem("Route_Selection", LpMinimize)
@@ -69,7 +68,6 @@ class LinearSelector(Selector):
 
         self.c = None
         if self.rxn_class_dict != None:
-            # print("Self.c function" + str(self.classes))
             class_ids = self.classes
             self.c = LpVariable.dicts(
                 "class",
@@ -174,8 +172,6 @@ class LinearSelector(Selector):
     def set_class_constraints(self):
         for id in self.classes:
             rxns = self.rxn_class_dict[id]
-            # print("linear set" + str(id))
-            # print("rxns" + str(rxns))
             N = len(rxns)
         
             self.problem += (
@@ -264,7 +260,6 @@ class LinearSelector(Selector):
         rxn_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('rxn')]
         mol_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('mol')]
         class_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('class')]
-        # print("linear, extract" + str(class_ids))
 
         return mol_ids, rxn_ids, class_ids
          

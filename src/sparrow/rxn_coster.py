@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple, Dict, Union
+from typing import Dict
 import subprocess
-import os
+import pandas as pd
 from pathlib import Path
 
 class RxnClass(ABC):
@@ -31,7 +31,6 @@ class NameRxnClass(RxnClass):
         if rxn[0] != '>':
             input = open("test.smi", 'w')
             input.write(rxn)
-            # test with different namerxn string -> plus make the input string the requirement for using name rxn
 
             cmd_str = " ".join(["../" + self.dir + "/namerxn", "-completer", "-addrxnname", "-osmi", "test.smi", "-o", "test.smi.out"])
             subprocess.Popen(cmd_str, shell=True)
@@ -75,8 +74,9 @@ class NameRxnClass(RxnClass):
 class LookupClass(RxnClass):
     def __init__(self, 
                  csv_path: str = None):
-        # convert the csv_path to the dict of rxn to class then save as the self.dict here
-        self.dict = {}
+        # test the csv -> dict conversion
+        df = pd.read_csv(csv_path)
+        self.dict = dict(zip(df.iloc[:, 0], df.iloc[:, 1]))
         super().__init__()
 
     def get_rxn_class(self, rxn):
@@ -90,8 +90,3 @@ class LookupClass(RxnClass):
                 classes[class_name] = []
             classes[class_name].append(rxn)
         return classes
-    
-# if __name__ == '__main__':
-#     classifier = NameRxnClass('HazELNut')
-#     classifier.get_rxn_class("CC(C)(C)OC(=O)N1C[C@@H](O)C[C@H]1C(=O)O.O=C(O)c1ccccc1-c1ccccc1>>CC(C)(C)OC(=O)N1C[C@@H](OC(=O)c2ccccc2-c2ccccc2)C[C@H]1C(=O)O")
-#     print("Finished!")

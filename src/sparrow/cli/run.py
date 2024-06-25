@@ -148,6 +148,7 @@ def build_classes(params, graph: RouteGraph):
         elif 'csv' in rec:
             classifier = LookupClass(rec)
 
+    # Bulk classification attempt
     # if classifier != None:
     #     rxn_class_file = Path('../sparrow/sparrow_results/chkpts') / 'rxn_class_smiles.smi'
 

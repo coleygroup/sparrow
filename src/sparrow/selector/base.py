@@ -8,6 +8,7 @@ import warnings
 import csv 
 import json 
 import numpy as np
+import subprocess
 
 from sparrow.scorer import Scorer
 from sparrow.condition_recommender import Recommender
@@ -82,7 +83,6 @@ class Selector(ABC):
             self.clusters = self.id_to_clusters = None
         self.N_per_cluster = N_per_cluster
 
-        # print("Base" + str(rxn_classes))
         if rxn_classes:
             self.classes = rxn_classes.keys()
             self.rxn_class_dict, self.id_to_classes = self.clean_clusters(rxn_classes, id_map="classes")
@@ -332,9 +332,34 @@ class Selector(ABC):
 
         return summary 
     
-    def rxn_class_analysis(self, summary):
-        # TODO: this
-        print("here is where I can make a call to the NameRxn thing to count the longest fragment length, etc")
+    def rxn_class_analysis(self, output_dir):
+        file = open(output_dir/f'routes.json', 'r')
+        data = json.load(file)
+        dict = {} # target to classes in order
+        score_dict = {} # general shared reaction count
+        
+        # need rxn classes in order that were used to get to target
+        for target in data:
+            reactions = data[target]['Reactions']
+            dict[target] = []
+            for reaction in reactions:
+                if reaction['smiles'][0] != '>':
+                    rxn_class = reaction['class']
+                    dict[target].append(rxn_class)
+
+        # this just counts the shared reactions between the path to a target compound and the paths to all other targets
+        for target in dict:
+            score_dict[target] = 0
+            for reaction in dict[target]:
+                for other_target in dict:
+                    if other_target != target:
+                        if reaction in dict[other_target]:
+                            score_dict[target] += 1
+
+        results = {}
+        results["Reaction Classes used to get Target"] = dict
+        results["Overall Reaction Classes shared with all other Targets Count"] = score_dict
+        return results
 
     def post_processing(self, output_dir=None, extract_routes=True, post_opt_class_score=None): 
         if output_dir is None: 
@@ -348,7 +373,7 @@ class Selector(ABC):
 
         # outputs results of post-processing in a separate file, based on regular summary, TODO: the directory should probably be an input parameter here
         if post_opt_class_score != None:
-            rxn_class_summary = self.rxn_class_analysis(summary)
+            rxn_class_summary = self.rxn_class_analysis(output_dir)
             with open(output_dir/'rxn_class_summary.json', 'w') as f:
                 json.dump(rxn_class_summary, f, indent='\t')
                 
@@ -429,6 +454,7 @@ class Selector(ABC):
                     'smiles': node.smiles,
                     'conditions': node.get_condition(1)[0], 
                     'score': node.score,
+                    'class': self.id_to_classes[par] if par in self.id_to_classes else "No rxn class"
                 })
             store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns)
         return store_dict
