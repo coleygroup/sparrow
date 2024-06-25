@@ -74,7 +74,7 @@ class NameRxnClass(RxnClass):
 class LookupClass(RxnClass):
     def __init__(self, 
                  csv_path: str = None):
-        # test the csv -> dict conversion
+        # TODO: test the csv -> dict conversion
         df = pd.read_csv(csv_path)
         self.dict = dict(zip(df.iloc[:, 0], df.iloc[:, 1]))
         super().__init__()

@@ -2,8 +2,6 @@ from typing import Dict, List
 from pulp import LpProblem, LpMinimize, LpVariable, lpSum, GUROBI, LpStatus
 from pulp.apis import PULP_CBC_CMD
 from tqdm import tqdm 
-
-import json 
 import time 
 
 from sparrow.condition_recommender import Recommender
@@ -183,7 +181,6 @@ class LinearSelector(Selector):
             )
 
     def set_objective(self): 
-        # TODO: Add consideration of conditions 
         print('Setting objective function ...')
 
         reward_mult = self.weights[0] # / ( len(self.target_dict)) # *max(self.target_dict.values()) )

@@ -8,20 +8,17 @@ import warnings
 import csv 
 import json 
 import numpy as np
-import subprocess
 
 from sparrow.scorer import Scorer
 from sparrow.condition_recommender import Recommender
 from sparrow.route_graph import RouteGraph
 from sparrow.coster import Coster, ChemSpaceCoster
 from sparrow.nodes import ReactionNode
-from sparrow.rxn_coster import NameRxnClass
 
 from pulp import LpProblem
-# import gurobipy as gp 
+import gurobipy as gp 
 
-# Problem = Union[LpProblem, gp.Model]
-Problem = LpProblem
+Problem = Union[LpProblem, gp.Model]
 
 class Selector(ABC):
     """ 
@@ -285,7 +282,7 @@ class Selector(ABC):
         selected_targets = set(mol_ids) & set(self.targets)
         selected_starting = set([self.graph.child_of_dummy(dummy) for dummy in dummy_ids])
         print(f'{len(selected_targets)} targets selected using {len(non_dummy_ids)} reactions and {len(selected_starting)} starting materials')
-        self.export_selected_nodes(rxn_ids, selected_starting, selected_targets, output_dir)
+        self.export_selected_nodes(rxn_ids, class_ids, selected_starting, selected_targets, output_dir)
         
         avg_rxn_score = np.mean([self.graph.node_from_id(rxn).score for rxn in non_dummy_ids]) if len(non_dummy_ids) > 0 else None
 
@@ -310,7 +307,7 @@ class Selector(ABC):
                 store_dict = {'Compounds':[], 'Reactions':[]}
                 smi = self.graph.smiles_from_id(target)
                 # recursive search between rxn and compound parent funcs
-                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids, target=target)
+                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids, class_ids, target=target)
                 storage[smi]['Reward'] = self.target_dict[target]
                 er = self.target_dict[target]*np.prod(np.array([entry['score'] for entry in storage[smi]['Reactions'] if 'score' in entry]))
                 storage[smi]['Expected Reward'] = er
@@ -336,6 +333,7 @@ class Selector(ABC):
         file = open(output_dir/f'routes.json', 'r')
         data = json.load(file)
         dict = {} # target to classes in order
+        class_count = {}
         score_dict = {} # general shared reaction count
         
         # need rxn classes in order that were used to get to target
@@ -344,8 +342,9 @@ class Selector(ABC):
             dict[target] = []
             for reaction in reactions:
                 if reaction['smiles'][0] != '>':
-                    rxn_class = reaction['class']
+                    rxn_class = reaction['class'][0]
                     dict[target].append(rxn_class)
+                    class_count[rxn_class] = class_count.get(rxn_class, 0) + 1
 
         # this just counts the shared reactions between the path to a target compound and the paths to all other targets
         for target in dict:
@@ -358,7 +357,9 @@ class Selector(ABC):
 
         results = {}
         results["Reaction Classes used to get Target"] = dict
+        results["Ocuurance frequency of reaction classes"] = class_count
         results["Overall Reaction Classes shared with all other Targets Count"] = score_dict
+        results["Max length of overlapping segment"] = {} #TODO
         return results
 
     def post_processing(self, output_dir=None, extract_routes=True, post_opt_class_score=None): 
@@ -384,9 +385,10 @@ class Selector(ABC):
     def extract_selected_ids(self):
         """ Returns a set of node IDs corresponding to selected compounds and reactions """
 
-    def export_selected_nodes(self, rxn_list, starting_list, target_list, output_dir):
+    def export_selected_nodes(self, rxn_list, class_ids, starting_list, target_list, output_dir):
         storage = {'Starting Materials': [], 'Reactions': [], 'Targets': []}
         graph = self.graph
+        print("CLASSIDS" + str(class_ids != []))
 
         for rxn_id in rxn_list:
             node = graph.node_from_id(rxn_id)
@@ -400,7 +402,7 @@ class Selector(ABC):
                     'smiles': node.smiles,
                     'conditions': node.get_condition(1)[0], 
                     'score': node.score,
-                    'class': self.id_to_classes[rxn_id] if rxn_id in self.id_to_classes else "No rxn class"
+                    'class': self.id_to_classes[rxn_id] if class_ids != [] and rxn_id in self.id_to_classes else "No rxn class"
                 })
 
         for cpd_id in starting_list: 
@@ -429,16 +431,16 @@ class Selector(ABC):
 
         return storage 
 
-    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns, target=None):
+    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns, class_ids, target=None):
 
         par_ids = [n.id for n in self.graph.node_from_id(rxn_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_mols)
         for par in selected_pars: 
             store_dict['Compounds'].append(self.graph.smiles_from_id(par))
-            store_dict = self.find_mol_parents(store_dict, par, selected_mols, selected_rxns)
+            store_dict = self.find_mol_parents(store_dict, par, selected_mols, selected_rxns, class_ids)
         return store_dict
 
-    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns, target=None): 
+    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns, class_ids, target=None): 
 
         par_ids = [n.id for n in self.graph.node_from_id(mol_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_rxns)
@@ -454,7 +456,7 @@ class Selector(ABC):
                     'smiles': node.smiles,
                     'conditions': node.get_condition(1)[0], 
                     'score': node.score,
-                    'class': self.id_to_classes[par] if par in self.id_to_classes else "No rxn class"
+                    'class': self.id_to_classes[par] if class_ids != [] and par in self.id_to_classes else "No rxn class"
                 })
-            store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns)
+            store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns, class_ids)
         return store_dict
