@@ -12,7 +12,7 @@ import numpy as np
 from sparrow.scorer import Scorer
 from sparrow.condition_recommender import Recommender
 from sparrow.route_graph import RouteGraph
-from sparrow.coster import Coster, ChemSpaceCoster
+from sparrow.coster import Coster, ChemSpaceCoster, LookupCoster
 from sparrow.nodes import ReactionNode
 
 from pulp import LpProblem
@@ -44,7 +44,6 @@ class Selector(ABC):
                  weights: List = [1,1,1,1],
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
-                 cluster_cutoff: float = 0.7,
                  clusters: dict = None,
                  N_per_cluster: int = 1, 
                  max_rxns: int = None,
@@ -56,6 +55,7 @@ class Selector(ABC):
         self.cost_per_rxn = cost_per_rxn
         self.max_rxns = max_rxns
         self.sm_budget = sm_budget
+        self.runtime = None
 
         self.graph = route_graph  
         if remove_dummy_rxns_first: 
@@ -64,7 +64,7 @@ class Selector(ABC):
             self.graph.prune_dummy_rxns()
 
         Path(self.dir/'chkpts').mkdir(parents=True, exist_ok=True)
-        save_freq = 1e6 if type(coster) == ChemSpaceCoster else 500
+        save_freq = 1e6 if type(coster) == LookupCoster else 500
         self.graph.set_buyable_compounds_and_costs(coster, save_json_dir=self.dir/'chkpts', save_freq=save_freq)
 
         self.add_dummy_starting_rxn_nodes()
@@ -90,7 +90,6 @@ class Selector(ABC):
               
         self.constrain_all_targets = constrain_all_targets
         self.weights = weights
-        self.cluster_cutoff = cluster_cutoff
         self.max_targets = max_targets
         
         if self.condition_recommender is not None: 
@@ -251,8 +250,8 @@ class Selector(ABC):
         """ Sets objective function for self.problem """
 
     @abstractmethod
-    def optimize(self): 
-        """ Optimizes self.problem """
+    def optimize(self, max_seconds): 
+        """ Optimizes self.problem, with a time limit of max_seconds """
 
     def extract_vars(self, output_dir=None, extract_routes=True):
         if output_dir is None: 
@@ -281,6 +280,9 @@ class Selector(ABC):
             'Cost starting materials (some may be unused)': sum([self.cost_of_dummy(dummy_id=d_id) for d_id in dummy_ids]),
             'Number reaction steps (some may be unused)': len(non_dummy_ids),
             'Average reaction score (some may be unused)': avg_rxn_score,
+            'Run time': self.runtime,
+            'Number of variables': self.get_num_variables(),
+            'Number of constraints': self.get_num_constraints(),
         }
 
         if extract_routes:
@@ -390,3 +392,11 @@ class Selector(ABC):
                 })
             store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns)
         return store_dict
+
+    @abstractmethod
+    def get_num_variables(self):
+        """ Returns the number of variables in the optimization problem """
+
+    @abstractmethod
+    def get_num_constraints(self): 
+        """ Returns the number of constraints in the optimization problem """

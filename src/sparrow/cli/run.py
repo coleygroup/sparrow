@@ -38,7 +38,7 @@ def get_clusters(cluster_type, filepath, cutoff, outdir=None):
             }
             return cluster_smis
 
-        c_names = set([c for c in df['Cluster'] if not np.isnan(c)])
+        c_names = set([c for c in df['Cluster'] if not pd.isnull(c)])
         cluster_smis = {
             c: list(df.loc[df.Cluster==c]['SMILES'])
             for c in c_names
@@ -66,7 +66,7 @@ def optimize(selector, params):
     selector.define_variables()
     selector.set_objective()
     selector.set_constraints(set_cycle_constraints=not params['acyclic'])
-    selector.optimize() 
+    selector.optimize(max_seconds=params['time_limit']*3600) 
     selector.extract_vars()
     
     return selector 
@@ -116,7 +116,7 @@ def build_scorer(params):
 def build_coster(params): 
     rec = params['coster']
     if rec == 'chemspace': 
-        sys.path.append(params['key_path'])
+        sys.path.append(str(Path(params['key_path']).parent))
         from keys import chemspace_api_key
         return ChemSpaceCoster(api_key=chemspace_api_key)
     elif rec == 'naive': 
@@ -167,7 +167,8 @@ def build_selector(params, target_dict, storage_path, clusters):
             max_rxns=params['max_rxns'],
             sm_budget=params['starting_material_budget'],
             dont_buy_targets=params['dont_buy_targets'],
-            N_per_cluster=params['N_per_cluster']
+            N_per_cluster=params['N_per_cluster'],
+            prune_distance=params['prune_distance'],
         )      
     else: 
         weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight']]
@@ -185,6 +186,8 @@ def build_selector(params, target_dict, storage_path, clusters):
             clusters=clusters,
             dont_buy_targets=params['dont_buy_targets'],
             solver=params['solver'],
+            max_rxns=params['max_rxns'],
+            sm_budget=params['starting_material_budget'],
         )
 
     if storage_path is not None: 
@@ -217,7 +220,7 @@ def run():
     save_args(params)
 
     target_dict, targets = get_target_dict(params['target_csv']) 
-    if params['diversity_weight'] > 0: 
+    if params['diversity_weight'] > 0 and params['cluster'] is None: 
         print(f'Overwriting parameter "--cluster" to be similarity for diversity objective')
         params['cluster'] = 'similarity'
     clusters = get_clusters(
