@@ -136,7 +136,7 @@ def add_optimization_args(parser: ArgumentParser):
 def add_cluster_args(parser: ArgumentParser): 
     # currently specific to linear optimization 
     parser.add_argument('--diversity-weight', action='store', type=float, default=0,
-                    help='weighting factor for diversity, automatically clusters by Tanimoto similarity and encourages many clusters to be represented')
+                    help='weighting factor for diversity, encourages many clusters to be represented')
 
     # not specific to any formulation 
     parser.add_argument('--cluster', action='store', default=None, choices=[None, 'custom', 'similarity'],

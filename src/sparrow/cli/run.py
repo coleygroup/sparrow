@@ -38,7 +38,7 @@ def get_clusters(cluster_type, filepath, cutoff, outdir=None):
             }
             return cluster_smis
 
-        c_names = set([c for c in df['Cluster'] if not np.isnan(c)])
+        c_names = set([c for c in df['Cluster'] if not pd.isnull(c)])
         cluster_smis = {
             c: list(df.loc[df.Cluster==c]['SMILES'])
             for c in c_names
@@ -116,7 +116,7 @@ def build_scorer(params):
 def build_coster(params): 
     rec = params['coster']
     if rec == 'chemspace': 
-        sys.path.append(params['key_path'])
+        sys.path.append(str(Path(params['key_path']).parent))
         from keys import chemspace_api_key
         return ChemSpaceCoster(api_key=chemspace_api_key)
     elif rec == 'naive': 
@@ -220,7 +220,7 @@ def run():
     save_args(params)
 
     target_dict, targets = get_target_dict(params['target_csv']) 
-    if params['diversity_weight'] > 0: 
+    if params['diversity_weight'] > 0 and params['cluster'] is None: 
         print(f'Overwriting parameter "--cluster" to be similarity for diversity objective')
         params['cluster'] = 'similarity'
     clusters = get_clusters(
