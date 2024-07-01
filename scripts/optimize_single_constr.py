@@ -9,7 +9,7 @@ def opt_rxn_constr(min_rxns=10, max_rxns=60, n_rxn=6):
 
     cmds = []
 
-    n_rxns = [*np.r_[0:100:10], *np.r_[100:200:20]]
+    n_rxns = np.r_[0:70:5] # [*np.r_[0:100:10], *np.r_[100:200:20]]
 
     out_dir = Path(f'results/garib_rxnconstr_nonlinear')
     for max_rxn in n_rxns: 
@@ -44,20 +44,20 @@ def opt_budget_constr_linear():
     
     for budget in budgets: 
         out_folder = out_dir / f'budget_{budget}'
-        cmd = f'sparrow --config {conf_path} --output-dir {out_folder} --formulation linear --start-cost-weight 0 --starting-material-budget {budget} --reward-weight 10'
+        cmd = f'sparrow --config {conf_path} --output-dir {out_folder} --formulation linear --start-cost-weight 0 --starting-material-budget {budget} --reward-weight 40'
         cmds.append(cmd)
     
     return cmds 
 
 def opt_rxn_constr_linear(): 
     cmds = []
-    n_rxns = [*np.r_[0:100:10], *np.r_[100:200:20]]
+    n_rxns = np.r_[0:70:5] # [*np.r_[0:70:10], *np.r_[80:200:20]]
     out_dir = Path(f'results/garib_rxnconstr_linear')
     conf_path = Path('examples/garibsingh/config_opt.ini')
     
     for max_rxn in n_rxns: 
         out_folder = out_dir / f'rxn_{max_rxn}'
-        cmd = f'sparrow --config {conf_path} --output-dir {out_folder} --formulation linear --start-cost-weight 0 --max-rxns {max_rxn} --reward-weight 10'
+        cmd = f'sparrow --config {conf_path} --output-dir {out_folder} --formulation linear --start-cost-weight 0 --max-rxns {max_rxn} --reward-weight 50'
         cmds.append(cmd)
     
     return cmds 
@@ -74,7 +74,10 @@ def print_commands(cmds):
         f.writelines(cmdss)
 
 if __name__=='__main__':
-    cmds_rxn = opt_rxn_constr()
-    cmds_budget = opt_budget_constr()
+    cmds_linear = opt_rxn_constr_linear()
+    cmds_nonlinear = opt_rxn_constr()
+    # cmds_budget = opt_budget_constr_linear()
     # run_commands([*cmds_rxn, *cmds_budget])
-    print_commands([*cmds_rxn, *cmds_budget])
+    # print_commands([*cmds_rxn, *cmds_budget])
+    print_commands(cmds_nonlinear)
+    run_commands(cmds_linear)

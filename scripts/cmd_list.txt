@@ -1,0 +1,14 @@
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_0 --formulation expected_reward --prune-distance 16 --max-rxns 0
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_5 --formulation expected_reward --prune-distance 16 --max-rxns 5
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_10 --formulation expected_reward --prune-distance 16 --max-rxns 10
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_15 --formulation expected_reward --prune-distance 16 --max-rxns 15
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_20 --formulation expected_reward --prune-distance 16 --max-rxns 20
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_25 --formulation expected_reward --prune-distance 16 --max-rxns 25
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_30 --formulation expected_reward --prune-distance 16 --max-rxns 30
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_35 --formulation expected_reward --prune-distance 16 --max-rxns 35
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_40 --formulation expected_reward --prune-distance 16 --max-rxns 40
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_45 --formulation expected_reward --prune-distance 16 --max-rxns 45
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_50 --formulation expected_reward --prune-distance 16 --max-rxns 50
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_55 --formulation expected_reward --prune-distance 16 --max-rxns 55
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_60 --formulation expected_reward --prune-distance 16 --max-rxns 60
+sparrow --config examples/garibsingh/config_opt.ini --output-dir results/garib_rxnconstr_nonlinear/rxn_65 --formulation expected_reward --prune-distance 16 --max-rxns 65
