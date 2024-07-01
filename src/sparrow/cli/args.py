@@ -117,7 +117,7 @@ def add_optimization_args(parser: ArgumentParser):
                         help='weighting factor for reaction objective')
     parser.add_argument('--max-rxns', action='store', type=int, default=None,
                         help='maximum number of reaction steps to select')
-    parser.add_argument('--starting-material-budget', action='store', type=int, default=None,
+    parser.add_argument('--starting-material-budget', action='store', type=float, default=None,
                         help='maximum budget on starting material costs (all on per g basis, does not consider amount needed!)')
     parser.add_argument('--prune-distance', '--prune', action='store', type=int, default=None,
                         help='To reduce the number of variables that is defined (and speed up solving), set this to a nonzero integer (~2X max route length)')
@@ -129,13 +129,15 @@ def add_optimization_args(parser: ArgumentParser):
                         help='maximum number of selected targets (useful if testing is a bottleneck)')
     parser.add_argument('--acyclic', action='store_true', default=False, 
                         help='if the reaction network graph is known to be acyclic')
+    parser.add_argument('--time-limit', action='store', default=12, type=float,
+                        help='time limit on solving the optimization, in hours')
     
     return parser
 
 def add_cluster_args(parser: ArgumentParser): 
     # currently specific to linear optimization 
     parser.add_argument('--diversity-weight', action='store', type=float, default=0,
-                    help='weighting factor for diversity, automatically clusters by Tanimoto similarity and encourages many clusters to be represented')
+                    help='weighting factor for diversity, encourages many clusters to be represented')
 
     # not specific to any formulation 
     parser.add_argument('--cluster', action='store', default=None, choices=[None, 'custom', 'similarity'],

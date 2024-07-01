@@ -181,9 +181,9 @@ class ExpectedRewardSelector(Selector):
     def set_rxn_constraints(self): 
         # TODO: consider redudancy in these constraints and simplify problem 
         
-        if self.max_rxns: 
+        if self.max_rxns is not None: 
             self.problem.addConstr(
-                self.max_rxns >= gp.quicksum(self.r[node.id] for node in self.graph.non_dummy_nodes())
+                self.max_rxns >= gp.quicksum(self.r[rid] for rid in self.r.keys() if not self.graph.smiles_from_id(rid).startswith('>>'))
             )
 
         for node in tqdm(self.graph.reaction_nodes_only(), desc='Reaction constraints'): 
@@ -327,7 +327,7 @@ class ExpectedRewardSelector(Selector):
 
         return 
     
-    def optimize(self, savedir=None, solver=None):
+    def optimize(self, savedir=None, solver=None, max_seconds=None):
 
         if not savedir: 
             savedir = self.dir 
@@ -336,13 +336,15 @@ class ExpectedRewardSelector(Selector):
         opt_start = time.time()
 
         self.problem.params.NonConvex = 2
-        self.problem.Params.TIME_LIMIT = 3*3600
+        self.problem.Params.TIME_LIMIT = max_seconds
         self.problem.optimize()
+
+        self.runtime = time.time()-opt_start
 
         if self.problem.status == 3: 
             raise RuntimeError('Problem is infeasible. To fix, try relaxing constraints.')
     
-        print(f"Optimization problem completed. Took {time.time()-opt_start:0.2f} seconds.")
+        print(f"Optimization problem completed. Took {self.runtime:0.2f} seconds.")
         
         return 
     
@@ -384,6 +386,12 @@ class ExpectedRewardSelector(Selector):
                     })
                 store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns, target=target)
         return store_dict
+
+    def get_num_variables(self): 
+        return len(self.problem.getVars())
+    
+    def get_num_constraints(self):
+        return len(self.problem.getConstrs())
 
 class PrunedERSelector(ExpectedRewardSelector): 
     """ 
@@ -517,9 +525,9 @@ class PrunedERSelector(ExpectedRewardSelector):
     def set_rxn_constraints(self):
         # TODO: consider redudancy in these constraints and simplify problem 
         
-        if self.max_rxns: 
+        if self.max_rxns is not None: 
             self.problem.addConstr(
-                self.max_rxns >= gp.quicksum(self.r[node.id] for node in self.graph.non_dummy_nodes())
+                self.max_rxns >= gp.quicksum(self.r[rid] for rid in self.r.keys() if not self.graph.smiles_from_id(rid).startswith('>>'))
             )
 
         for rid in tqdm(self.u.keys(), desc='Reaction constraints'): 
@@ -583,7 +591,7 @@ class PrunedERSelector(ExpectedRewardSelector):
 
         for cid in tqdm(self.m.keys(), 'Compound constraints'): 
             node = self.graph.node_from_id(cid)
-            par_ids = [par.id for par in node.parents.values()]
+            par_ids = [par.id for par in node.parents.values() if par.id in self.r]
             self.problem.addConstr(
                 self.m[cid] <= gp.quicksum(self.r[par_id] for par_id in par_ids),
                 name=f'cpdConstr_{node.id}'
