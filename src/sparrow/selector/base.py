@@ -12,7 +12,7 @@ import numpy as np
 from sparrow.scorer import Scorer
 from sparrow.condition_recommender import Recommender
 from sparrow.route_graph import RouteGraph
-from sparrow.coster import Coster, ChemSpaceCoster
+from sparrow.coster import Coster, ChemSpaceCoster, LookupCoster
 from sparrow.nodes import ReactionNode
 
 from pulp import LpProblem
@@ -64,7 +64,7 @@ class Selector(ABC):
             self.graph.prune_dummy_rxns()
 
         Path(self.dir/'chkpts').mkdir(parents=True, exist_ok=True)
-        save_freq = 1e6 if type(coster) == ChemSpaceCoster else 500
+        save_freq = 1e6 if type(coster) == LookupCoster else 500
         self.graph.set_buyable_compounds_and_costs(coster, save_json_dir=self.dir/'chkpts', save_freq=save_freq)
 
         self.add_dummy_starting_rxn_nodes()
