@@ -390,7 +390,6 @@ class Selector(ABC):
     def export_selected_nodes(self, rxn_list, class_ids, starting_list, target_list, output_dir):
         storage = {'Starting Materials': [], 'Reactions': [], 'Targets': []}
         graph = self.graph
-        print("CLASSIDS" + str(class_ids != []))
 
         for rxn_id in rxn_list:
             node = graph.node_from_id(rxn_id)

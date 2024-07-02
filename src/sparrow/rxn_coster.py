@@ -18,28 +18,38 @@ class RxnClass(ABC):
 
 class NameRxnClass(RxnClass):
     def __init__(self, 
-                 dir: str = None):
+                 dir: str = None,
+                 tmp: str = './tmp/'):
         self.dir = dir
+        self.tmp = Path(tmp)
+        self.tmp.mkdir(parents=True, exist_ok=True)
         self.no_class_num = 0
         super().__init__()
 
     def get_rxn_class(self, rxn, attempt=0):
-        if attempt > 3:
-            print("Classifying " + rxn + " failed")
+        if attempt > 5:
+            print(f"Classifying {rxn} failed")
             self.no_class_num += 1
-            return "Unclassified by NameRxn" + str(self.no_class_num)
+            return f"Unclassified_{self.no_class_num}"
         if rxn[0] != '>':
-            input = open("test.smi", 'w')
-            input.write(rxn)
+            tmp_in = self.tmp / "rxn.smi"
+            tmp_out = self.tmp / "rxn.smi.out"
+            with open(tmp_in, "w") as f: 
+                f.write(rxn)
+            # input = open("test.smi", 'w')
+            # input.write(rxn)
 
-            cmd_str = " ".join(["../" + self.dir + "/namerxn", "-completer", "-addrxnname", "-osmi", "test.smi", "-o", "test.smi.out"])
+            cmd_str = " ".join([self.dir + "/namerxn", "-completer", "-addrxnname", "-osmi", str(tmp_in), "-o", str(tmp_out)])
             subprocess.Popen(cmd_str, shell=True)
-            output = open("test.smi.out", 'r')
+            
             class_num = ""
+            with open(tmp_out, "r") as f:
+                output = f.readlines()
+            # output = open("test.smi.out", 'r')
+            
             try: 
                 for line in output:
                     class_num = line.strip().split()[1]
-                    # print(class_num)
             except:
                 return self.get_rxn_class(rxn, attempt + 1)
             
@@ -47,14 +57,16 @@ class NameRxnClass(RxnClass):
                 return class_num
             
         self.no_class_num += 1
-        return "Unclassified by NameRxn" + str(self.no_class_num)
+        return f"Unclassified_{self.no_class_num}"
 
     def get_rxn_classes(self, rxn_file):
-        cmd_str = " ".join(["../" + self.dir + "/namerxn", "-completer", "-addrxnname", "-osmi", str(rxn_file), "-o", "test.smi.out"])
+        tmp_out = self.tmp / "rxn.smi.out"
+        cmd_str = " ".join(["../" + self.dir + "/namerxn", "-completer", "-addrxnname", "-osmi", str(rxn_file), "-o", str(tmp_out)])
         subprocess.Popen(cmd_str, shell=True)
 
         classes = {}
-        output = open("test.smi.out", 'r')
+        with open(tmp_out, "r") as f: 
+            output = f.readlines()
 
         for line in output: 
             class_num = ""

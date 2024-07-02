@@ -3,6 +3,7 @@ import pandas as pd
 import sys 
 import numpy as np 
 import json 
+from tqdm import tqdm
 
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
@@ -78,7 +79,7 @@ def optimize(selector, params):
     if 'rxn_classifier_path' in params and params['rxn_classifier_path'] != '' and params['rxn_classifier_path'] != None:
         post_opt_class_score = params['rxn_classifier_path']
 
-    selector.post_processing(output_dir=output_dir, extract_routes=extract_routes, post_opt_class_score=post_opt_class_score) 
+    selector.post_processing(extract_routes=extract_routes, post_opt_class_score=post_opt_class_score) 
 
     return selector 
 
@@ -160,17 +161,22 @@ def build_classes(params, graph: RouteGraph):
 
     #     rxn_classes = classifier.get_rxn_classes(rxn_class_file)
     #     return rxn_classes
-
+    rxn_smis = []
+    classes = []
     if classifier != None:
         rxn_classes = {}
-        for rxn in graph.non_dummy_nodes():
+        for rxn in tqdm(graph.non_dummy_nodes(), desc='Classifying reactions'):
             c = classifier.get_rxn_class(rxn.smiles)
+            rxn_smis.append(rxn.smiles)
+            classes.append(c)
             if c in rxn_classes.keys():
                 rxn_classes[c].append(rxn.smiles)
             else:
                 rxn_classes[c] = [rxn.smiles]
-
+        rxn_df = pd.DataFrame({'SMILES': rxn_smis, 'Class': classes})
+        rxn_df.to_csv(Path(params['output_dir'])/'reaction_classes.csv', index=False)
         return rxn_classes
+
     return None
      
 def build_selector(params, target_dict, storage_path, clusters):

@@ -38,3 +38,4 @@ UNKNOWN**
 .vscode
 *.log
 .idea/
+tmp/
