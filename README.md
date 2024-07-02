@@ -31,7 +31,7 @@ SPARROW has been tested on Python version 3.7 and 3.8 and on Linux and Windows m
 
 ## Installation
 
-On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. If you are using Gurobi, obtain a Gurobi license and follow the instructions below to use with SPARROW. 
+On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. If you are using Gurobi, obtain a Gurobi license and follow the instructions below to use with SPARROW. If you are using NameRxn, skip to [Installing NameRxn](#installing-namerxn) and follow installation instructions there. 
 
 ```
 mamba env create -f environment.yml
@@ -60,26 +60,25 @@ You can check the status and expiration date of your license using `gurobi_cl --
 
 #### Installing NameRxn
 
-Instructions from Next Move Software are available at https://www.nextmovesoftware.com/downloads/hazelnut/documentation/
+To set up SPARROW to run with NameRxn, follow the instructions below. Note that additional installation details from Next Move Software are available at https://www.nextmovesoftware.com/downloads/hazelnut/documentation/.
 
-1. Download the two tar.gz files at https://www.nextmovesoftware.com/downloads/hazelnut/releases/LATEST/. You will need the ID and password (credentials associated with your license).
-2. Unzip with command
+1. Create an environment: 
 ```
-  $ tar -xf <filename>
+mamba create --override-channels -c conda-forge -n namerxn rdkit gxx_linux-64 pyodbc swig openjdk boost-cpp
+conda activate namerxn
 ```
-3. Move to HazELNut/ and verify that rdkit has been installed
-4. Tun the commands:
+2. Download the two installation files at https://www.nextmovesoftware.com/downloads/hazelnut/releases/LATEST/ (requires license credentials).
+3. Unzip the files and build the program. 
 ```
-  $ cmake .
-  $ make
+tar -xf <filename>
+cd HazELNut
+cmake . -DTARGET=RDKIT -DBUILD_CGI=1 -DPYTHON_BINDINGS=1 -DJAVA_BINDINGS=1 -DCMAKE_PREFIX_PATH=${CONDA_PREFIX} -DPython3_INCLUDE_DIRS=${CONDA_PREFIX}/include/python3.12 -DPython3_LIBRARIES=${CONDA_PREFIX}/lib/libpython3.12.so
+make
 ```
-5. Check the install by running
+4. Finally, install remaining requirements and set up SPARROW:
 ```
-		$ namerxn
-```
-Otherwise, try 
-```
-  $ ./namerxn
+pip install -r requirements.txt
+python setup.py develop 
 ```
 
 ## Running SPARROW
