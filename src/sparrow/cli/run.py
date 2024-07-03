@@ -161,23 +161,45 @@ def build_classes(params, graph: RouteGraph):
 
     #     rxn_classes = classifier.get_rxn_classes(rxn_class_file)
     #     return rxn_classes
-    rxn_smis = []
-    classes = []
-    if classifier != None:
-        rxn_classes = {}
-        for rxn in tqdm(graph.non_dummy_nodes(), desc='Classifying reactions'):
-            c = classifier.get_rxn_class(rxn.smiles)
-            rxn_smis.append(rxn.smiles)
-            classes.append(c)
-            if c in rxn_classes.keys():
-                rxn_classes[c].append(rxn.smiles)
-            else:
-                rxn_classes[c] = [rxn.smiles]
-        rxn_df = pd.DataFrame({'SMILES': rxn_smis, 'Class': classes})
-        rxn_df.to_csv(Path(params['output_dir'])/'reaction_classes.csv', index=False)
-        return rxn_classes
+    
+    if classifier is None:
+        return None
 
-    return None
+    rxn_smis = [r.smiles for r in graph.non_dummy_nodes()]
+    size = np.ceil(len(rxn_smis) / 5).astype(int)
+    batch_rxns = list(
+        map(lambda x: rxn_smis[x * size:x * size + size],
+        list(range(5)))
+    )
+    batch_classes = [
+        classifier.get_rxn_classes(batch) 
+        for batch in tqdm(batch_rxns, desc='Classifying reactions')
+    ]
+
+    class_nums = [c for batch in batch_classes for c in batch]
+
+    rxn_classes = {}
+    for c, rxn in zip(class_nums, rxn_smis): 
+        if c in rxn_classes.keys():
+            rxn_classes[c].append(rxn)
+        else:
+            rxn_classes[c] = [rxn]
+
+    # if classifier != None:
+    #     rxn_classes = {}
+    #     for rxn in tqdm(graph.non_dummy_nodes(), desc='Classifying reactions'):
+    #         c = classifier.get_rxn_class(rxn.smiles)
+    #         rxn_smis.append(rxn.smiles)
+    #         classes.append(c)
+    #         if c in rxn_classes.keys():
+    #             rxn_classes[c].append(rxn.smiles)
+    #         else:
+    #             rxn_classes[c] = [rxn.smiles]
+    if isinstance(classifier, NameRxnClass):
+        rxn_df = pd.DataFrame({'SMILES': rxn_smis, 'Class': class_nums})
+        rxn_df.to_csv(Path(params['output_dir'])/'reaction_classes.csv', index=False)
+        
+    return rxn_classes
      
 def build_selector(params, target_dict, storage_path, clusters):
     # storage_path is a dict of SMILES to reward
