@@ -8,6 +8,7 @@ import warnings
 import csv 
 import json 
 import numpy as np
+from difflib import SequenceMatcher
 
 from sparrow.scorer import Scorer
 from sparrow.condition_recommender import Recommender
@@ -268,7 +269,7 @@ class Selector(ABC):
         """ Sets objective function for self.problem """
 
     @abstractmethod
-    def optimize(self, max_seconds): 
+    def optimize(self): 
         """ Optimizes self.problem, with a time limit of max_seconds """
 
     def extract_vars(self, output_dir=None, extract_routes=True): 
@@ -357,11 +358,41 @@ class Selector(ABC):
                         if reaction in dict[other_target]:
                             score_dict[target] += 1
 
+        blacklist = []
+        matches_overall = {}
+        longest_match = {}
+        longest_overall = None
+        long_long_len = 0
+
+        for target in dict:
+            matches = {}
+            longest = None
+            long_len = 0
+            for other_target in dict:
+                if target != other_target and other_target not in blacklist:
+                    target_rxns = dict[target]
+                    other_rxns = dict[other_target]
+                    match = SequenceMatcher(None, target_rxns, other_rxns).find_longest_match()
+                    matches[other_target] = target_rxns[match.a:match.a + match.size]
+                    if match.size > long_len:
+                        long_len = match.size
+                        longest = target_rxns[match.a:match.a + match.size]
+            
+            longest_match[target] = (long_len, longest)
+            if long_len > long_long_len:
+                long_long_len = long_len
+                longest_overall = longest
+            matches_overall[target] = matches
+            blacklist.append(target)
+        
         results = {}
         results["Reaction Classes used to get Target"] = dict
-        results["Ocuurance frequency of reaction classes"] = class_count
+        results["Occurrence frequency of reaction classes"] = class_count
         results["Overall Reaction Classes shared with all other Targets Count"] = score_dict
-        results["Max length of overlapping segment"] = {} #TODO
+        results["Max length of overlapping segment"] = long_long_len
+        results["Longest overlapping segment"] = longest_overall
+        results["All sequence overlaps"] = matches_overall
+        results["Longest overlapping segments for each target"] = longest_match
         return results
 
     def post_processing(self, output_dir=None, extract_routes=True, post_opt_class_score=None): 

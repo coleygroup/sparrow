@@ -8,6 +8,7 @@ from tqdm import tqdm
 from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
 from sparrow.route_graph import RouteGraph
 from sparrow.selector.linear import LinearSelector
+from sparrow.selector.bayesian import BOLinearSelector
 from sparrow.selector.nonlinear import ExpectedRewardSelector, PrunedERSelector
 from sparrow.condition_recommender import AskcosAPIRecommender
 from sparrow.scorer import AskcosAPIScorer
@@ -62,26 +63,6 @@ def get_clusters(cluster_type, filepath, cutoff, outdir=None):
             json.dump(cluster_smis, f, indent='\t')
 
         return cluster_smis
-
-def optimize(selector, params):
-    selector.define_variables()
-    selector.set_objective()
-    selector.set_constraints(set_cycle_constraints=not params['acyclic'])
-    selector.optimize(max_seconds=params['time_limit']*3600) 
-    
-    output_dir = None
-    extract_routes = True
-    post_opt_class_score = None
-    if params['output_dir'] != None and params['output_dir'] != '':
-        output_dir = params['output_dir']
-    if 'extract_routes' in params and params['extract_routes'].lower() == 'false':
-        extract_routes = False
-    if 'rxn_classifier_path' in params and params['rxn_classifier_path'] != '' and params['rxn_classifier_path'] != None:
-        post_opt_class_score = params['rxn_classifier_path']
-
-    selector.post_processing(extract_routes=extract_routes, post_opt_class_score=post_opt_class_score) 
-
-    return selector 
 
 def get_path_storage(params, targets): 
     if params['graph'] is not None: 
@@ -201,12 +182,17 @@ def build_classes(params, graph: RouteGraph):
         
     return rxn_classes
      
-def build_selector(params, target_dict, storage_path, clusters):
+def build_selector(params, target_dict, storage_path, clusters, bayesian):
     # storage_path is a dict of SMILES to reward
     if storage_path is None: 
         graph = RouteGraph(node_filename=params['graph'])
     else: 
         graph = RouteGraph(node_filename=storage_path)
+
+    if 'extract_routes' in params and params['extract_routes'].lower() == 'false':
+        extract_routes = False
+    if 'rxn_classifier_path' in params and params['rxn_classifier_path'] != '' and params['rxn_classifier_path'] != None:
+        post_opt_class_score = params['rxn_classifier_path']
 
     weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight'], params['rxn_class_weight']]
     if params['formulation'] == 'expected_reward' and params['prune_distance'] is None:
@@ -228,6 +214,8 @@ def build_selector(params, target_dict, storage_path, clusters):
             sm_budget=params['starting_material_budget'],
             dont_buy_targets=params['dont_buy_targets'],
             N_per_cluster=params['N_per_cluster']
+            # set_cycle_constraints=not params['acyclic'],
+            # max_seconds=params['time_limit']*3600
         )
     elif params['formulation'] == 'expected_reward': 
         selector = PrunedERSelector(
@@ -249,7 +237,33 @@ def build_selector(params, target_dict, storage_path, clusters):
             dont_buy_targets=params['dont_buy_targets'],
             N_per_cluster=params['N_per_cluster'],
             prune_distance=params['prune_distance'],
-        )      
+            # set_cycle_constraints=not params['acyclic'],
+            # max_seconds=params['time_limit']*3600
+        )
+    elif bayesian:
+        selector = BOLinearSelector(
+            route_graph=graph,
+            target_dict=target_dict,
+            rxn_scorer=build_scorer(params),
+            condition_recommender=build_recommender(params),
+            constrain_all_targets=params['constrain_all'],
+            max_targets=params['max_targets'],
+            coster=build_coster(params),
+            weights=weights,
+            output_dir=Path(params['output_dir']),
+            clusters=clusters,
+            rxn_classes=build_classes(params, graph) if 'rxn_classifier_path' in params else None,
+            rxn_classifier_dir = params['rxn_classifier_path'] if 'rxn_classifier_path' in params else None,
+            max_rxn_classes=params['max_rxn_classes'] if 'max_rxn_classes' in params else None,
+            dont_buy_targets=params['dont_buy_targets'],
+            solver=params['solver'],
+            max_rxns=params['max_rxns'],
+            sm_budget=params['starting_material_budget'],    
+            set_cycle_constraints=not params['acyclic'],
+            max_seconds=params['time_limit']*3600,
+            extract_routes=extract_routes, 
+            post_opt_class_score=post_opt_class_score
+        )  
     else: 
         selector = LinearSelector(
             route_graph=graph,
@@ -269,6 +283,10 @@ def build_selector(params, target_dict, storage_path, clusters):
             solver=params['solver'],
             max_rxns=params['max_rxns'],
             sm_budget=params['starting_material_budget'],
+            set_cycle_constraints=not params['acyclic'],
+            max_seconds=params['time_limit']*3600,
+            extract_routes=extract_routes, 
+            post_opt_class_score=post_opt_class_score
         )
 
     # if no graph is given, creates graph from the info file path
@@ -290,6 +308,7 @@ def save_args(params):
 def run():
     args = get_args()
     params = vars(args)
+    bayesian = True #TODO: change this later!!!!
 
     print('SPARROW will be run with the following parameters:')    
     for k, v in sorted(params.items()):
@@ -312,8 +331,8 @@ def run():
         outdir=params['output_dir']
     )
     storage_path = get_path_storage(params, targets)
-    selector = build_selector(params, target_dict, storage_path, clusters)
-    selector = optimize(selector, params)
+    selector = build_selector(params, target_dict, storage_path, clusters, bayesian)
+    selector = selector.optimize()
 
 if __name__ == '__main__':
     run()
