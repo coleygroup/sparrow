@@ -13,6 +13,7 @@ pathlib
 pulp
 rdkit 
 scikit-learn==1.4
+scikit-optimize
 scipy
 cairosvg
 sphinx

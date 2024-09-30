@@ -182,17 +182,22 @@ def build_classes(params, graph: RouteGraph):
         
     return rxn_classes
      
-def build_selector(params, target_dict, storage_path, clusters, bayesian):
+def build_selector(params, target_dict, storage_path, clusters):
     # storage_path is a dict of SMILES to reward
     if storage_path is None: 
         graph = RouteGraph(node_filename=params['graph'])
     else: 
         graph = RouteGraph(node_filename=storage_path)
 
+    extract_routes = True
+    post_opt_class_score = None
+    bayes_iters = None
     if 'extract_routes' in params and params['extract_routes'].lower() == 'false':
         extract_routes = False
     if 'rxn_classifier_path' in params and params['rxn_classifier_path'] != '' and params['rxn_classifier_path'] != None:
         post_opt_class_score = params['rxn_classifier_path']
+    if 'bayes_iters' in params:
+        bayes_iters = params['bayes_iters']
 
     weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight'], params['rxn_class_weight']]
     if params['formulation'] == 'expected_reward' and params['prune_distance'] is None:
@@ -240,7 +245,7 @@ def build_selector(params, target_dict, storage_path, clusters, bayesian):
             # set_cycle_constraints=not params['acyclic'],
             # max_seconds=params['time_limit']*3600
         )
-    elif bayesian:
+    elif bayes_iters != None:
         selector = BOLinearSelector(
             route_graph=graph,
             target_dict=target_dict,
@@ -259,10 +264,11 @@ def build_selector(params, target_dict, storage_path, clusters, bayesian):
             solver=params['solver'],
             max_rxns=params['max_rxns'],
             sm_budget=params['starting_material_budget'],    
-            set_cycle_constraints=not params['acyclic'],
+            cycle_constraints=not params['acyclic'],
             max_seconds=params['time_limit']*3600,
             extract_routes=extract_routes, 
-            post_opt_class_score=post_opt_class_score
+            post_opt_class_score=post_opt_class_score,
+            bayes_iters=bayes_iters
         )  
     else: 
         selector = LinearSelector(
@@ -283,7 +289,7 @@ def build_selector(params, target_dict, storage_path, clusters, bayesian):
             solver=params['solver'],
             max_rxns=params['max_rxns'],
             sm_budget=params['starting_material_budget'],
-            set_cycle_constraints=not params['acyclic'],
+            cycle_constraints=not params['acyclic'],
             max_seconds=params['time_limit']*3600,
             extract_routes=extract_routes, 
             post_opt_class_score=post_opt_class_score
@@ -308,7 +314,6 @@ def save_args(params):
 def run():
     args = get_args()
     params = vars(args)
-    bayesian = True #TODO: change this later!!!!
 
     print('SPARROW will be run with the following parameters:')    
     for k, v in sorted(params.items()):
@@ -331,7 +336,7 @@ def run():
         outdir=params['output_dir']
     )
     storage_path = get_path_storage(params, targets)
-    selector = build_selector(params, target_dict, storage_path, clusters, bayesian)
+    selector = build_selector(params, target_dict, storage_path, clusters)
     selector = selector.optimize()
 
 if __name__ == '__main__':

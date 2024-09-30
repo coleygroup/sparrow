@@ -33,7 +33,7 @@ class LinearSelector(Selector):
                  solver: str = 'pulp',
                  max_rxns: int = None, 
                  sm_budget: float = None, 
-                 set_cycle_constraints: bool = False,
+                 cycle_constraints: bool = False,
                  max_seconds: int = None,
                  extract_routes: bool = True, 
                  post_opt_class_score: str = None,
@@ -44,11 +44,12 @@ class LinearSelector(Selector):
             rxn_scorer=rxn_scorer, condition_recommender=condition_recommender, 
             constrain_all_targets=constrain_all_targets, max_targets=max_targets, 
             coster=coster, weights=weights, output_dir=output_dir, 
-            remove_dummy_rxns_first=remove_dummy_rxns_first, 
+            remove_dummy_rxns_first=remove_dummy_rxns_first, max_seconds=max_seconds,
             clusters=clusters, N_per_cluster=N_per_cluster, rxn_classes=rxn_classes,
             rxn_classifier_dir=rxn_classifier_dir, max_rxn_classes=max_rxn_classes, 
-            dont_buy_targets=dont_buy_targets,
-            max_rxns=max_rxns, sm_budget=sm_budget,
+            dont_buy_targets=dont_buy_targets, post_opt_class_score=post_opt_class_score,
+            max_rxns=max_rxns, sm_budget=sm_budget, extract_routes=extract_routes,
+            cycle_constraints=cycle_constraints
             )
         self.solver = solver 
         
@@ -82,14 +83,14 @@ class LinearSelector(Selector):
         
         return 
 
-    def set_constraints(self, set_cycle_constraints=True):
+    def set_constraints(self):
 
         print('Setting constraints ...')
 
         self.set_rxn_constraints()
         self.set_mol_constraints()
 
-        if set_cycle_constraints: 
+        if self.cycle_constraints: 
             self.set_cycle_constraints()
         
         if self.max_targets:
@@ -257,6 +258,7 @@ class LinearSelector(Selector):
         print("Solving optimization problem...")
         self.define_variables()
         self.set_objective(weights)
+        self.set_constraints()
 
         opt_start = time.time()
         if self.solver == 'GUROBI' or self.solver == 'gurobi': 
@@ -271,7 +273,6 @@ class LinearSelector(Selector):
 
         print(f"Optimization problem completed. Took {self.runtime:0.2f} seconds to solve")
 
-        self.set_constraints(self.set_cycle_constraints)
         self.post_processing(extract_routes=self.extract_routes, post_opt_class_score=self.post_opt_class_score) 
         
         return self

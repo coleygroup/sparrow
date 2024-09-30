@@ -50,6 +50,10 @@ class Selector(ABC):
                  max_rxns: int = None,
                  sm_budget: float = None,
                  dont_buy_targets: bool = False, 
+                 cycle_constraints: bool = False,
+                 max_seconds: int = None,
+                 extract_routes: bool = True, 
+                 post_opt_class_score: str = None,
                  ) -> None:
 
         self.dir = Path(output_dir)
@@ -57,6 +61,10 @@ class Selector(ABC):
         self.max_rxns = max_rxns
         self.sm_budget = sm_budget
         self.runtime = None
+        self.cycle_constraints = cycle_constraints
+        self.max_seconds = max_seconds
+        self.extract_routes = extract_routes
+        self.post_opt_class_score = post_opt_class_score
 
         self.graph = route_graph  
         if remove_dummy_rxns_first: 
@@ -272,7 +280,7 @@ class Selector(ABC):
     def optimize(self): 
         """ Optimizes self.problem, with a time limit of max_seconds """
 
-    def extract_vars(self, output_dir=None, extract_routes=True): 
+    def extract_vars(self, output_dir=None, extract_routes=True, bayesian=False): 
         mol_ids, rxn_ids, class_ids = self.extract_selected_ids()
 
         dummy_ids = [rxn for rxn in rxn_ids if self.graph.node_from_id(rxn).dummy]

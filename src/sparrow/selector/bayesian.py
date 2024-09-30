@@ -1,6 +1,7 @@
 from typing import Dict, List
 from pulp import lpSum
 from skopt import gp_minimize
+from pathlib import Path
 
 from sparrow.condition_recommender import Recommender
 from sparrow.coster import Coster
@@ -30,10 +31,11 @@ class BOLinearSelector(LinearSelector):
                  solver: str = 'pulp',
                  max_rxns: int = None, 
                  sm_budget: float = None, 
-                 set_cycle_constraints: bool = False,
+                 cycle_constraints: bool = False,
                  max_seconds: int = None,
                  extract_routes: bool = True, 
                  post_opt_class_score: str = None,
+                 bayes_iters: int = 20,
                  ) -> None:
         
         super().__init__(
@@ -44,28 +46,49 @@ class BOLinearSelector(LinearSelector):
             remove_dummy_rxns_first=remove_dummy_rxns_first, max_seconds=max_seconds, 
             clusters=clusters, N_per_cluster=N_per_cluster, rxn_classes=rxn_classes,
             rxn_classifier_dir=rxn_classifier_dir, max_rxn_classes=max_rxn_classes, 
-            dont_buy_targets=dont_buy_targets, set_cycle_constraints=set_cycle_constraints,
+            dont_buy_targets=dont_buy_targets, cycle_constraints=cycle_constraints,
             max_rxns=max_rxns, sm_budget=sm_budget, extract_routes=extract_routes,
             post_opt_class_score=post_opt_class_score,
             )
+
+        self.bayes_iters = bayes_iters
         self.solver = solver 
     
     def optimize(self):
-        self.optimize_weights()
+        res = self.optimize_weights()
+        print("BAYESIAN RESULT:" + str(res))
+        #TODO: edit the overall summary file to reflect the most optimal solution
+        # include a bayesian output file with the str(res)
+        # useful params: fun = -1 * exp reward, func_vals = params (??)
+        # TODO: params input to run baysian and # of cycles (if # inputted -> run bayesian) ADD TO ARGS
         return self
 
     # very basic reward metric
     def expected_reward_basic(self, weights):
-        super().optimize(weights=weights)
-        summary = self.extract_vars()
-        return summary['Expected Reward']
+        # full re-initialization of the problem
+        all_weights = self.weights # make sure copy not reference
+        all_weights[0] = weights[0] # rxn utility
+        all_weights[1] = 0 # start material cost - clearing just in case
+        all_weights[2] = weights[1] # rxn penalty
+        print(all_weights)
+        self.problem = self.initialize_problem()
+
+        super().optimize(weights=all_weights)
+        output_path = "BO" + str(all_weights) 
+        Path(self.dir, output_path).mkdir(exist_ok=True) #TODO: what's wrong with self.output_dir?
+        summary = self.extract_vars(output_dir=Path(self.dir, output_path))
+        return -1 * summary['Expected Reward']
+    
+        #TODO: 
+        # ISSUE #1: routes.json blank in bayesian directories [is this wrong, the routes in the solution directory is non-empty?]
     
     def optimize_weights(self):
-        res = gp_minimize(-1 * self.expected_reward_basic,                  # the function to minimize
-        [(0,1), (0,1)],      # the bounds on each dimension of x
+        res = gp_minimize(self.expected_reward_basic,    # the function to minimize
+        [(0.0,1.0), (0.0,1.0)],      # the bounds on each dimension of x
         acq_func="EI",      # the acquisition function
-        n_calls=15,         # the number of evaluations of f
+        n_calls=self.bayes_iters,         # the number of evaluations of f
         n_initial_points=10,  # the number of random initialization points
-        random_state=[])   # the random seed
+        # random_state=[]   # the random seed
+        )
 
         return res
