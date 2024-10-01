@@ -63,7 +63,7 @@ class BOLinearSelector(LinearSelector):
 
         summary = json.load(open(Path(self.dir, "BO" + str(result_weights), "summary.json"), 'r'))
 
-        final_summary["Highest Expected Reward"] = res.fun * -1
+        final_summary["Highest Expected Reward"] = float(res.fun * -1)
         final_summary["Optimal Rxn Utility and Penalty Params"] = res.x
         final_summary["Iterations of Bayesian Opt"] = self.bayes_iters
         final_summary["Solution summary"] = summary
@@ -83,7 +83,7 @@ class BOLinearSelector(LinearSelector):
         self.problem = self.initialize_problem()
 
         output_path = "BO" + str(all_weights) 
-        Path(self.dir, output_path).mkdir(exist_ok=True) #TODO: what's wrong with self.output_dir?
+        Path(self.dir, output_path).mkdir(exist_ok=True)
         super().optimize(weights=all_weights, output_dir=Path(self.dir, output_path))
         summary = json.load(open(Path(self.dir, output_path, "summary.json"), 'r'))
         return -1 * summary['Expected Reward']

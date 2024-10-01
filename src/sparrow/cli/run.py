@@ -218,9 +218,9 @@ def build_selector(params, target_dict, storage_path, clusters):
             max_rxns=params['max_rxns'],
             sm_budget=params['starting_material_budget'],
             dont_buy_targets=params['dont_buy_targets'],
-            N_per_cluster=params['N_per_cluster']
-            # set_cycle_constraints=not params['acyclic'],
-            # max_seconds=params['time_limit']*3600
+            N_per_cluster=params['N_per_cluster'],
+            set_cycle_constraints=not params['acyclic'],
+            max_seconds=params['time_limit']*3600
         )
     elif params['formulation'] == 'expected_reward': 
         selector = PrunedERSelector(
@@ -242,8 +242,8 @@ def build_selector(params, target_dict, storage_path, clusters):
             dont_buy_targets=params['dont_buy_targets'],
             N_per_cluster=params['N_per_cluster'],
             prune_distance=params['prune_distance'],
-            # set_cycle_constraints=not params['acyclic'],
-            # max_seconds=params['time_limit']*3600
+            set_cycle_constraints=not params['acyclic'],
+            max_seconds=params['time_limit']*3600
         )
     elif bayes_iters != None:
         selector = BOLinearSelector(

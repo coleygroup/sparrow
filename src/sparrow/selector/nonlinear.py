@@ -35,7 +35,9 @@ class ExpectedRewardSelector(Selector):
                  N_per_cluster: int = 0, 
                  max_rxns: int = None, 
                  sm_budget: float = None, 
-                 dont_buy_targets: bool = False
+                 dont_buy_targets: bool = False,
+                 cycle_constraints: bool = True,
+                 max_seconds: int = None
                  ) -> None:
         
         super().__init__(
@@ -46,6 +48,7 @@ class ExpectedRewardSelector(Selector):
             remove_dummy_rxns_first=remove_dummy_rxns_first,
             clusters=clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
             dont_buy_targets=dont_buy_targets, N_per_cluster=N_per_cluster,
+            cycle_constraints=cycle_constraints, max_seconds=max_seconds,
             )
         
     def initialize_problem(self) -> gp.Model:
@@ -124,7 +127,7 @@ class ExpectedRewardSelector(Selector):
 
         return 
         
-    def set_constraints(self, set_cycle_constraints=True):
+    def set_constraints(self):
         """ Sets constraints """
 
         print('Setting constraints ...')
@@ -132,7 +135,7 @@ class ExpectedRewardSelector(Selector):
         self.set_rxn_constraints()
         self.set_mol_constraints()
 
-        if set_cycle_constraints: 
+        if self.cycle_constraints: 
             self.set_cycle_constraints()
         
         if self.max_targets:
@@ -327,7 +330,7 @@ class ExpectedRewardSelector(Selector):
 
         return 
     
-    def optimize(self, savedir=None, solver=None, max_seconds=None):
+    def optimize(self, savedir=None, solver=None):
 
         if not savedir: 
             savedir = self.dir 
@@ -336,7 +339,7 @@ class ExpectedRewardSelector(Selector):
         opt_start = time.time()
 
         self.problem.params.NonConvex = 2
-        self.problem.Params.TIME_LIMIT = max_seconds
+        self.problem.Params.TIME_LIMIT = self.max_seconds
         self.problem.optimize()
 
         self.runtime = time.time()-opt_start
