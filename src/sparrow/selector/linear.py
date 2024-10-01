@@ -254,7 +254,7 @@ class LinearSelector(Selector):
 
         return
     
-    def optimize(self, weights = None):
+    def optimize(self, weights = None, output_dir=None):
         print("Solving optimization problem...")
         self.define_variables()
         self.set_objective(weights)
@@ -273,7 +273,7 @@ class LinearSelector(Selector):
 
         print(f"Optimization problem completed. Took {self.runtime:0.2f} seconds to solve")
 
-        self.post_processing(extract_routes=self.extract_routes, post_opt_class_score=self.post_opt_class_score) 
+        self.post_processing(extract_routes=self.extract_routes, post_opt_class_score=self.post_opt_class_score, output_dir=output_dir) 
         
         return self
     

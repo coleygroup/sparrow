@@ -2,6 +2,7 @@ from typing import Dict, List
 from pulp import lpSum
 from skopt import gp_minimize
 from pathlib import Path
+import json
 
 from sparrow.condition_recommender import Recommender
 from sparrow.coster import Coster
@@ -56,15 +57,23 @@ class BOLinearSelector(LinearSelector):
     
     def optimize(self):
         res = self.optimize_weights()
-        print("BAYESIAN RESULT:" + str(res))
-        #TODO: edit the overall summary file to reflect the most optimal solution
-        # include a bayesian output file with the str(res)
-        # useful params: fun = -1 * exp reward, func_vals = params (??)
-        # TODO: params input to run baysian and # of cycles (if # inputted -> run bayesian) ADD TO ARGS
+        print("BAYESIAN RESULT:" + str(res.fun * -1) + " at " + str(res.x))
+        final_summary = {}
+        result_weights = [res.x[0], 0, res.x[1], self.weights[3], self.weights[4]] # reconstructing all_weights
+
+        summary = json.load(open(Path(self.dir, "BO" + str(result_weights), "summary.json"), 'r'))
+
+        final_summary["Highest Expected Reward"] = res.fun * -1
+        final_summary["Optimal Rxn Utility and Penalty Params"] = res.x
+        final_summary["Iterations of Bayesian Opt"] = self.bayes_iters
+        final_summary["Solution summary"] = summary
+        final_summary["Full Bayesian Opt Output"] = str(res)
+
+        with open(self.dir/f'bayesian_summary.json','w') as f: 
+                json.dump(final_summary, f, indent='\t')
         return self
 
-    # very basic reward metric
-    def expected_reward_basic(self, weights):
+    def expected_reward(self, weights):
         # full re-initialization of the problem
         all_weights = self.weights # make sure copy not reference
         all_weights[0] = weights[0] # rxn utility
@@ -73,17 +82,16 @@ class BOLinearSelector(LinearSelector):
         print(all_weights)
         self.problem = self.initialize_problem()
 
-        super().optimize(weights=all_weights)
         output_path = "BO" + str(all_weights) 
         Path(self.dir, output_path).mkdir(exist_ok=True) #TODO: what's wrong with self.output_dir?
-        summary = self.extract_vars(output_dir=Path(self.dir, output_path))
+        super().optimize(weights=all_weights, output_dir=Path(self.dir, output_path))
+        summary = json.load(open(Path(self.dir, output_path, "summary.json"), 'r'))
         return -1 * summary['Expected Reward']
     
-        #TODO: 
-        # ISSUE #1: routes.json blank in bayesian directories [is this wrong, the routes in the solution directory is non-empty?]
+        #TODO: routes.json blank in bayesian directories [is this wrong, the routes in the solution directory WAS non-empty?]
     
     def optimize_weights(self):
-        res = gp_minimize(self.expected_reward_basic,    # the function to minimize
+        res = gp_minimize(self.expected_reward,    # the function to minimize
         [(0.0,1.0), (0.0,1.0)],      # the bounds on each dimension of x
         acq_func="EI",      # the acquisition function
         n_calls=self.bayes_iters,         # the number of evaluations of f

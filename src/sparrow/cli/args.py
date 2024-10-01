@@ -132,6 +132,10 @@ def add_optimization_args(parser: ArgumentParser):
     parser.add_argument('--time-limit', action='store', default=12, type=float,
                         help='time limit on solving the optimization, in hours')
     
+    # bayesian optimization 
+    parser.add_argument('--bayes-iters', action='store', type=int, default=None,
+                        help='By setting number of iterations, enable bayesian optimization of weights')
+    
     return parser
 
 def add_cluster_args(parser: ArgumentParser): 
