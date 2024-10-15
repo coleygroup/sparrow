@@ -144,7 +144,7 @@ def build_rxn_classes(params, graph: RouteGraph):
     cls_path = params['rxn_classifier_path']
     if cls_path == None:
         return None
-    elif 'csv' in cls_path: 
+    elif not Path(cls_path).is_dir(): 
         classifier = LookupClass(cls_path)
     else:
         classifier = NameRxnClass(cls_path)
