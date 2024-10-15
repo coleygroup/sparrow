@@ -69,7 +69,7 @@ class LinearSelector(Selector):
 
         self.c = None
         if self.rxn_class_dict != None:
-            class_ids = self.classes
+            class_ids = self.rxn_classes
             self.c = LpVariable.dicts(
                 "class",
                 class_ids,
@@ -101,7 +101,7 @@ class LinearSelector(Selector):
             self.set_class_constraints()
 
         if self.max_rxn_classes:
-            print('setting max reaction classes')
+            print('Setting maximum number of reaction classes')
             self.set_max_classes_constraint()
 
         if self.sm_budget: 
@@ -187,7 +187,7 @@ class LinearSelector(Selector):
 
     def set_class_constraints(self):
 
-        for id in self.classes:
+        for id in self.rxn_classes:
             rxns = self.rxn_class_dict[id]
             N = len(rxns)
         
@@ -245,7 +245,7 @@ class LinearSelector(Selector):
         """ Adds objective to decrease the number of reaction classes used """
         
         # add objective 
-        print(f'adding reaction class objective with weight {self.weights[4]}')
+        print(f'Adding reaction class objective with weight {self.weights[4]}')
         self.problem += self.problem.objective + self.weights[4]*lpSum(self.c)
 
         return
