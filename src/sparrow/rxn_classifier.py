@@ -119,7 +119,6 @@ class LookupClass(RxnClass):
         df = pd.read_csv(csv_path)
         self.dict = dict(zip(df.iloc[:, 0], df.iloc[:, 1]))
         self.no_class_num = self.update_no_class_num()
-        print(self.no_class_num)
 
     def get_rxn_class(self, rxn):
         if self.dict: 
