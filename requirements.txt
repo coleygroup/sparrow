@@ -12,12 +12,12 @@ matplotlib
 pathlib 
 pulp
 rdkit 
-scikit-learn
+scikit-learn==1.4
 scipy
 cairosvg
 sphinx
 pandas
 setuptools
-joblib==1.1.0
+joblib
 configargparse
 seaborn 

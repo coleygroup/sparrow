@@ -2,8 +2,6 @@ from typing import Dict, List
 from pulp import LpProblem, LpMinimize, LpVariable, lpSum, GUROBI, LpStatus
 from pulp.apis import PULP_CBC_CMD
 from tqdm import tqdm 
-
-import json 
 import time 
 
 from sparrow.condition_recommender import Recommender
@@ -23,11 +21,14 @@ class LinearSelector(Selector):
                  constrain_all_targets: bool = False, 
                  max_targets: int = None, 
                  coster: Coster = None, 
-                 weights: List = [1, 1, 1, 1], 
+                 weights: List = [1, 1, 1, 0, 0], 
                  output_dir: str = 'debug', 
                  remove_dummy_rxns_first: bool = False, 
                  clusters: dict = None, 
                  N_per_cluster: int = 0,
+                 rxn_classes: dict = None,
+                 rxn_classifier_dir: str = None,
+                 max_rxn_classes: int = None,
                  dont_buy_targets: bool = False,
                  solver: str = 'pulp',
                  max_rxns: int = None, 
@@ -40,7 +41,9 @@ class LinearSelector(Selector):
             constrain_all_targets=constrain_all_targets, max_targets=max_targets, 
             coster=coster, weights=weights, output_dir=output_dir, 
             remove_dummy_rxns_first=remove_dummy_rxns_first, 
-            clusters=clusters, N_per_cluster=N_per_cluster, dont_buy_targets=dont_buy_targets,
+            clusters=clusters, N_per_cluster=N_per_cluster, rxn_classes=rxn_classes,
+            rxn_classifier_dir=rxn_classifier_dir, max_rxn_classes=max_rxn_classes, 
+            dont_buy_targets=dont_buy_targets,
             max_rxns=max_rxns, sm_budget=sm_budget,
             )
         self.solver = solver 
@@ -63,6 +66,15 @@ class LinearSelector(Selector):
             mol_ids, 
             cat="Binary",
         )
+
+        self.c = None
+        if self.rxn_class_dict != None:
+            class_ids = self.rxn_classes
+            self.c = LpVariable.dicts(
+                "class",
+                class_ids,
+                cat="Binary", # decision var for including a class
+            )
         
         return 
 
@@ -84,6 +96,13 @@ class LinearSelector(Selector):
         
         if self.N_per_cluster is not None and self.N_per_cluster > 0:
             self.set_cluster_constraints()
+
+        if self.rxn_class_dict:
+            self.set_class_constraints()
+
+        if self.max_rxn_classes:
+            print('Setting maximum number of reaction classes')
+            self.set_max_classes_constraint()
 
         if self.sm_budget: 
             self.set_budget_constraint()
@@ -128,10 +147,16 @@ class LinearSelector(Selector):
 
         return 
     
-    def set_max_target_constraint(self):
+    def set_max_target_constraint(self): 
         """ Sets constraint on the maximum number of selected targets. """
         self.problem += (
             lpSum(self.m[target] for target in self.targets) <= self.max_targets
+        )
+
+    def set_max_classes_constraint(self):
+        """ Sets constraint on the maximum number of rxn classes used to access selected targets. """
+        self.problem += (
+            lpSum(self.c) <= self.max_rxn_classes # TODO: is the summation working, look up docs
         )
     
     def set_constraint_all_targets(self): 
@@ -160,8 +185,21 @@ class LinearSelector(Selector):
             lpSum(self.cost_of_dummy(dummy_id=dummy)*self.r[dummy] for dummy in dummies_in_r) <= self.sm_budget
         )
 
+    def set_class_constraints(self):
+
+        for id in self.rxn_classes:
+            rxns = self.rxn_class_dict[id]
+            N = len(rxns)
+        
+            self.problem += (
+                N * self.c[id] >= lpSum(self.r[rxn] for rxn in rxns)
+            )
+
+            self.problem += (
+                self.c[id] <= lpSum(self.r[rxn] for rxn in rxns)
+            )
+
     def set_objective(self): 
-        # TODO: Add consideration of conditions 
         print('Setting objective function ...')
 
         reward_mult = self.weights[0] # / ( len(self.target_dict)) # *max(self.target_dict.values()) )
@@ -175,6 +213,9 @@ class LinearSelector(Selector):
         
         if self.weights[3]>0: 
             self.add_diversity_objective()
+
+        if self.c != None and len(self.weights) > 4 and self.weights[4] > 0:
+            self.add_rxn_class_objective()
 
         return 
 
@@ -199,6 +240,15 @@ class LinearSelector(Selector):
         self.problem += self.problem.objective - self.weights[3]*lpSum(self.d)
 
         return 
+    
+    def add_rxn_class_objective(self): 
+        """ Adds objective to decrease the number of reaction classes used """
+        
+        # add objective 
+        print(f'Adding reaction class objective with weight {self.weights[4]}')
+        self.problem += self.problem.objective + self.weights[4]*lpSum(self.c)
+
+        return
     
     def optimize(self, max_seconds=None):
 
@@ -227,8 +277,9 @@ class LinearSelector(Selector):
 
         rxn_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('rxn')]
         mol_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('mol')]
+        class_ids = [var.name.split('_')[1] for var in nonzero_vars if var.name.startswith('class')]
 
-        return mol_ids, rxn_ids
+        return mol_ids, rxn_ids, class_ids
     
     def get_num_variables(self): 
         return self.problem.numVariables()

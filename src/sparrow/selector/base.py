@@ -7,7 +7,7 @@ from datetime import datetime
 import warnings
 import csv 
 import json 
-import numpy as np 
+import numpy as np
 
 from sparrow.scorer import Scorer
 from sparrow.condition_recommender import Recommender
@@ -18,10 +18,7 @@ from sparrow.nodes import ReactionNode
 from pulp import LpProblem
 import gurobipy as gp 
 
-
-
 Problem = Union[LpProblem, gp.Model]
-
 
 class Selector(ABC):
     """ 
@@ -41,11 +38,14 @@ class Selector(ABC):
                  max_targets: int = None,
                  coster: Coster = None, 
                  cost_per_rxn: float = 100,
-                 weights: List = [1,1,1,1],
+                 weights: List = [1,1,1,0,0],
                  output_dir: str = 'debug',
                  remove_dummy_rxns_first: bool = False,
                  clusters: dict = None,
                  N_per_cluster: int = 1, 
+                 rxn_classes: dict = None,
+                 rxn_classifier_dir: str = None,
+                 max_rxn_classes: int = None,
                  max_rxns: int = None,
                  sm_budget: float = None,
                  dont_buy_targets: bool = False, 
@@ -75,10 +75,17 @@ class Selector(ABC):
         self.targets = list(self.target_dict.keys())
 
         if clusters: 
-            self.clusters, self.id_to_clusters = self.clean_clusters(clusters) 
+            self.clusters, self.id_to_clusters = self.clean_clusters(clusters, id_map="clusters") 
         else: 
             self.clusters = self.id_to_clusters = None
         self.N_per_cluster = N_per_cluster
+
+        if rxn_classes:
+            self.rxn_classes = rxn_classes.keys()
+            self.rxn_class_dict, self.id_to_classes = self.clean_clusters(rxn_classes, id_map="classes")
+        else:
+            self.rxn_classes = self.rxn_class_dict = None
+        self.rxn_classifier_dir = rxn_classifier_dir
 
         self.target_dict = self.graph.set_compound_types(self.target_dict, coster=coster, save_dir=self.dir/'chkpts')
         
@@ -91,6 +98,7 @@ class Selector(ABC):
         self.constrain_all_targets = constrain_all_targets
         self.weights = weights
         self.max_targets = max_targets
+        self.max_rxn_classes = max_rxn_classes
         
         if self.condition_recommender is not None: 
             self.get_recommendations()
@@ -127,7 +135,7 @@ class Selector(ABC):
             try: 
                 float(reward)
             except: 
-                warnings.warn(f'Target {old_smi} has an invalid reward ({reward}) and is being removed from target set')
+                # warnings.warn(f'Target {old_smi} has an invalid reward ({reward}) and is being removed from target set')
                 c+=1      
                 continue     
             
@@ -143,11 +151,13 @@ class Selector(ABC):
                     self.target_dict[node.id] = reward    
                     old_smis.append(old_smi)       
                 else:       
-                    warnings.warn(f'Target {old_smi} is not in routes and is being removed from target set')
+                    # warnings.warn(f'Target {old_smi} is not in routes and is being removed from target set')
                     c+=1
 
         if len(self.target_dict) < len(target_dict):
             p = self.dir / 'cleaned_tar_dict.csv'
+
+            warnings.warn(f'{c} targets are not in routes and are being removed from the candidate set')
             print(f'Saving {len(self.target_dict)} remaining targets, ids, and rewards to {p}')
 
             save_list = [
@@ -162,18 +172,18 @@ class Selector(ABC):
 
         return self.target_dict
 
-    def clean_clusters(self, clusters): 
-
+    def clean_clusters(self, clusters, id_map): 
+        #deleted the word compound from all of these nodes
         clean_clusters = {}
         for c_name, smis in clusters.items(): 
             clean_smis = []
             for old_smi in smis: 
-                node = self.graph.compound_nodes.get(old_smi, None)
+                node = self.graph.nodes().get(old_smi, None)
                 if node:
                     clean_smis.append(node.id)
                 else: 
                     clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
-                    node = self.graph.compound_nodes.get(clean_smi, None)
+                    node = self.graph.nodes().get(clean_smi, None)
                     if node: 
                         clean_smis.append(node.id)       
                     else:       
@@ -181,12 +191,22 @@ class Selector(ABC):
             
             clean_clusters[c_name] = clean_smis     
 
-        id_to_clusters = {tid: [] for tid in self.targets}
-        for c_name, tids in clean_clusters.items():
-            for tid in tids: 
-                id_to_clusters[tid].append(c_name)
+        if id_map == "clusters":
+            id_to_clusters = {tid: [] for tid in self.targets}
+            for c_name, tids in clean_clusters.items():
+                for tid in tids: 
+                    id_to_clusters[tid].append(c_name)
 
-        return clean_clusters, id_to_clusters
+            return clean_clusters, id_to_clusters
+        else:
+            id_to_classes = {}
+            for class_name, rxn_list in clean_clusters.items():
+                for rxn in rxn_list:
+                    if rxn not in id_to_classes.keys():
+                        id_to_classes[rxn] = [class_name]
+                    else:
+                        id_to_classes[rxn].append(class_name)
+            return clean_clusters, id_to_classes
 
     def get_recommendations(self): 
         """ Completes condition recommendation for any reaction node that does not have conditions """
@@ -253,17 +273,13 @@ class Selector(ABC):
     def optimize(self, max_seconds): 
         """ Optimizes self.problem, with a time limit of max_seconds """
 
-    def extract_vars(self, output_dir=None, extract_routes=True):
-        if output_dir is None: 
-            output_dir = self.dir / 'solution'
-
-        output_dir.mkdir(exist_ok=True, parents=True)    
-
-        mol_ids, rxn_ids = self.extract_selected_ids()
+    def extract_vars(self, output_dir=None, extract_routes=True): 
+        mol_ids, rxn_ids, class_ids = self.extract_selected_ids()
 
         dummy_ids = [rxn for rxn in rxn_ids if self.graph.node_from_id(rxn).dummy]
         non_dummy_ids = [rxn for rxn in rxn_ids if self.graph.node_from_id(rxn).dummy == 0]
 
+        # DFS to check that selected nodes for rxns and compounds are connected
         selected_targets = set(mol_ids) & set(self.targets)
         selected_starting = set([self.graph.child_of_dummy(dummy) for dummy in dummy_ids])
         print(f'{len(selected_targets)} targets selected using {len(non_dummy_ids)} reactions and {len(selected_starting)} starting materials')
@@ -285,13 +301,17 @@ class Selector(ABC):
             'Number of constraints': self.get_num_constraints(),
         }
 
+        if self.rxn_classes: 
+            summary['Number of reaction classes selected'] = len(class_ids)
+
         if extract_routes:
             summary['Expected Reward'] = 0
             storage = {}
             for target in tqdm(selected_targets, desc='Extracting routes'): 
                 store_dict = {'Compounds':[], 'Reactions':[]}
                 smi = self.graph.smiles_from_id(target)
-                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids, target=target)
+                # recursive search between rxn and compound parent funcs
+                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids)
                 storage[smi]['Reward'] = self.target_dict[target]
                 er = self.target_dict[target]*np.prod(np.array([entry['score'] for entry in storage[smi]['Reactions'] if 'score' in entry]))
                 storage[smi]['Expected Reward'] = er
@@ -311,16 +331,65 @@ class Selector(ABC):
             summary['Number starting materials (actual)'] = len(starting_materials)
             summary['Average reaction score (actual)'] =  np.mean([self.graph.node_from_smiles(rxn).score for rxn in rxn_steps]) if len(rxn_steps) > 0 else None
 
+        return summary 
+    
+    def rxn_class_analysis(self, output_dir):
+        file = open(output_dir/f'routes.json', 'r')
+        data = json.load(file)
+        dict = {} # target to classes in order
+        class_count = {}
+        score_dict = {} # general shared reaction count
+        
+        # need rxn classes in order that were used to get to target
+        for target in data:
+            reactions = data[target]['Reactions']
+            dict[target] = []
+            for reaction in reactions:
+                if reaction['smiles'][0] != '>':
+                    rxn_class = reaction['class'][0]
+                    dict[target].append(rxn_class)
+                    class_count[rxn_class] = class_count.get(rxn_class, 0) + 1
+
+        # this just counts the shared reactions between the path to a target compound and the paths to all other targets
+        for target in dict:
+            score_dict[target] = 0
+            for reaction in dict[target]:
+                for other_target in dict:
+                    if other_target != target:
+                        if reaction in dict[other_target]:
+                            score_dict[target] += 1
+
+        results = {}
+        # results["Reaction Classes used to get Target"] = dict
+        results["Frequency of selected reaction classes"] = class_count
+        # results["Overall Reaction Classes shared with all other Targets Count"] = score_dict
+        # results["Max length of overlapping segment"] = {} #TODO
+        return results
+
+    def post_processing(self, output_dir=None, extract_routes=True, post_opt_class_score=None): 
+        if output_dir is None: 
+            output_dir = self.dir / 'solution'
+
+        output_dir = Path(output_dir)
+        output_dir.mkdir(exist_ok=True, parents=True) 
+
+        # call extract_vars to get basic summary
+        summary = self.extract_vars(output_dir=output_dir, extract_routes=extract_routes)
+
+        # outputs results of post-processing in a separate file, based on regular summary, TODO: the directory should probably be an input parameter here
+        if post_opt_class_score != None:
+            rxn_class_summary = self.rxn_class_analysis(output_dir)
+            with open(output_dir/'rxn_class_summary.json', 'w') as f:
+                json.dump(rxn_class_summary, f, indent='\t')
+                
         with open(output_dir/'summary.json', 'w') as f:
             json.dump(summary, f, indent='\t')
 
-        return summary 
-    
     @abstractmethod
     def extract_selected_ids(self):
         """ Returns a set of node IDs corresponding to selected compounds and reactions """
 
-    def export_selected_nodes(self, rxn_list, starting_list, target_list, output_dir): 
+    def export_selected_nodes(self, rxn_list, starting_list, target_list, output_dir):
         storage = {'Starting Materials': [], 'Reactions': [], 'Targets': []}
         graph = self.graph
 
@@ -332,11 +401,15 @@ class Selector(ABC):
                     'starting material cost ($/g)': self.cost_of_dummy(node), 
                 })
             else: 
-                storage['Reactions'].append({
+                new_rxn_entry = {
                     'smiles': node.smiles,
                     'conditions': node.get_condition(1)[0], 
                     'score': node.score,
-                })
+                }
+                if self.rxn_classes:
+                    new_rxn_entry['class'] = self.id_to_classes[rxn_id] 
+                storage['Reactions'].append(new_rxn_entry)
+
 
         for cpd_id in starting_list: 
             node = graph.node_from_id(cpd_id)
@@ -359,12 +432,12 @@ class Selector(ABC):
                     'reward': node.reward,
                 })
         
-        with open(output_dir/'solution_list_format.json','w') as f:
+        with open(Path(output_dir)/'solution_list_format.json','w') as f:
             json.dump(storage, f, indent='\t')
 
         return storage 
 
-    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns, target=None):
+    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns):
 
         par_ids = [n.id for n in self.graph.node_from_id(rxn_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_mols)
@@ -373,7 +446,7 @@ class Selector(ABC):
             store_dict = self.find_mol_parents(store_dict, par, selected_mols, selected_rxns)
         return store_dict
 
-    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns, target=None): 
+    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns): 
 
         par_ids = [n.id for n in self.graph.node_from_id(mol_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_rxns)
@@ -385,11 +458,15 @@ class Selector(ABC):
                     'starting material cost ($/g)': self.cost_of_dummy(node), 
                 })
             else: 
-                store_dict['Reactions'].append({
+                new_rxn_entry = {
                     'smiles': node.smiles,
                     'conditions': node.get_condition(1)[0], 
                     'score': node.score,
-                })
+                }
+                if self.rxn_classes: 
+                    new_rxn_entry['class'] = self.id_to_classes[par]
+                store_dict['Reactions'].append(new_rxn_entry)  
+
             store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns)
         return store_dict
 

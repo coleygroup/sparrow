@@ -22,6 +22,7 @@ results/
 # figures 
 *.pdf 
 *.png 
+notebooks/nonlinear
 
 
 # debugging 
@@ -38,3 +39,4 @@ UNKNOWN**
 .vscode
 *.log
 .idea/
+tmp/

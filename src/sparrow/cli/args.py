@@ -18,6 +18,7 @@ def get_args(args: str = None):
     parser = add_coster_args(parser)
     parser = add_scorer_args(parser)
     parser = add_cluster_args(parser)
+    parser = add_rxn_class_args(parser)
     parser = add_optimization_args(parser)
 
     return parser.parse_args(args)
@@ -145,4 +146,13 @@ def add_cluster_args(parser: ArgumentParser):
                         help='if using automatic clustering, cutoff for Butina clustering algorithm (lower cutoff -> more small clusters)') 
     parser.add_argument('--N-per-cluster', action='store', type=int, default=None,
                         help='To constrain that N compounds per cluster will be selected')
+    return parser
+
+def add_rxn_class_args(parser: ArgumentParser):
+    parser.add_argument('--rxn-class-weight', action='store', type=float, default=0,
+                        help='weighting factor for shared rxn classes')
+    parser.add_argument('--rxn-classifier-path', action='store', type=str, default=None, 
+                        help='Enter path to NameRXN directory or the full path to a csv with a custom rxn class mapping')
+    parser.add_argument('--max-rxn-classes', action='store', type=int, default=None,
+                        help='Constrain maximum number of reaction classes allowed to get to target set')
     return parser

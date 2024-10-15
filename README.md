@@ -31,7 +31,7 @@ SPARROW has been tested on Python version 3.7 and 3.8 and on Linux and Windows m
 
 ## Installation
 
-On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. If you are using Gurobi, obtain a Gurobi license and follow the instructions below to use with SPARROW. 
+On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. If you are using Gurobi, obtain a Gurobi license and follow the instructions below to use with SPARROW. If you are using NameRxn, skip to [Installing SPARROW with NameRxn](#installing-sparrow-with-namerxn) and follow installation directions there. 
 
 ```
 mamba env create -f environment.yml
@@ -58,6 +58,29 @@ grbgetkey <your key>
 ```
 You can check the status and expiration date of your license using `gurobi_cl --license`. 
 
+#### Installing SPARROW with NameRxn
+
+To set up SPARROW to run with NameRxn, follow the instructions below. Note that additional installation details from Next Move Software are available [here](https://www.nextmovesoftware.com/downloads/hazelnut/documentation/) (requires license credentials).
+
+1. Create an environment: 
+```
+mamba create --override-channels -c conda-forge -n namerxn rdkit gxx_linux-64 pyodbc swig openjdk boost-cpp
+conda activate namerxn
+```
+2. Download the two installation files [here](https://www.nextmovesoftware.com/downloads/hazelnut/releases/LATEST/) (requires license credentials).
+3. Unzip the files and build the program. 
+```
+tar -xf <filename>
+cd HazELNut
+cmake . -DTARGET=RDKIT -DBUILD_CGI=1 -DPYTHON_BINDINGS=1 -DJAVA_BINDINGS=1 -DCMAKE_PREFIX_PATH=${CONDA_PREFIX} -DPython3_INCLUDE_DIRS=${CONDA_PREFIX}/include/python3.12 -DPython3_LIBRARIES=${CONDA_PREFIX}/lib/libpython3.12.so
+make
+```
+4. Finally, install remaining requirements and set up SPARROW:
+```
+pip install -r requirements.txt
+python setup.py develop 
+```
+
 ## Running SPARROW
 The general command to run SPARROW is:
 `sparrow --target-csv <path/to/target_csv> --path-finder {api, lookup} --recommender {api, lookup} --coster {naive, chemspace} [additional arguments]`
@@ -78,11 +101,14 @@ All arguments and descriptions can be viewed by running `sparrow --help`. Below 
  - `--reward-weight` <sup>L</sup>: weighting factor for reward objective 
  - `--start-cost-weight` <sup>L</sup>: weighting factor for starting material cost objective
  - `--reaction-weight` <sup>L</sup>: weighting factor for reaction objective
- - `--max-rxns` <sup>E</sup>: maximum number of reaction steps to select
- - `--starting-material-budget` <sup>E</sup>: maximum starting material cost 
+ - `--max-rxns`: maximum number of reaction steps to select
+ - `--starting-material-budget`: maximum starting material cost 
  - `--cluster {custom, similarity}` (default: `None`): How to define clusters if desired. If `custom`, they must be defined in the `target-csv` file. If `similarity`, they are automatically defined using Tanimoto similarity-based clusters with a maximum cutoff of `--cluster-cutoff` (default: `0.7`).
  - `--N-per-cluster`: Constrains that all clusters are represented by at least `N` compounds 
  - `--diversity-weight` (default: `0`) <sup>L</sup>: A weighting factor that encourages selection of many similarity-based clusters. 
+ - `--rxn-classifier-path`: Path to a csv file that maps reaction smiles to classes or a HazELNut directory to use NameRxn for reaction classification
+ - `--max-rxn-classes`: Constrains the number of distinct reaction classes present in SPARROW's selected synthetic routes
+ - `--rxn-class-weight` (default: `0`) <sup>L</sup>: A weighting factor that encourages the selection of few distinct reaction classes
  - `--path-finder {lookup,api}`: type of tree builder to use
  - `--tree-lookup-dir`: path of lookup json file with combined retrosynthesis tree
  - `--time-per-target`: expansion time in seconds for each target
@@ -102,7 +128,6 @@ All arguments and descriptions can be viewed by running `sparrow --help`. Below 
  - `--solver {pulp, gurobi}` (default: `pulp`) <sup>L</sup>: the solver to use. The expected reward formulation requires and defaults to Gurobi. 
 
 <sup>L</sup> only used in the linear formulation 
-<sup>E</sup> only used in the expected reward formulation
 
 **A note about required arguments:** The only required argument in SPARROW in `--target-csv`. However, providing this alone will not be sufficient to run SPARROW. In addition to candidates and rewards, SPARROW's optimization requires a set of potential reactions and scores for each reaction. If a provided `--graph` argument corresponds to a file that includes both potential reactions as a retrosynthesis tree _and_ reaction scores, that is sufficient to run SPARROW. However, if the file only contains a retrosynthesis tree, without reaction scores, SPARROW will require a `--scorer` argument. Likewise, if no `--graph` is provided, a valid entry for `--path-finder` (and any corresponding arguments) are required. We are currently working on expanding the documentation for SPARROW and improving its usability.
 
