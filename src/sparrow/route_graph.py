@@ -325,6 +325,7 @@ class RouteGraph:
         return [node for node in self.reaction_nodes_only() if node.dummy]
     
     def non_dummy_nodes(self) -> List[ReactionNode]: 
+        """ Returns list of reaction nodes that are not dummy reactions """
         return [node for node in self.reaction_nodes_only() if not node.dummy]
     
     def child_of_dummy(self, dummy_node_id: str) -> str: 

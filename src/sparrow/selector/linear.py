@@ -101,6 +101,7 @@ class LinearSelector(Selector):
             self.set_class_constraints()
 
         if self.max_rxn_classes:
+            print('setting max reaction classes')
             self.set_max_classes_constraint()
 
         if self.sm_budget: 
@@ -185,6 +186,7 @@ class LinearSelector(Selector):
         )
 
     def set_class_constraints(self):
+
         for id in self.classes:
             rxns = self.rxn_class_dict[id]
             N = len(rxns)
@@ -212,7 +214,7 @@ class LinearSelector(Selector):
         if self.weights[3]>0: 
             self.add_diversity_objective()
 
-        if self.c != None and len(self.weights) > 4 and self.weights[4] > 0: 
+        if self.c != None and len(self.weights) > 4 and self.weights[4] > 0:
             self.add_rxn_class_objective()
 
         return 

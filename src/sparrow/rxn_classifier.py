@@ -3,9 +3,10 @@ from typing import Dict
 import subprocess
 import pandas as pd
 from pathlib import Path
-import time 
 
 class RxnClass(ABC):
+    """ Base class for a reaction classifier """
+    
     def __init__(self):
         self.status_log = None
         self.no_class_num = 0
@@ -19,6 +20,10 @@ class RxnClass(ABC):
         """Converts a list of reactions into a dictionary of keys, corresponding to reaction classes, which map to lists of reactions"""
 
 class NameRxnClass(RxnClass):
+    """
+    A reaction classifier that uses NameRxn to assign classes
+    """
+
     def __init__(self, 
                  dir: str = None,
                  tmp: str = './tmp/'):
@@ -28,7 +33,8 @@ class NameRxnClass(RxnClass):
         super().__init__()
 
     def get_rxn_class(self, rxn, attempt=0):
-        # need to test this 
+        """ Classifies a single reaction smiles, returning a single class """
+
         if attempt > 5:
             print(f"Classifying {rxn} failed")
             self.no_class_num += 1
@@ -46,26 +52,15 @@ class NameRxnClass(RxnClass):
         cmd_str = " ".join([self.dir + "/namerxn", "-nomap", str(tmp_in)])
         output = subprocess.check_output(cmd_str, shell=True).decode("utf-8").split('\n')[0]
         class_num = self.output_to_classnum(output)
-        # class_num = ""
-        # with open(tmp_out, "r") as f:
-        #     output = f.readlines()
-        # # output = open("test.smi.out", 'r')
-
-        # try: 
-        #     class_num = output[0].strip().split()[1]
-        # except:
-        #     return self.get_rxn_class(rxn, attempt + 1)
             
         return class_num
 
     def get_rxn_classes(self, rxns):
+        """ Classifies a list of reactions, returning a list of classes """
 
         tmp_in = self.tmp / "rxns.smi"
         with open(tmp_in, "w") as f: 
             f.write('\n'.join(rxns))
-        # tmp_out = self.tmp / "rxn.smi.out"
-        # cmd_str = " ".join(["../" + self.dir + "/namerxn", "-completer", "-addrxnname", "-osmi", str(rxn_file), "-o", str(tmp_out)])
-        # subprocess.Popen(cmd_str, shell=True)
 
         cmd_str = " ".join([self.dir + "/namerxn", "-nomap", "-addrxnname", "-osmi", str(tmp_in)])
         output = subprocess.check_output(cmd_str, shell=True).decode("utf-8").split('\n')
@@ -73,24 +68,6 @@ class NameRxnClass(RxnClass):
         classes = [self.output_to_classnum(line) for line in output[:len(rxns)]]
         
         return classes 
-    
-        # with open(tmp_out, "r") as f: 
-        #     output = f.readlines()
-
-        # for line in output[:rxns]: 
-        #     class_num = ""
-        #     line = line.strip().split()
-        #     if len(line) >= 2:
-        #         class_num = line[1]
-        #     if class_num == "" or class_num == None:
-        #         self.no_class_num += 1
-        #         class_num = "Unclassified by NameRxn" + str(self.no_class_num)
-
-        #     if class_num not in classes.keys():
-        #         classes[class_num] = []
-        #     if line != []:
-        #         classes[class_num].append(line[0])
-        # return classes
     
     def output_to_classnum(self, line): 
         if line == '': 
@@ -111,6 +88,13 @@ class NameRxnClass(RxnClass):
     
 
 class LookupClass(RxnClass):
+    """ 
+    A reaction classifier that assigns classes based on a csv file input 
+    The first column of the csv file includes reaction SMILES strings, and the 
+    second column includes classes. The csv output from a NameRxn classifier in one run
+    can be used as the input to this classifier in subsequent runs. 
+    """
+
     def __init__(self, 
                  csv_path: str = None):
         # TODO: test the csv -> dict conversion
