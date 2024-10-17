@@ -13,7 +13,7 @@ from sparrow.selector.nonlinear import ExpectedRewardSelector, PrunedERSelector
 from sparrow.condition_recommender import AskcosAPIRecommender
 from sparrow.scorer import AskcosAPIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
-from sparrow.rxn_coster import NameRxnClass, LookupClass
+from sparrow.rxn_classifier import NameRxnClass, LookupClass
 from sparrow.cli.args import get_args
 from sparrow.utils import cluster_utils
 
@@ -121,33 +121,17 @@ def build_coster(params):
     else:
         raise NotImplementedError(f'Scorer {rec} not implemented')
     
-def build_classes(params, graph: RouteGraph):
-    rec = params['rxn_classifier_path']
-    classifier = None
-    if rec != None:
-        if 'HazELNut' in rec or 'namerxn' in rec:
-            classifier = NameRxnClass(rec)
-        elif 'csv' in rec:
-            classifier = LookupClass(rec)
-
-    # Bulk classification attempt
-    # if classifier != None:
-    #     rxn_class_file = Path('../sparrow/sparrow_results/chkpts') / 'rxn_class_smiles.smi'
-
-    #     with open(rxn_class_file,'w') as f:
-    #         for rxn in graph.non_dummy_nodes():
-    #             if rxn.smiles[0] != '>':
-    #                 f.write(rxn.smiles + "\n")
-    #     f.close()
-
-    #     rxn_classes = classifier.get_rxn_classes(rxn_class_file)
-    #     return rxn_classes
-    
-    if classifier is None:
+def build_rxn_classes(params, graph: RouteGraph):
+    cls_path = params['rxn_classifier_path']
+    if cls_path == None:
         return None
+    elif not Path(cls_path).is_dir(): 
+        classifier = LookupClass(cls_path)
+    else:
+        classifier = NameRxnClass(cls_path)
 
     rxn_smis = [r.smiles for r in graph.non_dummy_nodes()]
-    size = np.ceil(len(rxn_smis) / 5).astype(int)
+    size = np.ceil(len(rxn_smis) / 5).astype(int) # currently splits into 5 batches (hard-coded)
     batch_rxns = list(
         map(lambda x: rxn_smis[x * size:x * size + size],
         list(range(5)))
@@ -166,16 +150,6 @@ def build_classes(params, graph: RouteGraph):
         else:
             rxn_classes[c] = [rxn]
 
-    # if classifier != None:
-    #     rxn_classes = {}
-    #     for rxn in tqdm(graph.non_dummy_nodes(), desc='Classifying reactions'):
-    #         c = classifier.get_rxn_class(rxn.smiles)
-    #         rxn_smis.append(rxn.smiles)
-    #         classes.append(c)
-    #         if c in rxn_classes.keys():
-    #             rxn_classes[c].append(rxn.smiles)
-    #         else:
-    #             rxn_classes[c] = [rxn.smiles]
     if isinstance(classifier, NameRxnClass):
         rxn_df = pd.DataFrame({'SMILES': rxn_smis, 'Class': class_nums})
         rxn_df.to_csv(Path(params['output_dir'])/'reaction_classes.csv', index=False)
@@ -200,99 +174,55 @@ def build_selector(params, target_dict, storage_path, clusters):
         bayes_iters = params['bayes_iters']
 
     weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight'], params['rxn_class_weight']]
+    args = {
+        'route_graph': graph,
+        'target_dict': target_dict,
+        'rxn_scorer': build_scorer(params),
+        'condition_recommender': build_recommender(params),
+        'constrain_all_targets': params['constrain_all'],
+        'max_targets': params['max_targets'],
+        'coster': build_coster(params),
+        'output_dir': Path(params['output_dir']),
+        'clusters': clusters,
+        'max_rxns': params['max_rxns'],
+        'sm_budget': params['starting_material_budget'], 
+        'dont_buy_targets': params['dont_buy_targets'],
+        'N_per_cluster': params['N_per_cluster'],
+    }
+    
     if params['formulation'] == 'expected_reward' and params['prune_distance'] is None:
         selector = ExpectedRewardSelector(
-            route_graph=graph,
-            target_dict=target_dict,
-            rxn_scorer=build_scorer(params),
-            condition_recommender=build_recommender(params),
-            constrain_all_targets=params['constrain_all'],
-            max_targets=params['max_targets'],
-            coster=build_coster(params),
             cost_per_rxn=params['cost_of_rxn_weight'],
-            output_dir=Path(params['output_dir']),
-            clusters=clusters,
-            # rxn_classes=build_classes(params, graph),
-            # rxn_classifier_dir = params['rxn_classifier_path'],
-            # max_rxn_classes=params['max_rxn_classes'],
-            max_rxns=params['max_rxns'],
-            sm_budget=params['starting_material_budget'],
-            dont_buy_targets=params['dont_buy_targets'],
-            N_per_cluster=params['N_per_cluster'],
             set_cycle_constraints=not params['acyclic'],
             max_seconds=params['time_limit']*3600
+            **args
         )
     elif params['formulation'] == 'expected_reward': 
         selector = PrunedERSelector(
-            route_graph=graph,
-            target_dict=target_dict,
-            rxn_scorer=build_scorer(params),
-            condition_recommender=build_recommender(params),
-            constrain_all_targets=params['constrain_all'],
-            max_targets=params['max_targets'],
-            coster=build_coster(params),
             cost_per_rxn=params['cost_of_rxn_weight'],
-            output_dir=Path(params['output_dir']),
-            clusters=clusters,
-            # rxn_classes=build_classes(params, graph),
-            # rxn_classifier_dir = params['rxn_classifier_path'],
-            # max_rxn_classes=params['max_rxn_classes'],
-            max_rxns=params['max_rxns'],
-            sm_budget=params['starting_material_budget'],
-            dont_buy_targets=params['dont_buy_targets'],
-            N_per_cluster=params['N_per_cluster'],
             prune_distance=params['prune_distance'],
             set_cycle_constraints=not params['acyclic'],
             max_seconds=params['time_limit']*3600
-        )
+        )      
     elif bayes_iters != None:
         selector = BOLinearSelector(
-            route_graph=graph,
-            target_dict=target_dict,
-            rxn_scorer=build_scorer(params),
-            condition_recommender=build_recommender(params),
-            constrain_all_targets=params['constrain_all'],
-            max_targets=params['max_targets'],
-            coster=build_coster(params),
             weights=weights,
-            output_dir=Path(params['output_dir']),
-            clusters=clusters,
-            rxn_classes=build_classes(params, graph) if 'rxn_classifier_path' in params else None,
+            rxn_classes=build_rxn_classes(params, graph) if 'rxn_classifier_path' in params else None,
             rxn_classifier_dir = params['rxn_classifier_path'] if 'rxn_classifier_path' in params else None,
             max_rxn_classes=params['max_rxn_classes'] if 'max_rxn_classes' in params else None,
-            dont_buy_targets=params['dont_buy_targets'],
             solver=params['solver'],
-            max_rxns=params['max_rxns'],
-            sm_budget=params['starting_material_budget'],    
-            cycle_constraints=not params['acyclic'],
-            max_seconds=params['time_limit']*3600,
-            extract_routes=extract_routes, 
             post_opt_class_score=post_opt_class_score,
-            bayes_iters=bayes_iters
-        )  
+            bayes_iters=bayes_iters,
+            **args
+        ) 
     else: 
         selector = LinearSelector(
-            route_graph=graph,
-            target_dict=target_dict,
-            rxn_scorer=build_scorer(params),
-            condition_recommender=build_recommender(params),
-            constrain_all_targets=params['constrain_all'],
-            max_targets=params['max_targets'],
-            coster=build_coster(params),
             weights=weights,
-            output_dir=Path(params['output_dir']),
-            clusters=clusters,
-            rxn_classes=build_classes(params, graph) if 'rxn_classifier_path' in params else None,
+            rxn_classes=build_rxn_classes(params, graph) if 'rxn_classifier_path' in params else None,
             rxn_classifier_dir = params['rxn_classifier_path'] if 'rxn_classifier_path' in params else None,
             max_rxn_classes=params['max_rxn_classes'] if 'max_rxn_classes' in params else None,
-            dont_buy_targets=params['dont_buy_targets'],
             solver=params['solver'],
-            max_rxns=params['max_rxns'],
-            sm_budget=params['starting_material_budget'],
-            cycle_constraints=not params['acyclic'],
-            max_seconds=params['time_limit']*3600,
-            extract_routes=extract_routes, 
-            post_opt_class_score=post_opt_class_score
+            **args
         )
 
     # if no graph is given, creates graph from the info file path

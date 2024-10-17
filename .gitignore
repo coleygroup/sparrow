@@ -22,6 +22,7 @@ results/
 # figures 
 *.pdf 
 *.png 
+notebooks/nonlinear
 
 
 # debugging 

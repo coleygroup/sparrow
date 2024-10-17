@@ -32,7 +32,7 @@ SPARROW has been tested on Python version 3.7 and 3.8 and on Linux and Windows m
 
 ## Installation
 
-On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. If you are using Gurobi, obtain a Gurobi license and follow the instructions below to use with SPARROW. If you are using NameRxn, skip to [Installing NameRxn](#installing-namerxn) and follow installation instructions there. 
+On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. If you are using Gurobi, obtain a Gurobi license and follow the instructions below to use with SPARROW. If you are using NameRxn, skip to [Installing SPARROW with NameRxn](#installing-sparrow-with-namerxn) and follow installation directions there. 
 
 ```
 mamba env create -f environment.yml
@@ -59,16 +59,16 @@ grbgetkey <your key>
 ```
 You can check the status and expiration date of your license using `gurobi_cl --license`. 
 
-#### Installing NameRxn
+#### Installing SPARROW with NameRxn
 
-To set up SPARROW to run with NameRxn, follow the instructions below. Note that additional installation details from Next Move Software are available at https://www.nextmovesoftware.com/downloads/hazelnut/documentation/.
+To set up SPARROW to run with NameRxn, follow the instructions below. Note that additional installation details from Next Move Software are available [here](https://www.nextmovesoftware.com/downloads/hazelnut/documentation/) (requires license credentials).
 
 1. Create an environment: 
 ```
 mamba create --override-channels -c conda-forge -n namerxn rdkit gxx_linux-64 pyodbc swig openjdk boost-cpp
 conda activate namerxn
 ```
-2. Download the two installation files at https://www.nextmovesoftware.com/downloads/hazelnut/releases/LATEST/ (requires license credentials).
+2. Download the two installation files [here](https://www.nextmovesoftware.com/downloads/hazelnut/releases/LATEST/) (requires license credentials).
 3. Unzip the files and build the program. 
 ```
 tar -xf <filename>
@@ -102,15 +102,15 @@ All arguments and descriptions can be viewed by running `sparrow --help`. Below 
  - `--reward-weight` <sup>L</sup>: weighting factor for reward objective 
  - `--start-cost-weight` <sup>L</sup>: weighting factor for starting material cost objective
  - `--reaction-weight` <sup>L</sup>: weighting factor for reaction objective
- - `--max-rxns` <sup>E</sup>: maximum number of reaction steps to select
- - `--starting-material-budget` <sup>E</sup>: maximum starting material cost 
+ - `--max-rxns`: maximum number of reaction steps to select
+ - `--starting-material-budget`: maximum starting material cost 
  - `--cluster {custom, similarity}` (default: `None`): How to define clusters if desired. If `custom`, they must be defined in the `target-csv` file. If `similarity`, they are automatically defined using Tanimoto similarity-based clusters with a maximum cutoff of `--cluster-cutoff` (default: `0.7`).
  - `--N-per-cluster`: Constrains that all clusters are represented by at least `N` compounds 
  - `--diversity-weight` (default: `0`) <sup>L</sup>: A weighting factor that encourages selection of many similarity-based clusters. 
- - `--rxn-classifier-path`: Path to the reaction class classifier directory (to HazELNut if using NameRxn or to a directory containing Lookup csv for custom reaction class mapping).
- - `--max-rxn-classes`: Constrains the number of reaction classes that the optimizer can select.
- - `--rxn-class-weight` (default: `0`) <sup>L</sup>: A weighting factor that encourages the selection of as few as possible reaction classes. 
- - `--bayes-iters`: Setting the number of iterations will run Bayesian optimization on the weighting factors to maximize expected reward.
+ - `--rxn-classifier-path`: Path to a csv file that maps reaction smiles to classes or a HazELNut directory to use NameRxn for reaction classification
+ - `--max-rxn-classes`: Constrains the number of distinct reaction classes present in SPARROW's selected synthetic routes
+ - `--rxn-class-weight` (default: `0`) <sup>L</sup>: A weighting factor that encourages the selection of few distinct reaction classes
+ - `--bayes-iters`<sup>L</sup>: Performs linear optimization for specified number of iterations to identify reward and reaction weighting factors that maximize expected reward. 
  - `--path-finder {lookup,api}`: type of tree builder to use
  - `--tree-lookup-dir`: path of lookup json file with combined retrosynthesis tree
  - `--time-per-target`: expansion time in seconds for each target
@@ -130,7 +130,6 @@ All arguments and descriptions can be viewed by running `sparrow --help`. Below 
  - `--solver {pulp, gurobi}` (default: `pulp`) <sup>L</sup>: the solver to use. The expected reward formulation requires and defaults to Gurobi. 
 
 <sup>L</sup> only used in the linear formulation 
-<sup>E</sup> only used in the expected reward formulation
 
 **A note about required arguments:** The only required argument in SPARROW in `--target-csv`. However, providing this alone will not be sufficient to run SPARROW. In addition to candidates and rewards, SPARROW's optimization requires a set of potential reactions and scores for each reaction. If a provided `--graph` argument corresponds to a file that includes both potential reactions as a retrosynthesis tree _and_ reaction scores, that is sufficient to run SPARROW. However, if the file only contains a retrosynthesis tree, without reaction scores, SPARROW will require a `--scorer` argument. Likewise, if no `--graph` is provided, a valid entry for `--path-finder` (and any corresponding arguments) are required. We are currently working on expanding the documentation for SPARROW and improving its usability.
 
