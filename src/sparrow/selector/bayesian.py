@@ -1,8 +1,9 @@
 from typing import Dict, List
-from pulp import lpSum
 from skopt import gp_minimize
 from pathlib import Path
 import json
+import shutil
+import math 
 
 from sparrow.condition_recommender import Recommender
 from sparrow.coster import Coster
@@ -35,7 +36,6 @@ class BOLinearSelector(LinearSelector):
                  cycle_constraints: bool = False,
                  max_seconds: int = None,
                  extract_routes: bool = True, 
-                 post_opt_class_score: str = None,
                  bayes_iters: int = 20,
                  ) -> None:
         
@@ -49,54 +49,53 @@ class BOLinearSelector(LinearSelector):
             rxn_classifier_dir=rxn_classifier_dir, max_rxn_classes=max_rxn_classes, 
             dont_buy_targets=dont_buy_targets, cycle_constraints=cycle_constraints,
             max_rxns=max_rxns, sm_budget=sm_budget, extract_routes=extract_routes,
-            post_opt_class_score=post_opt_class_score,
             )
 
         self.bayes_iters = bayes_iters
         self.solver = solver 
     
-    def optimize(self):
+    def formulate_and_optimize(self, **kwargs):
+        self.define_variables()
+        self.set_constraints()
         res = self.optimize_weights()
-        print("BAYESIAN RESULT:" + str(res.fun * -1) + " at " + str(res.x))
-        final_summary = {}
-        result_weights = [res.x[0], 0, res.x[1], self.weights[3], self.weights[4]] # reconstructing all_weights
+        r_weight = res.x[0]
+        print(f'Optimal weighting factors:\n\tReward weight: {r_weight:0.3e}\n\tReaction weight: {1-r_weight:0.3e}')
+        print(f'Yielding expected reward of {res.fun * -1:0.3f}')
 
-        summary = json.load(open(Path(self.dir, "BO" + str(result_weights), "summary.json"), 'r'))
-
-        final_summary["Highest Expected Reward"] = float(res.fun * -1)
-        final_summary["Optimal Rxn Utility and Penalty Params"] = res.x
-        final_summary["Iterations of Bayesian Opt"] = self.bayes_iters
-        final_summary["Solution summary"] = summary
-        final_summary["Full Bayesian Opt Output"] = str(res)
-
-        with open(self.dir/f'bayesian_summary.json','w') as f: 
-                json.dump(final_summary, f, indent='\t')
+        best_output_dir = self.dir / 'tuning_results' / f'lambda_{r_weight:0.3f}'
+        dest = self.dir/'BEST_SOLUTION'
+        if dest.exists(): 
+            print(f'Overwriting directory: {dest}')
+            shutil.rmtree(dest)
+        shutil.copytree(best_output_dir, self.dir/'BEST_SOLUTION')  
         return self
+    
+    def run_opt_vary_weights(self, weights: list, output_dir: str, extract_routes: bool = True):
+        self.set_objective(weights=weights)
+        self.optimize()
+        summary = self.post_processing(extract_routes=extract_routes, output_dir=output_dir)
+        summary['Weights'] = weights
+        with open(output_dir/'summary.json', 'w') as f:
+            json.dump(summary, f, indent='\t') 
 
-    def expected_reward(self, weights):
-        # full re-initialization of the problem
-        all_weights = self.weights # make sure copy not reference
-        all_weights[0] = weights[0] # rxn utility
-        all_weights[1] = 0 # start material cost - clearing just in case
-        all_weights[2] = weights[1] # rxn penalty
-        print(all_weights)
-        self.problem = self.initialize_problem()
+        return summary
 
-        output_path = "BO" + str(all_weights) 
-        Path(self.dir, output_path).mkdir(exist_ok=True)
-        super().optimize(weights=all_weights, output_dir=Path(self.dir, output_path))
-        summary = json.load(open(Path(self.dir, output_path, "summary.json"), 'r'))
+    def expected_reward(self, reward_weight):
+        all_weights = [reward_weight[0], 0, 1-reward_weight[0], 0, 0]
+        print(f'Optimizing with weights: {all_weights}')
+        (self.dir / 'tuning_results').mkdir(exist_ok=True, parents=True)
+        output_dir = self.dir / 'tuning_results' / f'lambda_{reward_weight[0]:0.3f}'
+        output_dir.mkdir(exist_ok=True)
+        summary = self.run_opt_vary_weights(weights=all_weights, output_dir=output_dir)
         return -1 * summary['Expected Reward']
-    
-        #TODO: routes.json blank in bayesian directories [is this wrong, the routes in the solution directory WAS non-empty?]
-    
+        
     def optimize_weights(self):
-        res = gp_minimize(self.expected_reward,    # the function to minimize
-        [(0.0,1.0), (0.0,1.0)],      # the bounds on each dimension of x
-        acq_func="EI",      # the acquisition function
-        n_calls=self.bayes_iters,         # the number of evaluations of f
-        n_initial_points=10,  # the number of random initialization points
-        # random_state=[]   # the random seed
+        res = gp_minimize(
+            self.expected_reward,    # the function to minimize
+            [(0.0,1.0)],      # the bounds on each dimension of x
+            acq_func="EI",      # the acquisition function
+            n_calls=self.bayes_iters,         # the number of evaluations of f
+            n_initial_points=min(10, math.floor(self.bayes_iters/5)),  # the number of random initialization points
         )
 
         return res

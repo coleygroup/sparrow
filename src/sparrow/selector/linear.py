@@ -36,7 +36,6 @@ class LinearSelector(Selector):
                  cycle_constraints: bool = False,
                  max_seconds: int = None,
                  extract_routes: bool = True, 
-                 post_opt_class_score: str = None,
                  ) -> None:
         
         super().__init__(
@@ -47,8 +46,8 @@ class LinearSelector(Selector):
             remove_dummy_rxns_first=remove_dummy_rxns_first, max_seconds=max_seconds,
             clusters=clusters, N_per_cluster=N_per_cluster, rxn_classes=rxn_classes,
             rxn_classifier_dir=rxn_classifier_dir, max_rxn_classes=max_rxn_classes, 
-            dont_buy_targets=dont_buy_targets, post_opt_class_score=post_opt_class_score,
-            max_rxns=max_rxns, sm_budget=sm_budget, extract_routes=extract_routes,
+            dont_buy_targets=dont_buy_targets, max_rxns=max_rxns, 
+            sm_budget=sm_budget, extract_routes=extract_routes,
             cycle_constraints=cycle_constraints
             )
         self.solver = solver 
@@ -256,12 +255,8 @@ class LinearSelector(Selector):
 
         return
     
-    def optimize(self, weights = None, output_dir=None):
+    def optimize(self, output_dir=None):
         print("Solving optimization problem...")
-        self.define_variables()
-        self.set_objective(weights)
-        self.set_constraints()
-
         opt_start = time.time()
         if self.solver == 'GUROBI' or self.solver == 'gurobi': 
             self.problem.solve(GUROBI(timeLimit=self.max_seconds))
@@ -274,8 +269,6 @@ class LinearSelector(Selector):
         self.runtime = time.time()-opt_start
 
         print(f"Optimization problem completed. Took {self.runtime:0.2f} seconds to solve")
-
-        self.post_processing(extract_routes=self.extract_routes, post_opt_class_score=self.post_opt_class_score, output_dir=output_dir) 
         
         return self
     

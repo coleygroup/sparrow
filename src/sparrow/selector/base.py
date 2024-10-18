@@ -53,7 +53,6 @@ class Selector(ABC):
                  cycle_constraints: bool = False,
                  max_seconds: int = None,
                  extract_routes: bool = True, 
-                 post_opt_class_score: str = None,
                  ) -> None:
 
         self.dir = Path(output_dir)
@@ -64,7 +63,6 @@ class Selector(ABC):
         self.cycle_constraints = cycle_constraints
         self.max_seconds = max_seconds
         self.extract_routes = extract_routes
-        self.post_opt_class_score = post_opt_class_score
 
         self.graph = route_graph  
         if remove_dummy_rxns_first: 
@@ -280,9 +278,18 @@ class Selector(ABC):
 
     @abstractmethod
     def optimize(self): 
-        """ Optimizes self.problem, with a time limit of max_seconds """
+        """ Optimizes self.problem, with a time limit of self.max_seconds """
 
-    def extract_vars(self, output_dir=None, extract_routes=True, bayesian=False): 
+    def formulate_and_optimize(self, extract_routes: bool = True): 
+        """ Formulates the problem, solves it, and outputs the solution """
+        self.define_variables()
+        self.set_objective()
+        self.set_constraints()
+        self.optimize()
+        self.post_processing(extract_routes=extract_routes)
+        return 
+
+    def extract_vars(self, output_dir=None, extract_routes=True): 
         mol_ids, rxn_ids, class_ids = self.extract_selected_ids()
 
         dummy_ids = [rxn for rxn in rxn_ids if self.graph.node_from_id(rxn).dummy]
@@ -320,7 +327,7 @@ class Selector(ABC):
                 store_dict = {'Compounds':[], 'Reactions':[]}
                 smi = self.graph.smiles_from_id(target)
                 # recursive search between rxn and compound parent funcs
-                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids)
+                storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids, target=target)
                 storage[smi]['Reward'] = self.target_dict[target]
                 er = self.target_dict[target]*np.prod(np.array([entry['score'] for entry in storage[smi]['Reactions'] if 'score' in entry]))
                 storage[smi]['Expected Reward'] = er
@@ -375,24 +382,27 @@ class Selector(ABC):
         # results["Max length of overlapping segment"] = {} #TODO
         return results
 
-    def post_processing(self, output_dir=None, extract_routes=True, post_opt_class_score=None): 
+    def post_processing(self, 
+                        output_dir: str = None, 
+                        extract_routes: bool = True): 
+        
         if output_dir is None: 
             output_dir = self.dir / 'solution'
 
         output_dir = Path(output_dir)
         output_dir.mkdir(exist_ok=True, parents=True) 
 
-        # call extract_vars to get basic summary
         summary = self.extract_vars(output_dir=output_dir, extract_routes=extract_routes)
 
-        # outputs results of post-processing in a separate file, based on regular summary, TODO: the directory should probably be an input parameter here
-        if post_opt_class_score != None:
+        if self.rxn_classes:
             rxn_class_summary = self.rxn_class_analysis(output_dir)
             with open(output_dir/'rxn_class_summary.json', 'w') as f:
                 json.dump(rxn_class_summary, f, indent='\t')
                 
         with open(output_dir/'summary.json', 'w') as f:
             json.dump(summary, f, indent='\t')
+        
+        return summary
 
     @abstractmethod
     def extract_selected_ids(self):
@@ -446,7 +456,7 @@ class Selector(ABC):
 
         return storage 
 
-    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns):
+    def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns, target=None):
 
         par_ids = [n.id for n in self.graph.node_from_id(rxn_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_mols)
@@ -455,7 +465,7 @@ class Selector(ABC):
             store_dict = self.find_mol_parents(store_dict, par, selected_mols, selected_rxns)
         return store_dict
 
-    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns): 
+    def find_mol_parents(self, store_dict, mol_id, selected_mols, selected_rxns, target=None): 
 
         par_ids = [n.id for n in self.graph.node_from_id(mol_id).parents.values()]
         selected_pars = set(par_ids) & set(selected_rxns)

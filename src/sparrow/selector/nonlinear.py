@@ -330,7 +330,7 @@ class ExpectedRewardSelector(Selector):
 
         return 
     
-    def optimize(self, savedir=None, solver=None):
+    def optimize(self, savedir=None):
 
         if not savedir: 
             savedir = self.dir 
@@ -357,7 +357,7 @@ class ExpectedRewardSelector(Selector):
         ]
         rxn_ids = re.findall(r'rxn\[(.*?)\]', ' '.join(nonzero_varnames))
         mol_ids = re.findall(r'mol\[(.*?)\]', ' '.join(nonzero_varnames))
-        return mol_ids, rxn_ids
+        return mol_ids, rxn_ids, []
 
     def find_rxn_parents(self, store_dict, rxn_id, selected_mols, selected_rxns, target=None):
 

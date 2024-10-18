@@ -163,16 +163,6 @@ def build_selector(params, target_dict, storage_path, clusters):
     else: 
         graph = RouteGraph(node_filename=storage_path)
 
-    extract_routes = True
-    post_opt_class_score = None
-    bayes_iters = None
-    if 'extract_routes' in params and params['extract_routes'].lower() == 'false':
-        extract_routes = False
-    if 'rxn_classifier_path' in params and params['rxn_classifier_path'] != '' and params['rxn_classifier_path'] != None:
-        post_opt_class_score = params['rxn_classifier_path']
-    if 'bayes_iters' in params:
-        bayes_iters = params['bayes_iters']
-
     weights = [params['reward_weight'], params['start_cost_weight'], params['reaction_weight'], params['diversity_weight'], params['rxn_class_weight']]
     args = {
         'route_graph': graph,
@@ -188,31 +178,29 @@ def build_selector(params, target_dict, storage_path, clusters):
         'sm_budget': params['starting_material_budget'], 
         'dont_buy_targets': params['dont_buy_targets'],
         'N_per_cluster': params['N_per_cluster'],
+        'cycle_constraints': not params['acyclic'],
+        'max_seconds': params['time_limit']*3600,
     }
     
     if params['formulation'] == 'expected_reward' and params['prune_distance'] is None:
         selector = ExpectedRewardSelector(
             cost_per_rxn=params['cost_of_rxn_weight'],
-            set_cycle_constraints=not params['acyclic'],
-            max_seconds=params['time_limit']*3600
             **args
         )
     elif params['formulation'] == 'expected_reward': 
         selector = PrunedERSelector(
             cost_per_rxn=params['cost_of_rxn_weight'],
             prune_distance=params['prune_distance'],
-            set_cycle_constraints=not params['acyclic'],
-            max_seconds=params['time_limit']*3600
+            **args
         )      
-    elif bayes_iters != None:
+    elif params['bayes_iters']:
         selector = BOLinearSelector(
             weights=weights,
             rxn_classes=build_rxn_classes(params, graph) if 'rxn_classifier_path' in params else None,
             rxn_classifier_dir = params['rxn_classifier_path'] if 'rxn_classifier_path' in params else None,
             max_rxn_classes=params['max_rxn_classes'] if 'max_rxn_classes' in params else None,
             solver=params['solver'],
-            post_opt_class_score=post_opt_class_score,
-            bayes_iters=bayes_iters,
+            bayes_iters=params['bayes_iters'],
             **args
         ) 
     else: 
@@ -267,7 +255,7 @@ def run():
     )
     storage_path = get_path_storage(params, targets)
     selector = build_selector(params, target_dict, storage_path, clusters)
-    selector = selector.optimize()
+    selector = selector.formulate_and_optimize(extract_routes=not params['no_routes'])
 
 if __name__ == '__main__':
     run()
