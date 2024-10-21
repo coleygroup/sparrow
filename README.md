@@ -1,6 +1,6 @@
 # SPARROW (Synthesis Planning And Rewards-based Route Optimization Workflow)
 
-A workflow to simultaneously select molecules and their synthetic routes for lead optimization and design-make-test cycles. This optimization approach aims to minimize synthetic cost while selecting the molecules that are most likely to fulfill design constraints. More details about SPARROW can be found in [this paper](https://www.sciencedirect.com/science/article/pii/S2666389923000016).   
+A workflow to simultaneously select molecules and their synthetic routes for lead optimization and design-make-test cycles. This optimization approach aims to minimize synthetic cost while selecting the molecules that are most likely to fulfill design constraints. More details about SPARROW can be found in [this paper](https://www.nature.com/articles/s43588-024-00639-y).   
 
 ## Overview 
 This repository performs the following steps: 
@@ -142,14 +142,13 @@ When using `--bayes-iters` to automatically tune weighting factors, a folder (`t
 The run time associated with SPARROW depends on the information provided. If a route graph is provided, SPARROW will typically run in seconds (< ~100 candidates) or minutes (> ~100 candidates). When retrosynthesis, condition recommendation, reaction scoring, and compound buyability must all be performed, the total run time for SPARROW will scale linearly with the number of candidates. For the [example of 300 candidate molecules](examples/button_alectinib/), the total runtime of the SPARROW workflow was approximately 13 hours. Approximately 5 hours of retrosynthesis planning, 4 hours of searching for buyability and cost, and 4 hours of condition recommendation and scoring contributed to this computation cost.
 
 ##  Optimization Problem Formulation 
-The formulation of the optimization problem can be found at our [published paper](https://www.sciencedirect.com/science/article/pii/S2666389923000016). 
+The formulation of the optimization problem can be found in our [paper](https://www.nature.com/articles/s43588-024-00639-y). 
 
 ## Reproducing Results
-The results shown in our [published paper](https://www.sciencedirect.com/science/article/pii/S2666389923000016) can be reproduced using the [optimize_preprint](scripts/optimize_preprint.py) script. This uses SPARROW to select routes from previously generated retrosynthesis trees with previously computed conditions and reaction scores. For each case study, this information is stored in the relevant [examples folder](examples) as a `trees_w_info.json` file. Each example contains a `config_opt.ini` that builds a route graph from the existing `trees_w_info.json` file and (if applicable) a `config.ini` that builds a route graph from scratch using ASKCOS. In order to use the sample `config.ini` files, you must enter an IP address corresponding to an ASKCOS instance where indicated and enter a ChemSpace API key in [keys.py](keys.py). 
+The results shown [here](https://www.nature.com/articles/s43588-024-00639-y) can be reproduced using the [optimize_preprint](scripts/optimize_preprint.py) script. This uses SPARROW to select routes from previously generated retrosynthesis trees with previously computed conditions and reaction scores. For each case study, this information is stored in the relevant [examples folder](examples) as a `trees_w_info.json` file. Each example contains a `config_opt.ini` that builds a route graph from the existing `trees_w_info.json` file and (if applicable) a `config.ini` that builds a route graph from scratch using ASKCOS. In order to use the sample `config.ini` files, you must enter an IP address corresponding to an ASKCOS instance where indicated and enter a ChemSpace API key in [keys.py](keys.py). 
 
 ## Future Goals
-1. Update tree visualization
-2. Modify optimization function formulation to better capture information gain and cost 
+* Update tree visualization
 
 
 
