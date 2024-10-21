@@ -32,7 +32,7 @@ SPARROW has been tested on Python version 3.7 and 3.8 and on Linux and Windows m
 
 ## Installation
 
-On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. If you are using Gurobi, obtain a Gurobi license and follow the instructions below to use with SPARROW. If you are using NameRxn, skip to [Installing SPARROW with NameRxn](#installing-sparrow-with-namerxn) and follow installation directions there. 
+On a standard desktop computer, installation of SPARROW should typically take less than one hour. To begin installation, create a conda environment for SPARROW using [mamba](https://mamba.readthedocs.io/en/latest/installation.html) and install additional requirements through pip. If you are using Gurobi (not a requirement for SPARROW), obtain a Gurobi license and follow the instructions below to use with SPARROW. If you are using NameRxn (not a requirement for SPARROW), skip to [Installing SPARROW with NameRxn](#installing-sparrow-with-namerxn) and follow installation directions there. 
 
 ```
 mamba env create -f environment.yml
@@ -61,7 +61,7 @@ You can check the status and expiration date of your license using `gurobi_cl --
 
 #### Installing SPARROW with NameRxn
 
-To set up SPARROW to run with NameRxn, follow the instructions below. Note that additional installation details from Next Move Software are available [here](https://www.nextmovesoftware.com/downloads/hazelnut/documentation/) (requires license credentials).
+To set up SPARROW to run with NameRxn (not required for SPARROW), follow the instructions below. Note that additional installation details from Next Move Software are available [here](https://www.nextmovesoftware.com/downloads/hazelnut/documentation/) (requires license credentials).
 
 1. Create an environment: 
 ```
