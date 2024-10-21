@@ -11,7 +11,6 @@ This repository performs the following steps:
 5. Sets relevant constraints on the optimization variables and sets the objective function. 
 6. Solves optimization problem.  
 7. Outputs the resulting selected routes and target molecules. 
-8. Provides an option to auto-tune the input weight parameters via Bayesian optimization.
 
 ## Table of Contents 
 - [Overview](#overview)
