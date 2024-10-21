@@ -33,6 +33,9 @@ class LinearSelector(Selector):
                  solver: str = 'pulp',
                  max_rxns: int = None, 
                  sm_budget: float = None, 
+                 cycle_constraints: bool = False,
+                 max_seconds: int = None,
+                 extract_routes: bool = True, 
                  ) -> None:
         
         super().__init__(
@@ -40,11 +43,12 @@ class LinearSelector(Selector):
             rxn_scorer=rxn_scorer, condition_recommender=condition_recommender, 
             constrain_all_targets=constrain_all_targets, max_targets=max_targets, 
             coster=coster, weights=weights, output_dir=output_dir, 
-            remove_dummy_rxns_first=remove_dummy_rxns_first, 
+            remove_dummy_rxns_first=remove_dummy_rxns_first, max_seconds=max_seconds,
             clusters=clusters, N_per_cluster=N_per_cluster, rxn_classes=rxn_classes,
             rxn_classifier_dir=rxn_classifier_dir, max_rxn_classes=max_rxn_classes, 
-            dont_buy_targets=dont_buy_targets,
-            max_rxns=max_rxns, sm_budget=sm_budget,
+            dont_buy_targets=dont_buy_targets, max_rxns=max_rxns, 
+            sm_budget=sm_budget, extract_routes=extract_routes,
+            cycle_constraints=cycle_constraints
             )
         self.solver = solver 
         
@@ -78,14 +82,14 @@ class LinearSelector(Selector):
         
         return 
 
-    def set_constraints(self, set_cycle_constraints=True):
+    def set_constraints(self):
 
         print('Setting constraints ...')
 
         self.set_rxn_constraints()
         self.set_mol_constraints()
 
-        if set_cycle_constraints: 
+        if self.cycle_constraints: 
             self.set_cycle_constraints()
         
         if self.max_targets:
@@ -156,7 +160,7 @@ class LinearSelector(Selector):
     def set_max_classes_constraint(self):
         """ Sets constraint on the maximum number of rxn classes used to access selected targets. """
         self.problem += (
-            lpSum(self.c) <= self.max_rxn_classes # TODO: is the summation working, look up docs
+            lpSum(self.c) <= self.max_rxn_classes
         )
     
     def set_constraint_all_targets(self): 
@@ -199,22 +203,23 @@ class LinearSelector(Selector):
                 self.c[id] <= lpSum(self.r[rxn] for rxn in rxns)
             )
 
-    def set_objective(self): 
+    def set_objective(self, weights = None): 
         print('Setting objective function ...')
+        weights = weights or self.weights
 
-        reward_mult = self.weights[0] # / ( len(self.target_dict)) # *max(self.target_dict.values()) )
-        cost_mult = self.weights[1] # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
-        pen_mult = self.weights[2] # / (len(self.graph.non_dummy_nodes())) # * max([node.penalty for node in self.graph.non_dummy_nodes()]) )
+        reward_mult = weights[0] # / ( len(self.target_dict)) # *max(self.target_dict.values()) )
+        cost_mult = weights[1] # / (len(self.graph.dummy_nodes_only())) # * max([node.cost_per_g for node in self.graph.buyable_nodes()]) ) 
+        pen_mult = weights[2] # / (len(self.graph.non_dummy_nodes())) # * max([node.penalty for node in self.graph.non_dummy_nodes()]) )
 
         self.problem += -1*reward_mult*lpSum([float(self.target_dict[target])*self.m[target] for target in self.targets]) \
         + cost_mult*lpSum([self.cost_of_dummy(dummy)*self.r[dummy.id] for dummy in self.graph.dummy_nodes_only()]) \
         + pen_mult*lpSum([self.r[node.id]*float(node.penalty) for node in self.graph.non_dummy_nodes()])
             # reaction penalties, implement CSR later 
         
-        if self.weights[3]>0: 
+        if weights[3]>0: 
             self.add_diversity_objective()
 
-        if self.c != None and len(self.weights) > 4 and self.weights[4] > 0:
+        if self.c != None and len(weights) > 4 and weights[4] > 0: 
             self.add_rxn_class_objective()
 
         return 
@@ -250,14 +255,13 @@ class LinearSelector(Selector):
 
         return
     
-    def optimize(self, max_seconds=None):
-
+    def optimize(self, output_dir=None):
         print("Solving optimization problem...")
         opt_start = time.time()
         if self.solver == 'GUROBI' or self.solver == 'gurobi': 
-            self.problem.solve(GUROBI(timeLimit=max_seconds))
+            self.problem.solve(GUROBI(timeLimit=self.max_seconds))
         else: 
-            self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False, timeLimit=max_seconds))
+            self.problem.solve(PULP_CBC_CMD(gapRel=1e-7, gapAbs=1e-9, msg=False, timeLimit=self.max_seconds))
 
         if self.problem.status == -1: 
             raise RuntimeError('Problem is infeasible. To fix, try relaxing constraints.')
@@ -266,7 +270,7 @@ class LinearSelector(Selector):
 
         print(f"Optimization problem completed. Took {self.runtime:0.2f} seconds to solve")
         
-        return 
+        return self
     
     def extract_selected_ids(self):
         """ Returns nonzero variables names """

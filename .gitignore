@@ -9,6 +9,7 @@ build
 
 # results 
 results/
+sparrow_results/
 
 # large files 
 *.json
