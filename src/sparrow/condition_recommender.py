@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from typing import List, Union, Dict 
 from pathlib import Path  
 import json 
+import requests
+import time
 from sparrow.utils.api_utils import post_and_get
 
 def clean_context(context):
@@ -102,7 +104,61 @@ class AskcosLookupRecommender(Recommender):
         contexts = self.data[rxn_smi]
         return contexts[:n_c]
         
+
 class AskcosAPIRecommender(Recommender): 
+    """ 
+    Uses the ASKCOS v2 API to recommend contexts for reactions. 
+    For each reaction, first tries the graph model. If that fails, uses the fingerprint model. 
+    """
+    
+    def __init__(self, host: str, port: str = None, model: str = 'graph'): 
+
+        if port: 
+            self.host = f'{host}:{port}'
+        else: 
+            self.host = host 
+        
+        self.max_attempts = 3
+
+    def process_result(self, result):
+        condition = []
+        for entry in result['agents']: 
+            if entry.get('role')=='REACTANT': 
+                continue 
+            condition.append(entry['smi_or_name'])
+        
+        return condition    
+            
+    def recommend_conditions(self, rxn_smi: str, n_c: int, attempt=0, model='GRAPH') -> List: 
+        """ Returns a list of n_c recommended conditions (each a list). """
+        data = {
+            "smiles": rxn_smi,
+            "reagents": [],
+            "n_conditions": 1
+        }
+        try:
+            resp = requests.post(
+                url=f"http://{self.host}/api/context-recommender/v2/condition/{model}/call-sync",
+                json=data
+            ).json()
+        except requests.exceptions.JSONDecodeError:
+            if attempt < self.max_attempts: 
+                return self.recommend_conditions(rxn_smi, n_c, attempt=attempt+1, model='FP')
+            else:     
+                print(f'ASKCOS error recommending conditions for {rxn_smi}, returning empty conditions')
+                return [[]]
+        
+        if len(resp['result']) == 0: 
+            if attempt < self.max_attempts: 
+                return self.recommend_conditions(rxn_smi, n_c, attempt=attempt+1, model='FP')
+            else: 
+                print(f'ASKCOS error recommending conditions for {rxn_smi}, returning empty conditions')
+                return [[]]
+        
+        return [self.process_result(resp["result"][0])]
+    
+
+class AskcosV1APIRecommender(Recommender): 
     """ Uses the ASKCOS API to recommend contexts for reactions """
     
     def __init__(self, host: str): 
@@ -151,4 +207,4 @@ class AskcosAPIRecommender(Recommender):
     def clean_context(self, context): 
         context = clean_context(context)
         return context 
-        
+    

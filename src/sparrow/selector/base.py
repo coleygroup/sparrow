@@ -226,7 +226,7 @@ class Selector(ABC):
             node.update_condition(condition)
             count += 1
 
-            if count % 100 == 0: 
+            if count % 1000 == 0: 
                 time = datetime.now().strftime("%H-%M-%S")
                 self.graph.to_json(self.dir / 'chkpts' / f'trees_w_conditions_{time}.json')
             

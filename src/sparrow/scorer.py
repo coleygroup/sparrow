@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Union, List
 from pathlib import Path 
 from rdkit import Chem
+import requests
 
 from sparrow.utils.api_utils import post_and_get
 
@@ -28,6 +29,47 @@ class Scorer(ABC):
 
 
 class AskcosAPIScorer(Scorer): 
+    """ 
+    Scores reactions by called ASKCOS API 
+    """
+    def __init__(self, host: str, port: str = None): 
+        self.requires_contexts = True
+        if port: 
+            self.host = f'{host}:{port}'
+        else: 
+            self.host = host 
+        
+        self.max_attempts = 3
+    
+    def score_rxn(self, rxn_smi: str, condition: List = None, attempt = 0) -> float:
+        if type(condition[0]) is list: 
+            condition = condition[0]
+        
+        reacs, prod = rxn_smi.split('>>')
+        data = {
+            "backend": "wldn5",
+            "model_name": "pistachio",
+            "smiles": [reacs],
+            "reagents": '.'.join(condition),
+            "solvent": ""
+        }
+        try:         
+            resp = requests.post(
+                url=f"http://{self.host}/api/forward/controller/call-sync",
+                json=data
+            ).json()
+            outcomes = {entry["outcome"]: entry["prob"] for entry in resp["result"][0]}
+        except: 
+            print(f'no outcomes for {rxn_smi}, assigning score of 1e-6')
+            print(resp)
+            return 1e-6
+
+        if prod in outcomes: 
+            return outcomes[prod]
+        else: 
+            return 1e-6
+
+class AskcosV1APIScorer(Scorer): 
     """ 
     Scores reactions by called ASKCOS API 
     """
@@ -72,7 +114,6 @@ class AskcosAPIScorer(Scorer):
             else: 
                 print(f'Could not score {rxn_smi}, returning score of 0')
                 return 0 
-        
 
 class LookupScorer(Scorer): 
     """ 
