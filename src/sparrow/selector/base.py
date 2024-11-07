@@ -131,9 +131,10 @@ class Selector(ABC):
                 score = 10**6,
             )  
 
-    def clean_target_dict(self, target_dict: Dict[str, float]) -> Dict[str, float]:
+    def clean_target_dict(self, target_dict: Dict[str, Union[float, tuple[float, str]]]) -> Dict[str, float]:
         """ Converts target dict from Dict[smiles, reward] to Dict[id, reward] """
         self.target_dict = {}
+        custom = False
         
         c=0
         old_smis = []
@@ -142,21 +143,31 @@ class Selector(ABC):
             try: 
                 float(reward)
             except: 
-                # warnings.warn(f'Target {old_smi} has an invalid reward ({reward}) and is being removed from target set')
-                c+=1      
-                continue     
+                try:
+                    reward, custom_id = reward
+                    custom = True
+                    float(reward)
+                except:
+                    # warnings.warn(f'Target {old_smi} has an invalid reward ({reward}) and is being removed from target set')
+                    custom = False
+                    c+=1      
+                    continue     
             
             node = self.graph.compound_nodes.get(old_smi, None)
             if node:
                 self.target_dict[node.id] = reward
                 old_smis.append(old_smi)
+                if custom:
+                    node.custom_id = custom_id
             else: 
                 clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
                 node = self.graph.compound_nodes.get(clean_smi, None)
                 
                 if node: 
                     self.target_dict[node.id] = reward    
-                    old_smis.append(old_smi)       
+                    old_smis.append(old_smi)
+                    if custom:
+                        node.custom_id = custom_id       
                 else:       
                     # warnings.warn(f'Target {old_smi} is not in routes and is being removed from target set')
                     c+=1
@@ -443,12 +454,14 @@ class Selector(ABC):
                 storage['Targets'].append({
                     'smiles': node.smiles,
                     'reward': node.reward,
-                    'clusters': self.id_to_clusters[cpd_id]
+                    'clusters': self.id_to_clusters[cpd_id],
+                    'custom id': node.custom_id
                 })
             else:
                 storage['Targets'].append({
                     'smiles': node.smiles,
                     'reward': node.reward,
+                    'custom id': node.custom_id
                 })
         
         with open(Path(output_dir)/'solution_list_format.json','w') as f:

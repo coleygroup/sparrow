@@ -12,6 +12,7 @@ class Node:
                  parents: Optional[List] = None, 
                  children: Optional[List] = None,
                  id: Optional[str] = None,
+                 custom_id: Optional[str] = None,
                  selected: Optional[int] = 0,
                 ) -> None:
         self.smiles = smiles
@@ -25,6 +26,7 @@ class Node:
 
         self.selected = selected
         self.id = id
+        self.custom_id = custom_id
 
         self.blocked = False 
 
@@ -66,6 +68,7 @@ class CompoundNode(Node):
                 smiles: str,
                 parents: List[Node] = None,
                 children: List[Node] = None,
+                custom_id: Optional[str] = None,
                 buyable: bool = None, 
                 cost_per_g: float = None, 
                 cost_function: list = None,
@@ -75,7 +78,7 @@ class CompoundNode(Node):
                 cost_set: int = False,
                 **kwargs) -> None:
     
-        super().__init__(smiles, parents, children, **kwargs)
+        super().__init__(smiles, parents, children, custom_id, **kwargs) #TODO: make sure not messing up ID
         
         self.cost_set = cost_set 
         self.reward = None 

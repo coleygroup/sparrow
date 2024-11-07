@@ -19,10 +19,16 @@ from sparrow.utils import cluster_utils
 
 def get_target_dict(filepath: Path): 
     df = pd.read_csv(filepath)
-    target_dict = {
-        smiles: reward
-        for smiles, reward in zip(df['SMILES'], df['Reward'])
-    }
+    if 'ID' in df.columns:
+        target_dict = {
+            smiles: (reward, str(id_))
+            for smiles, reward, id_ in zip(df['SMILES'], df['Reward'], df['ID'])
+        }
+    else:
+        target_dict = {
+            smiles: reward
+            for smiles, reward in zip(df['SMILES'], df['Reward'])
+        }
     return target_dict, list(df['SMILES'])
 
 def get_clusters(cluster_type, filepath, cutoff, outdir=None): 
@@ -157,7 +163,7 @@ def build_rxn_classes(params, graph: RouteGraph):
     return rxn_classes
      
 def build_selector(params, target_dict, storage_path, clusters):
-    # storage_path is a dict of SMILES to reward
+    # storage_path is a dict of SMILES to reward and optionally, a custom target ID
     if storage_path is None: 
         graph = RouteGraph(node_filename=params['graph'])
     else: 
@@ -213,10 +219,12 @@ def build_selector(params, target_dict, storage_path, clusters):
             **args
         )
 
+    logs = open(Path(params['output_dir'])/"logs.txt", "a")
     # if no graph is given, creates graph from the info file path
     if storage_path is not None: 
         filepath = Path(params['output_dir'])/'trees_w_info.json'
         print(f'Saving route graph with contexts, reaction scores, and costs to {filepath}')
+        logs.write(f'Saving route graph with contexts, reaction scores, and costs to {filepath}\n')
         selector.graph.to_json(filepath)
     
     return selector
@@ -232,14 +240,19 @@ def save_args(params):
 def run():
     args = get_args()
     params = vars(args)
+    output_dir = Path(params['output_dir'])
+    output_dir.mkdir(exist_ok=True, parents=True)
+    logs = open(output_dir/"logs.txt", "w")
+    # sys.stdout = open(output_dir/"logs1.txt", "w")
+    # sys.stderr = open(output_dir/"logs1.txt", "a")
 
-    print('SPARROW will be run with the following parameters:')    
+    print('SPARROW will be run with the following parameters:')
+    logs.write(f'SPARROW will be run with the following parameters:\n')    
     for k, v in sorted(params.items()):
         if v is not None: 
             print(f"  {k}: {v}")
+            logs.write(f"  {k}: {v}\n")
     print(flush=True)
-    output_dir = Path(params['output_dir'])
-    output_dir.mkdir(exist_ok=True, parents=True)
     
     save_args(params)
 
