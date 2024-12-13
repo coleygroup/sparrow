@@ -18,6 +18,7 @@ sparrow_results/
 !examples/button_alectinib/trees_w_info.json
 !examples/garibsingh/trees_w_info.json
 *.zip
+*.sdf
 
 
 # figures 

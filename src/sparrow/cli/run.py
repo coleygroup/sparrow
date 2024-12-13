@@ -10,7 +10,7 @@ from sparrow.route_graph import RouteGraph
 from sparrow.selector.linear import LinearSelector
 from sparrow.selector.bayesian import BOLinearSelector
 from sparrow.selector.nonlinear import ExpectedRewardSelector, PrunedERSelector
-from sparrow.condition_recommender import AskcosAPIRecommender
+from sparrow.condition_recommender import AskcosAPIRecommender, AskcosV1APIRecommender
 from sparrow.scorer import AskcosAPIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
 from sparrow.rxn_classifier import NameRxnClass, LookupClass
@@ -88,6 +88,8 @@ def build_recommender(params):
     rec = params['recommender']
     if rec == 'api': 
         return AskcosAPIRecommender(host=params['context_host'])
+    elif rec == 'apiv1': 
+        return AskcosV1APIRecommender(host=params['context_host'])
     elif rec is None: 
         return None    
     elif rec == 'lookup': 
