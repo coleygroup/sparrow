@@ -180,19 +180,18 @@ class Selector(ABC):
 
     def clean_clusters(self, clusters, id_map): 
         clean_clusters = {}
-        for c_name, smis in tqdm(clusters.items()): 
+        for c_name, smis in clusters.items(): 
             clean_smis = []
             for old_smi in smis: 
                 if old_smi in self.graph.compound_nodes:
                     clean_smis.append(self.graph.compound_nodes[old_smi].id)
                 else: 
                     clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
-                    print('running ChemMolToSmiles')
                     if clean_smi in self.graph.compound_nodes: 
                         clean_smis.append(self.graph.compound_nodes[clean_smi].id)       
             
             clean_clusters[c_name] = clean_smis     
-        print('line 201')
+
         if id_map == "clusters":
             id_to_clusters = {tid: [] for tid in self.targets}
             for c_name, tids in clean_clusters.items():
