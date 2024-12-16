@@ -87,7 +87,7 @@ The general command to run SPARROW is:
 
 Alternatively, you may run the following command: 
 `sparrow --config <path/to/config>`
-which directs SPARROW to a configuration file with all arguments. Some example config files are in the [examples folder](examples).
+which directs SPARROW to a configuration file with all arguments. Some example config files are in the [examples folder](examples). For retrosynthesis, condition recommendation, and reaction scoring, `api` assumes an ASKCOSv2 deployment, while `apiv1` assumes an ASKCOSv1 deployment. 
 
 If more than one run is performed on the same set of compounds, and only the weighting factors are changed, the route graph information from the first run can be easily incorporated into following runs. By providing the path to the `trees_w_info.json` file from the initial run as the argument for `--graph`, all potential paths, compound costs, and reaction scores are incorporated. In these cases, entries for `--path-finder`, `--recommender`, `--scorer`, and `--coster` are not required. 
 
@@ -110,16 +110,16 @@ All arguments and descriptions can be viewed by running `sparrow --help`. Below 
  - `--max-rxn-classes`: Constrains the number of distinct reaction classes present in SPARROW's selected synthetic routes
  - `--rxn-class-weight` (default: `0`) <sup>L</sup>: A weighting factor that encourages the selection of few distinct reaction classes
  - `--bayes-iters`<sup>L</sup>: Performs linear optimization for specified number of iterations to identify reward and reaction weighting factors that maximize expected reward. 
- - `--path-finder {lookup,api}`: type of tree builder to use
+ - `--path-finder {lookup,api,apiv1}`: type of tree builder to use
  - `--tree-lookup-dir`: path of lookup json file with combined retrosynthesis tree
  - `--time-per-target`: expansion time in seconds for each target
  - `--max-ppg`: maximum price per gram in dollars for starting materials for ASKCOS MCTS tree search
  - `--max-branching`: maximum branch factor for ASKCOS MCTS tree search
  - `--tree-host`: host address for tree builder, if using ASKCOS API path finder
- - `--recommender {lookup,api}`: type of context recommender to use
+ - `--recommender {lookup,api,apiv1}`: type of context recommender to use
  - `--context-host`: host address for context recommender, if using API recommender
  - `--context-lookup`: path of lookup csv file for lookup context recommender
- - `--scorer {lookup,api}`: type of scorer to use
+ - `--scorer {lookup,api,apiv1}`: type of scorer to use
  - `--scorer-host`: host address for reaction scorer, if using API recommender
  - `--scorer-lookup`: path of reaction scorer csv file for lookup reaction scorer (not implemented yet)
  - `--coster {lookup, naive, chemspace}`: type of compound coster to use

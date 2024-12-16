@@ -5,13 +5,13 @@ import numpy as np
 import json 
 from tqdm import tqdm
 
-from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner
+from sparrow.path_finder import AskcosAPIPlanner, LookupPlanner, AskcosV1APIPlanner
 from sparrow.route_graph import RouteGraph
 from sparrow.selector.linear import LinearSelector
 from sparrow.selector.bayesian import BOLinearSelector
 from sparrow.selector.nonlinear import ExpectedRewardSelector, PrunedERSelector
 from sparrow.condition_recommender import AskcosAPIRecommender, AskcosV1APIRecommender
-from sparrow.scorer import AskcosAPIScorer
+from sparrow.scorer import AskcosAPIScorer, AskcosV1APIScorer
 from sparrow.coster import ChemSpaceCoster, NaiveCoster, LookupCoster
 from sparrow.rxn_classifier import NameRxnClass, LookupClass
 from sparrow.cli.args import get_args
@@ -81,6 +81,14 @@ def get_path_storage(params, targets):
             max_ppg=params['max_ppg'],
             max_branching=params['max_branching'],
         )
+    elif params['path_finder'] == 'apiv1':
+        planner = AskcosV1APIPlanner( 
+            host=params['tree_host'],
+            output_dir=Path(params['output_dir']),
+            time_per_target=params['time_per_target'], 
+            max_ppg=params['max_ppg'],
+            max_branching=params['max_branching'],
+        )
 
     return planner.get_save_trees(targets)
 
@@ -101,6 +109,8 @@ def build_scorer(params):
     rec = params['scorer']
     if rec == 'api': 
         return AskcosAPIScorer(host=params['scorer_host'])
+    elif rec == 'apiv1': 
+        return AskcosV1APIScorer(host=params['scorer_host'])
     elif rec is None: 
         return None  
     elif rec == 'lookup': 
