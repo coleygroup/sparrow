@@ -425,6 +425,8 @@ class PrunedERSelector(ExpectedRewardSelector):
                  sm_budget: float = None, 
                  dont_buy_targets: bool = False,
                  prune_distance: int = 10, 
+                 cycle_constraints: bool = True,
+                 max_seconds: int = None
                  ) -> None:
         
         super().__init__(
@@ -434,7 +436,8 @@ class PrunedERSelector(ExpectedRewardSelector):
             coster=coster, cost_per_rxn=cost_per_rxn, output_dir=output_dir, 
             remove_dummy_rxns_first=remove_dummy_rxns_first, N_per_cluster=N_per_cluster,
             clusters=clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
-            dont_buy_targets=dont_buy_targets
+            dont_buy_targets=dont_buy_targets, cycle_constraints=cycle_constraints,
+            max_seconds=max_seconds
             )  
 
         self.prune_distance = prune_distance # TODO: make this an argument   
@@ -449,7 +452,10 @@ class PrunedERSelector(ExpectedRewardSelector):
         # only define this variable for reactions that are within some directed distance of targets
         self.u = {}
         self.cpdfor = {}
-                
+
+        self.u_by_targets = {t_id: [] for t_id in self.targets}
+        self.cpdfor_by_targets = {t_id: [] for t_id in self.targets}
+
         for t_id in tqdm(self.targets, desc='"for" constraints'): 
             connected_nodes = self.graph.get_connected_nodes(t_id, max_distance=self.prune_distance)
             for n in connected_nodes: 
@@ -461,6 +467,7 @@ class PrunedERSelector(ExpectedRewardSelector):
                         vtype=GRB.BINARY,
                         name=f'cpdfor[{n_id}][{t_id}]'
                     )
+                    self.cpdfor_by_targets[t_id].append(n_id)
                 elif n_id.startswith('R'): 
                     if n_id not in self.u: 
                         self.u[n_id] = {}
@@ -468,7 +475,8 @@ class PrunedERSelector(ExpectedRewardSelector):
                         vtype=GRB.BINARY,
                         name=f'rxnfor[{n_id}][{t_id}]'
                     )
-        
+                    self.u_by_targets[t_id].append(n_id)
+            
         # whether rxn is used, only worth defining if in self.u
         self.r = self.problem.addVars(
             self.u.keys(),
@@ -546,7 +554,7 @@ class PrunedERSelector(ExpectedRewardSelector):
                     )
                 
                 # if a reaction is selected, every parent (reactant) must also be selected 
-                if node.id in self.u and par_id in self.cpdfor:
+                if rid in self.u and par_id in self.cpdfor:
                     ts = self.cpdfor[par_id].keys() & self.u[node.id].keys()
                     self.problem.addConstrs(
                         self.cpdfor[par_id][t] >= self.u[node.id][t] for t in ts
@@ -571,14 +579,15 @@ class PrunedERSelector(ExpectedRewardSelector):
                     name=f'rxnusedConstr2_{node.id}'
                 )
 
-        
-        for t in self.targets: 
-            rs = [r for r in self.rxn_ids if r in self.u and t in self.u[r]]
+        for t in tqdm(self.targets, desc='Reaction constraints for targets'): 
+            # rs = [r for r in self.rxn_ids if r in self.u and t in self.u[r]]
+            rs = self.u_by_targets[t]
             self.problem.addConstr(
                 gp.quicksum(self.u[r][t] for r in rs) <= len(rs)*self.m[t]
             )
 
-            cs = [c for c in self.mol_ids if c in self.cpdfor and t in self.cpdfor[c]]
+            # cs = [c for c in self.mol_ids if c in self.cpdfor and t in self.cpdfor[c]]
+            cs = self.cpdfor_by_targets[t]
             self.problem.addConstr(
                 gp.quicksum(self.cpdfor[c][t] for c in cs) <= len(cs)*self.m[t]
             )
@@ -632,10 +641,11 @@ class PrunedERSelector(ExpectedRewardSelector):
 
         log_scores = np.log([node.score if node.score>0 else 1e-10 for node in self.graph.non_dummy_nodes()])
         log_scores = {node.id: score for node, score in zip(self.graph.non_dummy_nodes(), log_scores)}
-        
-        for t in self.targets: 
-            nids = [node.id for node in self.graph.non_dummy_nodes()
-                    if node.id in self.u and t in self.u[node.id]]
+
+        for t in tqdm(self.targets, 'Nonlinear constraints'): 
+            nids = [nid for nid in self.u_by_targets[t] if nid in log_scores]
+                    #[node.id for node in self.graph.non_dummy_nodes()
+                   # if node.id in self.u and t in self.u[node.id]]
             self.problem.addConstr(
                 self.usum[t] == gp.quicksum(
                     self.u[nid][t]*log_scores[nid] 
