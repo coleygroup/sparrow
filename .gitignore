@@ -10,6 +10,7 @@ build
 # results 
 results/
 sparrow_results/
+*logs*
 
 # large files 
 *.json
