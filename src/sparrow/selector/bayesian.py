@@ -92,7 +92,7 @@ class BOLinearSelector(LinearSelector):
     def optimize_weights(self):
         res = gp_minimize(
             self.expected_reward,    # the function to minimize
-            [(0.0,1.0)],      # the bounds on each dimension of x
+            [(1e-5,1-1e-5)],      # the bounds on each dimension of x
             acq_func="EI",      # the acquisition function
             n_calls=self.bayes_iters,         # the number of evaluations of f
             n_initial_points=min(10, math.floor(self.bayes_iters/5)),  # the number of random initialization points
