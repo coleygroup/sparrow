@@ -4,6 +4,7 @@ from pathlib import Path
 import json
 import shutil
 import math 
+import time 
 
 from sparrow.condition_recommender import Recommender
 from sparrow.coster import Coster
@@ -57,7 +58,9 @@ class BOLinearSelector(LinearSelector):
     def formulate_and_optimize(self, **kwargs):
         self.define_variables()
         self.set_constraints()
+        opt_start_time = time.time()
         res = self.optimize_weights()
+        bo_run_time = time.time() - opt_start_time
         r_weight = res.x[0]
         print(f'Optimal weighting factors:\n\tReward weight: {r_weight:0.3e}\n\tReaction weight: {1-r_weight:0.3e}')
         print(f'Yielding expected reward of {res.fun * -1:0.3f}')
@@ -68,6 +71,14 @@ class BOLinearSelector(LinearSelector):
             print(f'Overwriting directory: {dest}')
             shutil.rmtree(dest)
         shutil.copytree(best_output_dir, self.dir/'BEST_SOLUTION')  
+        
+        with open(self.dir/'BEST_SOLUTION'/'summary.json', 'r') as f:
+            final_summary = json.load(f) 
+        
+        final_summary['Total Tuning Run Time'] = bo_run_time
+        with open(self.dir/'BEST_SOLUTION'/'summary.json', 'w') as f:
+            final_summary = json.dump(final_summary, f, indent='\t') 
+
         return self
     
     def run_opt_vary_weights(self, weights: list, output_dir: str, extract_routes: bool = True):
