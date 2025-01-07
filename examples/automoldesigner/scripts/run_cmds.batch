@@ -4,7 +4,8 @@
 #SBATCH -e examples/automoldesigner/logs/%x_%a.err
 
 #SBATCH -n 48                       # number of cpus
-#SBATCH --array 0
+#SBATCH -N 1                        # single node 
+#SBATCH --array 13
 #SBATCH -t 1-00:00
 #SBATCH -p xeon-p8    # Partition to submit to
 

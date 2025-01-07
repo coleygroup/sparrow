@@ -12,6 +12,10 @@ sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/aut
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_150 --max-rxns 150
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_175 --max-rxns 175
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_200 --max-rxns 200
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_225 --max-rxns 225
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_250 --max-rxns 250
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_275 --max-rxns 275
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_300 --max-rxns 300
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_10 --max-rxns 10
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_20 --max-rxns 20
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_30 --max-rxns 30
@@ -26,3 +30,7 @@ sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir resu
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_150 --max-rxns 150
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_175 --max-rxns 175
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_200 --max-rxns 200
+sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_225 --max-rxns 225
+sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_250 --max-rxns 250
+sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_275 --max-rxns 275
+sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_300 --max-rxns 300
