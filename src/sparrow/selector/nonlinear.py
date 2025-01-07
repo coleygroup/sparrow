@@ -335,7 +335,7 @@ class ExpectedRewardSelector(Selector):
         if not savedir: 
             savedir = self.dir 
 
-        print("Solving optimization problem...")
+        print("Solving optimization problem ...")
         opt_start = time.time()
 
         self.problem.Params.NonConvex = 2

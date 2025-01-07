@@ -76,6 +76,8 @@ class BOLinearSelector(LinearSelector):
             final_summary = json.load(f) 
         
         final_summary['Total Tuning Run Time'] = bo_run_time
+        final_summary['Reward weighting factor in each tuning iteration'] = res.x_iters
+        final_summary['Function values in each tuning iteration'] = list(-1*res.func_vals) 
         with open(self.dir/'BEST_SOLUTION'/'summary.json', 'w') as f:
             final_summary = json.dump(final_summary, f, indent='\t') 
 
@@ -100,13 +102,14 @@ class BOLinearSelector(LinearSelector):
         summary = self.run_opt_vary_weights(weights=all_weights, output_dir=output_dir)
         return -1 * summary['Expected Reward']
         
-    def optimize_weights(self):
+    def optimize_weights(self, random_state=0):
         res = gp_minimize(
             self.expected_reward,    # the function to minimize
             [(1e-5,1-1e-5)],      # the bounds on each dimension of x
             acq_func="EI",      # the acquisition function
             n_calls=self.bayes_iters,         # the number of evaluations of f
             n_initial_points=min(10, math.floor(self.bayes_iters/5)),  # the number of random initialization points
+            random_state=random_state, # random state for reproducibility 
         )
 
         return res
