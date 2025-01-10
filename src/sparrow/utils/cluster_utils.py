@@ -1,12 +1,14 @@
 from rdkit import Chem
+from rdkit.Chem import rdFingerprintGenerator
 from rdkit.Chem import AllChem
 from rdkit import DataStructs
 from rdkit.ML.Cluster import Butina
 
-def compute_fps(smiles: list, radius=2, length=1024):
+def compute_fps(smiles: list, radius=3, length=2048):
     """ Computes Morgan fingerprints for a list of smiles"""
-    mols = [Chem.MolFromSmiles(smi) for smi in smiles]
-    fps = [AllChem.GetMorganFingerprintAsBitVect(x, radius, length) for x in mols]
+    mfpgen = rdFingerprintGenerator.GetMorganGenerator(radius=radius, fpSize=length)
+    mols = [Chem.MolFromSmiles(s) for s in smiles]
+    fps = [mfpgen.GetCountFingerprint(m) for m in mols]
     return fps 
 
 def cluster_fps(fps, cutoff):
