@@ -34,3 +34,25 @@ sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir resu
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_250 --max-rxns 250
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_275 --max-rxns 275
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_300 --max-rxns 300
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_div/weight_0 --bayes-iters 20 --max-targets 100
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.1 --diversity-weight 0.1
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.2 --diversity-weight 0.2
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.3 --diversity-weight 0.3
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.4 --diversity-weight 0.4
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.5 --diversity-weight 0.5
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.6 --diversity-weight 0.6
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.7 --diversity-weight 0.7
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.8 --diversity-weight 0.8
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.9 --diversity-weight 0.9
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_1.0 --diversity-weight 1.0
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.05 --diversity-weight 0.05
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.15 --diversity-weight 0.15
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.25 --diversity-weight 0.25
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.35 --diversity-weight 0.35
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.45 --diversity-weight 0.45
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.55 --diversity-weight 0.55
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.65 --diversity-weight 0.65
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.75 --diversity-weight 0.75
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.85 --diversity-weight 0.85
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.95 --diversity-weight 0.95
+
