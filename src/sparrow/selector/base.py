@@ -490,7 +490,6 @@ class Selector(ABC):
                     'conditions': node.get_condition(1)[0], 
                     'score': node.score,
                 }
-                print(f'493 --- REACTION CLASSES: {self.rxn_classes}')
                 if self.rxn_classes: 
                     new_rxn_entry['class'] = self.id_to_classes[par]
                 store_dict['Reactions'].append(new_rxn_entry)  
