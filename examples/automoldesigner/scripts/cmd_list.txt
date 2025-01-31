@@ -55,4 +55,25 @@ sparrow --config examples/automoldesigner/config_diversity.ini --output-dir resu
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.75 --diversity-weight 0.75
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.85 --diversity-weight 0.85
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.95 --diversity-weight 0.95
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_1 --max-rxn-classes 1
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_2 --max-rxn-classes 2
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_3 --max-rxn-classes 3
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_4 --max-rxn-classes 4
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_5 --max-rxn-classes 5
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_6 --max-rxn-classes 6
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_7 --max-rxn-classes 7
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_8 --max-rxn-classes 8
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_9 --max-rxn-classes 9
+sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_10 --max-rxn-classes 10
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/test3
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_2_div_0 --diversity-weight 0 --max-rxn-classes 2
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_2_div_0.1 --diversity-weight 0.1 --max-rxn-classes 2
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_4_div_0 --diversity-weight 0 --max-rxn-classes 4
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_4_div_0.1 --diversity-weight 0.1 --max-rxn-classes 4
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_3_div_0_20rxns --max-rxn-classes 3 --max-rxns 20
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_2_div_0_20rxns --max-rxn-classes 2 --max-rxns 20
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_1_div_0_20rxns --max-rxn-classes 1 --max-rxns 20
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_3_div_0_10tars --max-targets 10  --max-rxn-classes 3
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_2_div_0_10tars --max-targets 10  --max-rxn-classes 2
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/classes_1_div_0_10tars --max-targets 10  --max-rxn-classes 1
 
