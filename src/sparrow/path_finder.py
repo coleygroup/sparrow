@@ -27,8 +27,96 @@ class PathFinder(ABC):
         returns the path to the file """
 
 
-class AskcosAPIPlanner(PathFinder): 
-    """ Uses ASKCOS API to get paths to target smiles """
+class AskcosAPIPlanner(PathFinder):
+    """ Uses ASKCOS v2 API to get paths to target smiles """
+    def __init__(self, 
+                 host: str,
+                 output_dir: Path,
+                 port: str = None,
+                 time_per_target: int = 30, 
+                 max_branching: int = 20,
+                 **kwargs,
+                 ):
+        
+        if port: 
+            self.host = f'{host}:{port}'
+        else: 
+            self.host = host 
+
+        self.output_dir = output_dir
+
+        self.params = {
+            "build_tree_options": {
+                "expansion_time": time_per_target,
+                "max_branching": max_branching,
+                "max_depth": 10,
+                "exploration_weight": 1,
+                "return_first": False
+            },
+            "enumerate_paths_options": {
+                "path_format": "json",
+                "json_format": "nodelink",
+                "sorting_metric": "plausibility",
+                "validate_paths": True,
+            },
+        }
+
+    def get_save_trees(self, targets: List[str]): 
+        """ Uses ASKCOS v2 MCTS tree to generate paths to each smiles in 
+        targets, combines the trees, and stores the output. returns the path
+        of the combined trees """
+
+        tree_path = self.output_dir/'combined_tree.json'
+        path_ls = self.get_trees(targets, store_dir=self.output_dir/'askcos_trees')
+        storage = self.combine_trees(path_ls)
+        save_storage_dict(storage, filename=tree_path)
+
+        print(f'Saving combined retrosynthesis tree to {str(tree_path)}')
+        return tree_path  
+
+    def get_trees(self, smiles_ls: list, store_dir: Path) -> List[Path]: 
+
+        Path(store_dir).mkdir(parents=True, exist_ok=True)
+        
+        for i, smiles in tqdm(enumerate(smiles_ls), total=len(smiles_ls), desc='Performing tree search'):
+            self.params['smiles'] = smiles
+
+            try:
+                resp = requests.post(
+                    url=f"http://{self.host}/api/tree-search/mcts/call-sync-without-token",
+                    json=self.params
+                ).json()
+                paths = resp["result"]["paths"]
+            except ConnectionError:
+                print ("Connection Error from " + self.host)
+        
+            with open(store_dir/f'tree_{i}.json','w') as f: 
+                json.dump({smiles: paths}, f, indent='\t')
+
+        return list(store_dir.glob('tree*.json')) 
+
+    def combine_trees(self, path_ls: List[Path]):
+
+        reactions = set()
+        for p in tqdm(path_ls, desc='Combining ASKCOS outputs'): 
+            with open(p,'r') as f: 
+                entry = json.load(f)
+            for _, paths in entry.items(): 
+                reactions.update([
+                    node['smiles'] 
+                    for p in paths for node in p['nodes']
+                    if '>>' in node['smiles']
+                ])
+        
+        storage = {
+            'Reaction Nodes': [{'smiles': smi} for smi in list(reactions)], 
+            'Compound Nodes': [],
+        }
+
+        return storage    
+
+class AskcosV1APIPlanner(PathFinder): 
+    """ Uses ASKCOS v1 API to get paths to target smiles """
     def __init__(self, 
                  host: str,
                  output_dir: Path,
@@ -55,7 +143,7 @@ class AskcosAPIPlanner(PathFinder):
         }
 
     def get_save_trees(self, targets: List[str]): 
-        """ Uses ASKCOS MCTS tree to generate paths to each smiles in 
+        """ Uses ASKCOS v1 MCTS tree to generate paths to each smiles in 
         targets, combines the trees, and stores the output. returns the path
         of the combined trees """
 

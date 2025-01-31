@@ -159,7 +159,8 @@ def make_dict_jsonable(storage):
     
     for node_list in storage.values(): 
         for entry in node_list: 
-            entry['parents'] = list(entry['parents'])
+            if 'parents' in entry:
+                entry['parents'] = list(entry['parents'])
     
     return storage 
 

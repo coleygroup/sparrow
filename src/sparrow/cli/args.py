@@ -25,7 +25,7 @@ def get_args(args: str = None):
 
 def add_tree_build_args(parser: ArgumentParser): 
     parser.add_argument('--path-finder', default=None, action='store', type=str,
-                        choices=['lookup', 'api'], 
+                        choices=['lookup', 'api', 'apiv1'], 
                         help='type of tree builder to use')
     
     # lookup tree builder 
@@ -45,7 +45,7 @@ def add_tree_build_args(parser: ArgumentParser):
 
 def add_condition_rec_args(parser: ArgumentParser):    
     parser.add_argument('--recommender', default=None, action='store', type=str,
-                        choices=['lookup', 'api'], 
+                        choices=['lookup', 'api', 'apiv1'], 
                         help='type of context recommender to use')
     
     # API Recommender 
@@ -84,7 +84,7 @@ def add_coster_args(parser: ArgumentParser):
 
 def add_scorer_args(parser: ArgumentParser): 
     parser.add_argument('--scorer', default=None, action='store', type=str,
-                        choices=['lookup', 'api'], 
+                        choices=['lookup', 'api', 'apiv1'], 
                         help='type of scorer to use')    
     
     # API Scorer 

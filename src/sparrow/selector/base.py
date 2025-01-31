@@ -8,12 +8,11 @@ import warnings
 import csv 
 import json 
 import numpy as np
-from difflib import SequenceMatcher
 
 from sparrow.scorer import Scorer
 from sparrow.condition_recommender import Recommender
 from sparrow.route_graph import RouteGraph
-from sparrow.coster import Coster, ChemSpaceCoster, LookupCoster
+from sparrow.coster import Coster, LookupCoster
 from sparrow.nodes import ReactionNode
 
 from pulp import LpProblem
@@ -95,7 +94,7 @@ class Selector(ABC):
         self.rxn_classifier_dir = rxn_classifier_dir
 
         self.target_dict = self.graph.set_compound_types(self.target_dict, coster=coster, save_dir=self.dir/'chkpts')
-        
+
         if dont_buy_targets: 
             self.graph.remove_dummies_to(id_list=self.targets)
         
@@ -180,21 +179,16 @@ class Selector(ABC):
         return self.target_dict
 
     def clean_clusters(self, clusters, id_map): 
-        #deleted the word compound from all of these nodes
         clean_clusters = {}
         for c_name, smis in clusters.items(): 
             clean_smis = []
             for old_smi in smis: 
-                node = self.graph.nodes().get(old_smi, None)
-                if node:
-                    clean_smis.append(node.id)
+                if old_smi in self.graph.compound_nodes:
+                    clean_smis.append(self.graph.compound_nodes[old_smi].id)
                 else: 
                     clean_smi = Chem.MolToSmiles(Chem.MolFromSmiles(old_smi))
-                    node = self.graph.nodes().get(clean_smi, None)
-                    if node: 
-                        clean_smis.append(node.id)       
-                    else:       
-                        warnings.warn(f'Target {old_smi} is not in routes and is being removed from clusters')
+                    if clean_smi in self.graph.compound_nodes: 
+                        clean_smis.append(self.graph.compound_nodes[clean_smi].id)       
             
             clean_clusters[c_name] = clean_smis     
 
@@ -226,7 +220,7 @@ class Selector(ABC):
             node.update_condition(condition)
             count += 1
 
-            if count % 100 == 0: 
+            if count % 1000 == 0: 
                 time = datetime.now().strftime("%H-%M-%S")
                 self.graph.to_json(self.dir / 'chkpts' / f'trees_w_conditions_{time}.json')
             
@@ -329,7 +323,8 @@ class Selector(ABC):
                 # recursive search between rxn and compound parent funcs
                 storage[smi] = self.find_mol_parents(store_dict, target, mol_ids, rxn_ids, target=target)
                 storage[smi]['Reward'] = self.target_dict[target]
-                er = self.target_dict[target]*np.prod(np.array([entry['score'] for entry in storage[smi]['Reactions'] if 'score' in entry]))
+                p_success = np.prod(np.array([entry['score'] for entry in storage[smi]['Reactions'] if 'score' in entry]))
+                er = self.target_dict[target]*p_success
                 storage[smi]['Expected Reward'] = er
                 summary['Expected Reward'] += er
 
