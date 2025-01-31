@@ -37,7 +37,9 @@ class ExpectedRewardSelector(Selector):
                  sm_budget: float = None, 
                  dont_buy_targets: bool = False,
                  cycle_constraints: bool = True,
-                 max_seconds: int = None
+                 max_seconds: int = None,
+                 rxn_classes: dict = None,
+                 max_rxn_classes: int = None,
                  ) -> None:
         
         super().__init__(
@@ -49,6 +51,7 @@ class ExpectedRewardSelector(Selector):
             clusters=clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
             dont_buy_targets=dont_buy_targets, N_per_cluster=N_per_cluster,
             cycle_constraints=cycle_constraints, max_seconds=max_seconds,
+            rxn_classes=rxn_classes, max_rxn_classes=max_rxn_classes,
             )
         
     def initialize_problem(self) -> gp.Model:
@@ -124,6 +127,14 @@ class ExpectedRewardSelector(Selector):
             ub=max_er,
             lb=0,
         )
+        
+        self.c = None
+        if self.rxn_class_dict != None:
+            self.c = self.problem.addVars(
+                self.rxn_classes,
+                vtype=GRB.BINARY,
+                name="class", # decision var for including a class
+            )
 
         return 
         
@@ -149,6 +160,12 @@ class ExpectedRewardSelector(Selector):
 
         if self.sm_budget: 
             self.set_budget_constraint()
+
+        if self.rxn_class_dict:
+            self.set_class_constraints()
+
+        if self.max_rxn_classes:
+            self.set_max_classes_constraint()
 
         self.set_nonlinear_constraints()
 
@@ -317,6 +334,27 @@ class ExpectedRewardSelector(Selector):
                 name=f'cluster_represented_{cname}'
             )
     
+    def set_class_constraints(self):
+        
+        for id in tqdm(self.rxn_classes, 'Reaction class constraints'):
+            rxns = self.rxn_class_dict[id]
+            N = len(rxns)
+        
+            self.problem.addConstr(
+                N * self.c[id] >= gp.quicksum(self.r[rxn] for rxn in rxns if rxn in self.r)
+            )
+
+            self.problem.addConstr(
+                self.c[id] <= gp.quicksum(self.r[rxn] for rxn in rxns if rxn in self.r)
+            )
+
+        return 
+
+    def set_max_classes_constraint(self): 
+        self.problem.addConstr(
+            gp.quicksum(self.c) <= self.max_rxn_classes
+        )
+
     def set_objective(self, cost_weight=0): 
 
         print('Setting objective function ...')
@@ -382,11 +420,15 @@ class ExpectedRewardSelector(Selector):
                         'starting material cost ($/g)': self.cost_of_dummy(node), 
                     })
                 else: 
-                    store_dict['Reactions'].append({
+                    new_rxn_entry = {
                         'smiles': node.smiles,
                         'conditions': node.get_condition(1)[0], 
                         'score': node.score,
-                    })
+                    }
+                    if self.rxn_classes: 
+                        new_rxn_entry['class'] = self.id_to_classes[par]
+                    store_dict['Reactions'].append(new_rxn_entry)  
+
                 store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns, target=target)
         return store_dict
 
@@ -426,7 +468,9 @@ class PrunedERSelector(ExpectedRewardSelector):
                  dont_buy_targets: bool = False,
                  prune_distance: int = 10, 
                  cycle_constraints: bool = True,
-                 max_seconds: int = None
+                 max_seconds: int = None,
+                 rxn_classes: dict = None,
+                 max_rxn_classes: int = None,
                  ) -> None:
         
         super().__init__(
@@ -437,10 +481,10 @@ class PrunedERSelector(ExpectedRewardSelector):
             remove_dummy_rxns_first=remove_dummy_rxns_first, N_per_cluster=N_per_cluster,
             clusters=clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
             dont_buy_targets=dont_buy_targets, cycle_constraints=cycle_constraints,
-            max_seconds=max_seconds
+            max_seconds=max_seconds, rxn_classes=rxn_classes, max_rxn_classes=max_rxn_classes,
             )  
 
-        self.prune_distance = prune_distance # TODO: make this an argument   
+        self.prune_distance = prune_distance 
         
     def define_variables(self): 
      
@@ -540,6 +584,13 @@ class PrunedERSelector(ExpectedRewardSelector):
             ub=max_er,
             lb=0,
         )
+
+        if self.rxn_class_dict != None:
+            self.c = self.problem.addVars(
+                self.rxn_classes,
+                vtype=GRB.BINARY,
+                name="class", # decision var for including a class
+            )
         
         return 
 
@@ -701,11 +752,15 @@ class PrunedERSelector(ExpectedRewardSelector):
                         'starting material cost ($/g)': self.cost_of_dummy(node), 
                     })
                 else: 
-                    store_dict['Reactions'].append({
+                    new_rxn_entry = {
                         'smiles': node.smiles,
                         'conditions': node.get_condition(1)[0], 
                         'score': node.score,
-                    })
+                    }
+                    if self.rxn_classes: 
+                        new_rxn_entry['class'] = self.id_to_classes[par]
+                    store_dict['Reactions'].append(new_rxn_entry)  
+
                 store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns, target=target)
         return store_dict
 

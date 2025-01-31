@@ -192,6 +192,8 @@ def build_selector(params, target_dict, storage_path, clusters):
         'N_per_cluster': params['N_per_cluster'],
         'cycle_constraints': not params['acyclic'],
         'max_seconds': params['time_limit']*3600,
+        'rxn_classes': build_rxn_classes(params, graph) if 'rxn_classifier_path' in params else None,
+        'max_rxn_classes': params['max_rxn_classes'] if 'max_rxn_classes' in params else None,
     }
     
     if params['formulation'] == 'expected_reward' and params['prune_distance'] is None:
@@ -208,9 +210,7 @@ def build_selector(params, target_dict, storage_path, clusters):
     elif params['bayes_iters']:
         selector = BOLinearSelector(
             weights=weights,
-            rxn_classes=build_rxn_classes(params, graph) if 'rxn_classifier_path' in params else None,
             rxn_classifier_dir = params['rxn_classifier_path'] if 'rxn_classifier_path' in params else None,
-            max_rxn_classes=params['max_rxn_classes'] if 'max_rxn_classes' in params else None,
             solver=params['solver'],
             bayes_iters=params['bayes_iters'],
             **args
@@ -218,9 +218,7 @@ def build_selector(params, target_dict, storage_path, clusters):
     else: 
         selector = LinearSelector(
             weights=weights,
-            rxn_classes=build_rxn_classes(params, graph) if 'rxn_classifier_path' in params else None,
             rxn_classifier_dir = params['rxn_classifier_path'] if 'rxn_classifier_path' in params else None,
-            max_rxn_classes=params['max_rxn_classes'] if 'max_rxn_classes' in params else None,
             solver=params['solver'],
             **args
         )

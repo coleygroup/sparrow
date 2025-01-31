@@ -359,8 +359,10 @@ class Selector(ABC):
         return summary 
     
     def rxn_class_analysis(self, output_dir):
-        file = open(output_dir/f'routes.json', 'r')
-        data = json.load(file)
+
+        with open(output_dir/f'routes.json', 'r') as f: 
+            data = json.load(f)
+
         dict = {} # target to classes in order
         class_count = {}
         score_dict = {} # general shared reaction count
@@ -370,7 +372,7 @@ class Selector(ABC):
             reactions = data[target]['Reactions']
             dict[target] = []
             for reaction in reactions:
-                if reaction['smiles'][0] != '>':
+                if 'class' in reaction: 
                     rxn_class = reaction['class'][0]
                     dict[target].append(rxn_class)
                     class_count[rxn_class] = class_count.get(rxn_class, 0) + 1
@@ -385,10 +387,7 @@ class Selector(ABC):
                             score_dict[target] += 1
 
         results = {}
-        # results["Reaction Classes used to get Target"] = dict
         results["Frequency of selected reaction classes"] = class_count
-        # results["Overall Reaction Classes shared with all other Targets Count"] = score_dict
-        # results["Max length of overlapping segment"] = {} #TODO
         return results
 
     def post_processing(self, 
@@ -491,6 +490,7 @@ class Selector(ABC):
                     'conditions': node.get_condition(1)[0], 
                     'score': node.score,
                 }
+                print(f'493 --- REACTION CLASSES: {self.rxn_classes}')
                 if self.rxn_classes: 
                     new_rxn_entry['class'] = self.id_to_classes[par]
                 store_dict['Reactions'].append(new_rxn_entry)  
