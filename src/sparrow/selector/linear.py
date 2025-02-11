@@ -257,7 +257,7 @@ class LinearSelector(Selector):
     
     def optimize(self, output_dir=None):
 
-        self.problem.writeMPS(self.dir/'chkpts'/'problem.mps')
+        # self.problem.writeMPS(self.dir/'chkpts'/'problem.mps')
 
         print("Solving optimization problem ...")
         opt_start = time.time()

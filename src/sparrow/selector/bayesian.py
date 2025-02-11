@@ -108,7 +108,7 @@ class BOLinearSelector(LinearSelector):
             [(1e-5,1-1e-5)],      # the bounds on each dimension of x
             acq_func="EI",      # the acquisition function
             n_calls=self.bayes_iters,         # the number of evaluations of f
-            n_initial_points=min(10, math.floor(self.bayes_iters/5)),  # the number of random initialization points
+            n_initial_points=2, # min(10, math.floor(self.bayes_iters/5)),  # the number of random initialization points
             random_state=random_state, # random state for reproducibility 
         )
 

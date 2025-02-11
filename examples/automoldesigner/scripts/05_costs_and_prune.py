@@ -9,7 +9,7 @@ from sparrow.utils.parallel_utils import chunked_parallel
 graph = RouteGraph(node_filename='examples/automoldesigner/chkpts/graph_reactions_only.json')
 
 # prune
-cutoff_distance = 8
+cutoff_distance = 16
 graph.id_nodes() 
 
 nx_graph, id_to_ind = graph.create_nx_graph()

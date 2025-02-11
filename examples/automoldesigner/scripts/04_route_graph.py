@@ -3,6 +3,8 @@ import json
 import pandas as pd
 from rdkit import Chem
 
+thresh = 0 
+
 # load reaction conditions 
 with open('examples/automoldesigner/chkpts/conditions.json', 'r') as f: 
     conditions = json.load(f)
@@ -18,7 +20,7 @@ nodes = {
         "smiles": smi,
         "condition": conditions[smi],
         "score": scores[smi],
-    } for smi in scores if scores[smi]>0.01]
+    } for smi in scores if scores[smi]>thresh]
 }
 
 with open('examples/automoldesigner/chkpts/graph_reactions_only.json', 'w') as f: 
@@ -45,7 +47,7 @@ raw_data["Neutral SMILES"] = neutral_smiles
 raw_data.to_csv("examples/automoldesigner/chkpts/neutral_smiles.csv", index=False)
 
 # eliminate compounds that have no routes 
-all_rxn_products = set([rxn.split('>>')[1] for rxn, s in scores.items() if s>0.01])
+all_rxn_products = set([rxn.split('>>')[1] for rxn, s in scores.items() if s>thresh])
 targets_df = raw_data[raw_data["Neutral SMILES"].isin(all_rxn_products)]
 targets_df = targets_df[['Neutral SMILES', 'Activity probability', 'Closest known molecule']]
 targets_df = targets_df.rename(columns={
