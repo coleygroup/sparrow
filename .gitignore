@@ -21,6 +21,8 @@ sparrow_results/
 *.zip
 *.sdf
 
+# proprietary/from commercial software
+*reaction_classes*
 
 # figures 
 *.pdf 

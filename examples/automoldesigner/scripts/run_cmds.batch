@@ -3,8 +3,8 @@
 #SBATCH -o examples/automoldesigner/logs/%x_%a.out
 #SBATCH -e examples/automoldesigner/logs/%x_%a.err
 
-#SBATCH -c 8 # 48                    # number of cpus
-#SBATCH --array 23-32
+#SBATCH -c 24 # 48                    # number of cpus
+#SBATCH --array 46-47
 #SBATCH -t 1-00:00
 #SBATCH -p xeon-p8    # Partition to submit to
 
