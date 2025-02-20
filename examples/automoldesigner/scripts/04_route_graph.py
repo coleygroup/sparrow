@@ -3,7 +3,7 @@ import json
 import pandas as pd
 from rdkit import Chem
 
-thresh = 0 
+thresh = 0.01 
 
 # load reaction conditions 
 with open('examples/automoldesigner/chkpts/conditions.json', 'r') as f: 

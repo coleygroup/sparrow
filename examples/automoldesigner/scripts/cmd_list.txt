@@ -21,15 +21,25 @@ sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/aut
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_350 --max-rxns 350
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_400 --max-rxns 400
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_div/weight_0 --bayes-iters 20 --max-targets 20
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.05 --diversity-weight 0.05
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.1 --diversity-weight 0.1
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.15 --diversity-weight 0.15
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.2 --diversity-weight 0.2
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.25 --diversity-weight 0.25
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.3 --diversity-weight 0.3
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.35 --diversity-weight 0.35
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.4 --diversity-weight 0.4
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.45 --diversity-weight 0.45
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.5 --diversity-weight 0.5
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.55 --diversity-weight 0.55
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.6 --diversity-weight 0.6
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.65 --diversity-weight 0.65
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.7 --diversity-weight 0.7
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.75 --diversity-weight 0.75
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.8 --diversity-weight 0.8
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.85 --diversity-weight 0.85
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.9 --diversity-weight 0.9
+sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.95 --diversity-weight 0.95
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_1.0 --diversity-weight 1.0
 sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_1 --max-rxn-classes 1
 sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_2 --max-rxn-classes 2
@@ -39,11 +49,5 @@ sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir result
 sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_6 --max-rxn-classes 6
 sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_7 --max-rxn-classes 7
 sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_8 --max-rxn-classes 8
-sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_9 --max-rxn-classes 9
-sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_10 --max-rxn-classes 10
-sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0_classes1_tars8_newclusters0.85 --diversity-weight 0 --max-rxn-classes 1 --max-targets 8 --cluster similarity --cluster-cutoff 0.85
-sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0.1_classes1_tars8_newclusters0.85 --diversity-weight 0.1 --max-rxn-classes 1 --max-targets 8 --cluster similarity --cluster-cutoff 0.85 
-sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0.5_classes1_tars8_newclusters0.85 --diversity-weight 0.5 --max-rxn-classes 1 --max-targets 8 --cluster similarity --cluster-cutoff 0.85 
-sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0_classes1_tars8_newclusters0.8 --diversity-weight 0 --max-rxn-classes 1 --max-targets 8 --cluster similarity --cluster-cutoff 0.8
-sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0.1_classes1_tars8_newclusters0.8 --diversity-weight 0.1 --max-rxn-classes 1 --max-targets 8 --cluster similarity --cluster-cutoff 0.8 
-sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0.5_classes1_tars8_newclusters0.8 --diversity-weight 0.5 --max-rxn-classes 1 --max-targets 8 --cluster similarity --cluster-cutoff 0.8 
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0_classes1_tars8_newclusters0.8 --diversity-weight 0 --max-rxn-classes 1 --cluster similarity --cluster-cutoff 0.8
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0.1_classes1_tars8_newclusters0.8 --diversity-weight 0.1 --max-rxn-classes 1 --cluster similarity --cluster-cutoff 0.8 
