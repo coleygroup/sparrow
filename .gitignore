@@ -28,7 +28,7 @@ sparrow_results/
 *.pdf 
 *.png 
 notebooks/nonlinear
-
+examples/automoldesigner/figures/figs
 
 # debugging 
 debug/
@@ -45,3 +45,4 @@ UNKNOWN**
 *.log
 .idea/
 tmp/
+*/.ipynb_checkpoints*
