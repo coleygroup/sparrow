@@ -7,7 +7,7 @@ This repository performs the following steps:
 1. Performs a tree search to identify synthetic routes for a set of provided candidate molecules using ASKCOS 
 2. Combines synthetic routes for all molecules into one synthesis network (defined as a **RouteGraph** object).
 3. Calculates confidence scores for all reactions in the network using the ASKCOS forward predictor. These scores indicate the confidence of the model in the success of the reaction and serve as a proxy to estimate the likelihood that the reaction will succeed. 
-4. Defines optimization problem variables using PuLP
+4. Defines optimization problem variables using PuLP or Gurobi
 5. Sets relevant constraints on the optimization variables and sets the objective function. 
 6. Solves optimization problem.  
 7. Outputs the resulting selected routes and target molecules. 
@@ -21,13 +21,15 @@ This repository performs the following steps:
 - [Future Goals](#future-goals)
 
 ## Requirements 
-To use ASKCOS to perform retrosynthesis searches, propose conditions, and score reactions, an API address to a deployed version of ASKCOS is required. Directions to deploy ASKCOS can be found [here](https://github.com/ASKCOS/ASKCOS). A ChemSpace API key is required use ChemSpace to assign compound buyability and cost. Refer to [these directions](https://api.chem-space.com/docs/#:~:text=Get%20API%20Key&text=The%20API%20key%20is%20unique,%40chem%2Dspace.com.) to attain the key. The key should be entered into the [keys.py](keys.py) file, and the path to this file is required to run SPARROW with ChemSpace. 
+To use ASKCOS to perform retrosynthesis searches, propose conditions, and score reactions, an API address to a deployed version of ASKCOS is required. Directions to deploy ASKCOS can be found [here](https://github.com/ASKCOS/ASKCOS). A ChemSpace API key is required to use ChemSpace to assign compound buyability and cost. Refer to [these directions](https://api.chem-space.com/docs/#:~:text=Get%20API%20Key&text=The%20API%20key%20is%20unique,%40chem%2Dspace.com.) to attain the key. The key should be entered into the [keys.py](keys.py) file, and the path to this file is required to run SPARROW with ChemSpace. If you are using Gurobi (not a requirement), SPARROW requires a Gurobi license. If you are using NameRxn (not a requirement), SPARROW requires access to a NameRxn executable. 
+
+SPARROW accommodates multiple options to bypass these dependences. Reactions generated and scores through other methods can be compiled into a json format (see [json template](examples/templates/tree.json)). Compound buyability and costs can be provided in the same json file or in a separate inventory csv file (see [inventory template](examples/templates/inventory.json)). Reaction classes can be specified with other methods and compiled into a csv file (see [reaction class template](examples/templates/reaction_classes.csv)). 
 
 Dependencies: 
 * Python >= 3.7
 * Remaining requirements in [requirements.txt](requirements.txt)
 
-SPARROW has been tested on Python version 3.7 and 3.8 and on Linux and Windows machines. 
+SPARROW has most recently been tested on Python version 3.12 Linux machines. 
 
 ## Installation
 
@@ -89,7 +91,7 @@ Alternatively, you may run the following command:
 `sparrow --config <path/to/config>`
 which directs SPARROW to a configuration file with all arguments. Some example config files are in the [examples folder](examples). For retrosynthesis, condition recommendation, and reaction scoring, `api` assumes an ASKCOSv2 deployment, while `apiv1` assumes an ASKCOSv1 deployment. 
 
-If more than one run is performed on the same set of compounds, and only the weighting factors are changed, the route graph information from the first run can be easily incorporated into following runs. By providing the path to the `trees_w_info.json` file from the initial run as the argument for `--graph`, all potential paths, compound costs, and reaction scores are incorporated. In these cases, entries for `--path-finder`, `--recommender`, `--scorer`, and `--coster` are not required. 
+If more than one run is performed on the same set of compounds, and only the weighting factors are changed, the route graph information from the first run can be easily incorporated into following runs. By providing the path to the `trees_w_info.json` (see [example template](examples/templates/tree.json)) file from the initial run as the argument for `--graph`, all potential paths, compound costs, and reaction scores are incorporated. In these cases, entries for `--path-finder`, `--recommender`, `--scorer`, and `--coster` are not required. 
 
 #### Settings 
 All arguments and descriptions can be viewed by running `sparrow --help`. Below we include the arguments we expect to be most relevant to users. 
@@ -98,37 +100,34 @@ All arguments and descriptions can be viewed by running `sparrow --help`. Below 
  - `--target-csv`: the filepath of the target csv file
  - `--output-dir`: where to save checkpoints files and paths generated by SPARROW
  - `--graph`: path to route graph json file. If provided, no route planning is performed
- - `--reward-weight` <sup>L</sup>: weighting factor for reward objective 
- - `--start-cost-weight` <sup>L</sup>: weighting factor for starting material cost objective
- - `--reaction-weight` <sup>L</sup>: weighting factor for reaction objective
+ - `--reward-weight` (default: `1`)<sup>L</sup>: weighting factor for reward objective 
+ - `--start-cost-weight` (default: `1`)<sup>L</sup>: weighting factor for starting material cost objective
+ - `--reaction-weight` (default: `1`)<sup>L</sup>: weighting factor for reaction objective
  - `--max-rxns`: maximum number of reaction steps to select
+ - `--max-targets`: maximum number of candidates (i.e. targets) to select
  - `--starting-material-budget`: maximum starting material cost 
  - `--cluster {custom, similarity}` (default: `None`): How to define clusters if desired. If `custom`, they must be defined in the `target-csv` file. If `similarity`, they are automatically defined using Tanimoto similarity-based clusters with a maximum cutoff of `--cluster-cutoff` (default: `0.7`).
  - `--N-per-cluster`: Constrains that all clusters are represented by at least `N` compounds 
  - `--diversity-weight` (default: `0`) <sup>L</sup>: A weighting factor that encourages selection of many similarity-based clusters. 
- - `--rxn-classifier-path`: Path to a csv file that maps reaction smiles to classes or a HazELNut directory to use NameRxn for reaction classification
+ - `--rxn-classifier-path`: Path to a csv file that maps reaction smiles to classes or a HazELNut directory to use NameRxn for reaction classification (see [reaction class template](examples/templates/reaction_classes.csv))
  - `--max-rxn-classes`: Constrains the number of distinct reaction classes present in SPARROW's selected synthetic routes
  - `--rxn-class-weight` (default: `0`) <sup>L</sup>: A weighting factor that encourages the selection of few distinct reaction classes
  - `--bayes-iters`<sup>L</sup>: Performs linear optimization for specified number of iterations to identify reward and reaction weighting factors that maximize expected reward. 
- - `--path-finder {lookup,api,apiv1}`: type of tree builder to use
- - `--tree-lookup-dir`: path of lookup json file with combined retrosynthesis tree
+ - `--prune-distance`<sup>E</sup>: distance from targets to prune decision variables for nonlinear optimization 
+ - `--path-finder {api,apiv1,lookup}`: type of tree builder to use
  - `--time-per-target`: expansion time in seconds for each target
- - `--max-ppg`: maximum price per gram in dollars for starting materials for ASKCOS MCTS tree search
- - `--max-branching`: maximum branch factor for ASKCOS MCTS tree search
  - `--tree-host`: host address for tree builder, if using ASKCOS API path finder
- - `--recommender {lookup,api,apiv1}`: type of context recommender to use
+ - `--recommender {api,apiv1,lookup}`: type of context recommender to use
  - `--context-host`: host address for context recommender, if using API recommender
- - `--context-lookup`: path of lookup csv file for lookup context recommender
- - `--scorer {lookup,api,apiv1}`: type of scorer to use
+ - `--scorer {api,apiv1,lookup}`: type of scorer to use
  - `--scorer-host`: host address for reaction scorer, if using API recommender
- - `--scorer-lookup`: path of reaction scorer csv file for lookup reaction scorer (not implemented yet)
  - `--coster {lookup, naive, chemspace}`: type of compound coster to use
  - `--key-path` path that includes the file keys.py with chemspace api key
- - `--inventory`: path to CSV file with SMILES strings and costs, if using lookup coster
+ - `--inventory`: path to CSV file with SMILES strings and costs, if using lookup coster (see [inventory template](examples/templates/inventory.json))
  - `--dont-buy-targets`: ensures that solution does not propose directly buying any target
- - `--solver {pulp, gurobi}` (default: `pulp`) <sup>L</sup>: the solver to use. The expected reward formulation requires and defaults to Gurobi. 
 
-<sup>L</sup> only used in the linear formulation 
+<sup>L</sup> only used in linear formulation 
+<sup>E</sup> only used in expected reward formulation 
 
 **A note about required arguments:** The only required argument in SPARROW in `--target-csv`. However, providing this alone will not be sufficient to run SPARROW. In addition to candidates and rewards, SPARROW's optimization requires a set of potential reactions and scores for each reaction. If a provided `--graph` argument corresponds to a file that includes both potential reactions as a retrosynthesis tree _and_ reaction scores, that is sufficient to run SPARROW. However, if the file only contains a retrosynthesis tree, without reaction scores, SPARROW will require a `--scorer` argument. Likewise, if no `--graph` is provided, a valid entry for `--path-finder` (and any corresponding arguments) are required. We are currently working on expanding the documentation for SPARROW and improving its usability.
 
