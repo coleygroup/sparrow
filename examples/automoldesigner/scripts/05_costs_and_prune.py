@@ -42,7 +42,7 @@ for nid in remove_ids:
 
 # set buyability 
 coster = LookupCoster(
-    lookup_file='examples/automoldesigner/enamine_per_g_122024.csv'
+    lookup_file='examples/automoldesigner/data/enamine_per_g_122024.csv'
 )
 graph.set_buyable_compounds_and_costs(
     coster=coster,
