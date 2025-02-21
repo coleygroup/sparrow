@@ -1,26 +1,30 @@
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_10 --max-rxns 10
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_30 --max-rxns 30
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_50 --max-rxns 50
-sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_10 --max-rxns 10
-sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_30 --max-rxns 30
-sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_50 --max-rxns 50
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_75 --max-rxns 75
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_100 --max-rxns 100
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_150 --max-rxns 150
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_200 --max-rxns 200
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_250 --max-rxns 250
 sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_300 --max-rxns 300
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_350 --max-rxns 350
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_400 --max-rxns 400
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_450 --max-rxns 450
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_500 --max-rxns 500
+sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_10 --max-rxns 10
+sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_30 --max-rxns 30
+sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_50 --max-rxns 50
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_75 --max-rxns 75
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_100 --max-rxns 100
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_150 --max-rxns 150
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_200 --max-rxns 200
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_250 --max-rxns 250
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_300 --max-rxns 300
-sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_350 --max-rxns 350
-sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_rxnconstr/bo_400 --max-rxns 400
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_350 --max-rxns 350
 sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_400 --max-rxns 400
-sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_div/weight_0 --bayes-iters 20 --max-targets 20
+sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_450 --max-rxns 450
+sparrow --config examples/automoldesigner/config_nonlinear.ini --output-dir results/automoldesigner_rxnconstr/er_500 --max-rxns 500
+sparrow --config examples/automoldesigner/config_bo.ini --output-dir results/automoldesigner_div/weight_0 --bayes-iters 20 --max-targets 50
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.05 --diversity-weight 0.05
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.1 --diversity-weight 0.1
 sparrow --config examples/automoldesigner/config_diversity.ini --output-dir results/automoldesigner_div/weight_0.15 --diversity-weight 0.15
@@ -49,5 +53,5 @@ sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir result
 sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_6 --max-rxn-classes 6
 sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_7 --max-rxn-classes 7
 sparrow --config examples/automoldesigner/config_namerxn.ini --output-dir results/automoldesigner_namerxn/classes_8 --max-rxn-classes 8
-sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0_classes1_tars8_newclusters0.8 --diversity-weight 0 --max-rxn-classes 1 --cluster similarity --cluster-cutoff 0.8
-sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0.1_classes1_tars8_newclusters0.8 --diversity-weight 0.1 --max-rxn-classes 1 --cluster similarity --cluster-cutoff 0.8 
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0_classes1 --diversity-weight 0 --max-rxn-classes 1 --cluster similarity --cluster-cutoff 0.8
+sparrow --config examples/automoldesigner/config_namerxn_diversity.ini --output-dir results/automoldesigner_namerxn_diversity/div0.1_classes1 --diversity-weight 0.1 --max-rxn-classes 1 --cluster similarity --cluster-cutoff 0.8 
