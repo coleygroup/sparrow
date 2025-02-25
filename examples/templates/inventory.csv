@@ -1,0 +1,5 @@
+SMILES,Cost
+O=C(O)[C@@H]1C[C@H](O)CN1,1
+C=CCn1c(S)nnc1-c1cc(-c2ccc(C)cc2)nc2ccccc12,100
+CCCCn1c(S)nc2cc(C(=O)OC)ccc2c1=O,10
+COc1cc(C=O)ccc1OCC(=O)c1ccc(Cl)c(Cl)c1,1

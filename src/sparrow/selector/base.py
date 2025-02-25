@@ -81,14 +81,14 @@ class Selector(ABC):
         self.targets = list(self.target_dict.keys())
 
         if clusters: 
-            self.clusters, self.id_to_clusters = self.clean_clusters(clusters, id_map="clusters") 
+            self.clusters, self.id_to_clusters = self.clean_clusters(clusters) 
         else: 
             self.clusters = self.id_to_clusters = None
         self.N_per_cluster = N_per_cluster
 
         if rxn_classes:
             self.rxn_classes = rxn_classes.keys()
-            self.rxn_class_dict, self.id_to_classes = self.clean_clusters(rxn_classes, id_map="classes")
+            self.rxn_class_dict, self.id_to_classes = self.clean_rxn_classes(rxn_classes)
         else:
             self.rxn_classes = self.rxn_class_dict = None
         self.rxn_classifier_dir = rxn_classifier_dir
@@ -127,7 +127,7 @@ class Selector(ABC):
                 children=[start_node.smiles], 
                 dummy=True, 
                 penalty=0, 
-                score = 10**6,
+                score = 1,
             )  
 
     def clean_target_dict(self, target_dict: Dict[str, float]) -> Dict[str, float]:
@@ -177,8 +177,32 @@ class Selector(ABC):
                 writer.writerows(save_list)
 
         return self.target_dict
+    
+    def clean_rxn_classes(self, classes): 
+        clean_clusters = {}
+        for c_name, rxnsmis in classes.items(): 
+            clean_smis = []
+            for old_smi in rxnsmis: 
+                if old_smi in self.graph.reaction_nodes:
+                    clean_smis.append(self.graph.reaction_nodes[old_smi].id)
+                else: 
+                    reacs, prods = old_smi.split('>>')
+                    clean_smi = f'{Chem.MolToSmiles(Chem.MolFromSmiles(reacs))}>>{Chem.MolToSmiles(Chem.MolFromSmiles(prods))}'
+                    if clean_smi in self.graph.reaction_nodes: 
+                        clean_smis.append(self.graph.reaction_nodes[clean_smi].id)       
+            
+            clean_clusters[c_name] = clean_smis  
 
-    def clean_clusters(self, clusters, id_map): 
+        id_to_classes = {}
+        for class_name, rxn_list in clean_clusters.items():
+            for rxn in rxn_list:
+                if rxn not in id_to_classes.keys():
+                    id_to_classes[rxn] = [class_name]
+                else:
+                    id_to_classes[rxn].append(class_name)
+        return clean_clusters, id_to_classes
+        
+    def clean_clusters(self, clusters): 
         clean_clusters = {}
         for c_name, smis in clusters.items(): 
             clean_smis = []
@@ -192,22 +216,12 @@ class Selector(ABC):
             
             clean_clusters[c_name] = clean_smis     
 
-        if id_map == "clusters":
-            id_to_clusters = {tid: [] for tid in self.targets}
-            for c_name, tids in clean_clusters.items():
-                for tid in tids: 
-                    id_to_clusters[tid].append(c_name)
+        id_to_clusters = {tid: [] for tid in self.targets}
+        for c_name, tids in clean_clusters.items():
+            for tid in tids: 
+                id_to_clusters[tid].append(c_name)
 
-            return clean_clusters, id_to_clusters
-        else:
-            id_to_classes = {}
-            for class_name, rxn_list in clean_clusters.items():
-                for rxn in rxn_list:
-                    if rxn not in id_to_classes.keys():
-                        id_to_classes[rxn] = [class_name]
-                    else:
-                        id_to_classes[rxn].append(class_name)
-            return clean_clusters, id_to_classes
+        return clean_clusters, id_to_clusters
 
     def get_recommendations(self): 
         """ Completes condition recommendation for any reaction node that does not have conditions """
@@ -345,8 +359,10 @@ class Selector(ABC):
         return summary 
     
     def rxn_class_analysis(self, output_dir):
-        file = open(output_dir/f'routes.json', 'r')
-        data = json.load(file)
+
+        with open(output_dir/f'routes.json', 'r') as f: 
+            data = json.load(f)
+
         dict = {} # target to classes in order
         class_count = {}
         score_dict = {} # general shared reaction count
@@ -356,7 +372,7 @@ class Selector(ABC):
             reactions = data[target]['Reactions']
             dict[target] = []
             for reaction in reactions:
-                if reaction['smiles'][0] != '>':
+                if 'class' in reaction: 
                     rxn_class = reaction['class'][0]
                     dict[target].append(rxn_class)
                     class_count[rxn_class] = class_count.get(rxn_class, 0) + 1
@@ -371,10 +387,7 @@ class Selector(ABC):
                             score_dict[target] += 1
 
         results = {}
-        # results["Reaction Classes used to get Target"] = dict
         results["Frequency of selected reaction classes"] = class_count
-        # results["Overall Reaction Classes shared with all other Targets Count"] = score_dict
-        # results["Max length of overlapping segment"] = {} #TODO
         return results
 
     def post_processing(self, 

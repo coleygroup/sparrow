@@ -37,7 +37,9 @@ class ExpectedRewardSelector(Selector):
                  sm_budget: float = None, 
                  dont_buy_targets: bool = False,
                  cycle_constraints: bool = True,
-                 max_seconds: int = None
+                 max_seconds: int = None,
+                 rxn_classes: dict = None,
+                 max_rxn_classes: int = None,
                  ) -> None:
         
         super().__init__(
@@ -49,6 +51,7 @@ class ExpectedRewardSelector(Selector):
             clusters=clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
             dont_buy_targets=dont_buy_targets, N_per_cluster=N_per_cluster,
             cycle_constraints=cycle_constraints, max_seconds=max_seconds,
+            rxn_classes=rxn_classes, max_rxn_classes=max_rxn_classes,
             )
         
     def initialize_problem(self) -> gp.Model:
@@ -124,6 +127,14 @@ class ExpectedRewardSelector(Selector):
             ub=max_er,
             lb=0,
         )
+        
+        self.c = None
+        if self.rxn_class_dict != None:
+            self.c = self.problem.addVars(
+                self.rxn_classes,
+                vtype=GRB.BINARY,
+                name="class", # decision var for including a class
+            )
 
         return 
         
@@ -149,6 +160,12 @@ class ExpectedRewardSelector(Selector):
 
         if self.sm_budget: 
             self.set_budget_constraint()
+
+        if self.rxn_class_dict:
+            self.set_class_constraints()
+
+        if self.max_rxn_classes:
+            self.set_max_classes_constraint()
 
         self.set_nonlinear_constraints()
 
@@ -317,6 +334,27 @@ class ExpectedRewardSelector(Selector):
                 name=f'cluster_represented_{cname}'
             )
     
+    def set_class_constraints(self):
+        
+        for id in tqdm(self.rxn_classes, 'Reaction class constraints'):
+            rxns = self.rxn_class_dict[id]
+            N = len(rxns)
+        
+            self.problem.addConstr(
+                N * self.c[id] >= gp.quicksum(self.r[rxn] for rxn in rxns if rxn in self.r)
+            )
+
+            self.problem.addConstr(
+                self.c[id] <= gp.quicksum(self.r[rxn] for rxn in rxns if rxn in self.r)
+            )
+
+        return 
+
+    def set_max_classes_constraint(self): 
+        self.problem.addConstr(
+            gp.quicksum(self.c) <= self.max_rxn_classes
+        )
+
     def set_objective(self, cost_weight=0): 
 
         print('Setting objective function ...')
@@ -335,10 +373,10 @@ class ExpectedRewardSelector(Selector):
         if not savedir: 
             savedir = self.dir 
 
-        print("Solving optimization problem...")
+        print("Solving optimization problem ...")
         opt_start = time.time()
 
-        self.problem.params.NonConvex = 2
+        self.problem.Params.NonConvex = 2
         self.problem.Params.TIME_LIMIT = self.max_seconds
         self.problem.optimize()
 
@@ -382,11 +420,15 @@ class ExpectedRewardSelector(Selector):
                         'starting material cost ($/g)': self.cost_of_dummy(node), 
                     })
                 else: 
-                    store_dict['Reactions'].append({
+                    new_rxn_entry = {
                         'smiles': node.smiles,
                         'conditions': node.get_condition(1)[0], 
                         'score': node.score,
-                    })
+                    }
+                    if self.rxn_classes: 
+                        new_rxn_entry['class'] = self.id_to_classes[par]
+                    store_dict['Reactions'].append(new_rxn_entry)  
+
                 store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns, target=target)
         return store_dict
 
@@ -425,6 +467,10 @@ class PrunedERSelector(ExpectedRewardSelector):
                  sm_budget: float = None, 
                  dont_buy_targets: bool = False,
                  prune_distance: int = 10, 
+                 cycle_constraints: bool = True,
+                 max_seconds: int = None,
+                 rxn_classes: dict = None,
+                 max_rxn_classes: int = None,
                  ) -> None:
         
         super().__init__(
@@ -434,10 +480,11 @@ class PrunedERSelector(ExpectedRewardSelector):
             coster=coster, cost_per_rxn=cost_per_rxn, output_dir=output_dir, 
             remove_dummy_rxns_first=remove_dummy_rxns_first, N_per_cluster=N_per_cluster,
             clusters=clusters, max_rxns=max_rxns, sm_budget=sm_budget, 
-            dont_buy_targets=dont_buy_targets
+            dont_buy_targets=dont_buy_targets, cycle_constraints=cycle_constraints,
+            max_seconds=max_seconds, rxn_classes=rxn_classes, max_rxn_classes=max_rxn_classes,
             )  
 
-        self.prune_distance = prune_distance # TODO: make this an argument   
+        self.prune_distance = prune_distance 
         
     def define_variables(self): 
      
@@ -449,7 +496,10 @@ class PrunedERSelector(ExpectedRewardSelector):
         # only define this variable for reactions that are within some directed distance of targets
         self.u = {}
         self.cpdfor = {}
-                
+
+        self.u_by_targets = {t_id: [] for t_id in self.targets}
+        self.cpdfor_by_targets = {t_id: [] for t_id in self.targets}
+
         for t_id in tqdm(self.targets, desc='"for" constraints'): 
             connected_nodes = self.graph.get_connected_nodes(t_id, max_distance=self.prune_distance)
             for n in connected_nodes: 
@@ -461,6 +511,8 @@ class PrunedERSelector(ExpectedRewardSelector):
                         vtype=GRB.BINARY,
                         name=f'cpdfor[{n_id}][{t_id}]'
                     )
+                    if n_id not in self.cpdfor_by_targets: 
+                        self.cpdfor_by_targets[t_id].append(n_id)
                 elif n_id.startswith('R'): 
                     if n_id not in self.u: 
                         self.u[n_id] = {}
@@ -468,7 +520,9 @@ class PrunedERSelector(ExpectedRewardSelector):
                         vtype=GRB.BINARY,
                         name=f'rxnfor[{n_id}][{t_id}]'
                     )
-        
+                    if n_id not in self.u_by_targets[t_id]:
+                        self.u_by_targets[t_id].append(n_id)
+            
         # whether rxn is used, only worth defining if in self.u
         self.r = self.problem.addVars(
             self.u.keys(),
@@ -484,20 +538,25 @@ class PrunedERSelector(ExpectedRewardSelector):
         )
 
         # additional variables for nonlinearity 
-        sum_log_scores = np.log([node.score if node.score>0 else 1e-10 for node in self.graph.non_dummy_nodes()]).sum()
+        usum_lower_bounds = [
+            sum(sorted(np.log([
+                self.graph.node_from_id(r_id).score for r_id in self.u_by_targets[t_id]
+            ]))[:self.max_rxns])
+            for t_id in self.targets
+        ]
         self.usum = self.problem.addVars(
             self.targets, 
             vtype=GRB.CONTINUOUS,  
             name="usum",
             ub=0,
-            lb=sum_log_scores,
+            lb=usum_lower_bounds,
         )
         self.expusum = self.problem.addVars(
             self.targets,
             vtype=GRB.CONTINUOUS,
             name="expusum",
             ub=1,
-            lb=0
+            lb=0,
         )
         self.probsuccess = self.problem.addVars(
             self.targets, 
@@ -506,15 +565,18 @@ class PrunedERSelector(ExpectedRewardSelector):
             ub=1,
             lb=0,
         )
-        max_n_rxns = len(self.graph.non_dummy_nodes())
-        max_sm_costs = np.sum([self.cost_of_dummy(dummy) for dummy in self.graph.dummy_nodes_only()])
-        max_costs = max_n_rxns*self.cost_per_rxn + max_sm_costs
-        self.allcosts = self.problem.addVar(
-            name="allcosts",
-            vtype=GRB.CONTINUOUS,
-            ub=max_costs,
-            lb=0,
-        )
+
+        if self.sm_budget: 
+            max_n_rxns = len(self.graph.non_dummy_nodes())
+            max_sm_costs = np.sum([self.cost_of_dummy(dummy) for dummy in self.graph.dummy_nodes_only()])
+            max_costs = max_n_rxns*self.cost_per_rxn + max_sm_costs
+            self.allcosts = self.problem.addVar(
+                name="allcosts",
+                vtype=GRB.CONTINUOUS,
+                ub=max_costs,
+                lb=0,
+            )
+
         max_er = sum(self.target_dict.values())
         self.sumer = self.problem.addVar(
             name="sumer",
@@ -522,6 +584,13 @@ class PrunedERSelector(ExpectedRewardSelector):
             ub=max_er,
             lb=0,
         )
+
+        if self.rxn_class_dict != None:
+            self.c = self.problem.addVars(
+                self.rxn_classes,
+                vtype=GRB.BINARY,
+                name="class", # decision var for including a class
+            )
         
         return 
 
@@ -546,7 +615,7 @@ class PrunedERSelector(ExpectedRewardSelector):
                     )
                 
                 # if a reaction is selected, every parent (reactant) must also be selected 
-                if node.id in self.u and par_id in self.cpdfor:
+                if rid in self.u and par_id in self.cpdfor:
                     ts = self.cpdfor[par_id].keys() & self.u[node.id].keys()
                     self.problem.addConstrs(
                         self.cpdfor[par_id][t] >= self.u[node.id][t] for t in ts
@@ -562,7 +631,7 @@ class PrunedERSelector(ExpectedRewardSelector):
             if node.id in self.u: 
                 
                 self.problem.addConstr(
-                    len(self.targets)*self.r[node.id] >= gp.quicksum(self.u[node.id].values()),
+                    len(self.u[node.id])*self.r[node.id] >= gp.quicksum(self.u[node.id].values()),
                     name=f'rxnusedConstr_{node.id}'
                 )
 
@@ -571,14 +640,15 @@ class PrunedERSelector(ExpectedRewardSelector):
                     name=f'rxnusedConstr2_{node.id}'
                 )
 
-        
-        for t in self.targets: 
-            rs = [r for r in self.rxn_ids if r in self.u and t in self.u[r]]
+        for t in tqdm(self.targets, desc='Reaction constraints for targets'): 
+            # rs = [r for r in self.rxn_ids if r in self.u and t in self.u[r]]
+            rs = self.u_by_targets[t]
             self.problem.addConstr(
                 gp.quicksum(self.u[r][t] for r in rs) <= len(rs)*self.m[t]
             )
 
-            cs = [c for c in self.mol_ids if c in self.cpdfor and t in self.cpdfor[c]]
+            # cs = [c for c in self.mol_ids if c in self.cpdfor and t in self.cpdfor[c]]
+            cs = self.cpdfor_by_targets[t]
             self.problem.addConstr(
                 gp.quicksum(self.cpdfor[c][t] for c in cs) <= len(cs)*self.m[t]
             )
@@ -610,7 +680,7 @@ class PrunedERSelector(ExpectedRewardSelector):
 
                 # if a compound is used for a target, it is also used in general 
                 self.problem.addConstr(
-                    len(self.targets)*self.m[cid] >= gp.quicksum(self.cpdfor[cid].values()),
+                    len(self.cpdfor[cid])*self.m[cid] >= gp.quicksum(self.cpdfor[cid].values()),
                     name=f'molusedConstr_{cid}'
                 )     
 
@@ -630,12 +700,13 @@ class PrunedERSelector(ExpectedRewardSelector):
     
     def set_nonlinear_constraints(self):
 
-        log_scores = np.log([node.score if node.score>0 else 1e-10 for node in self.graph.non_dummy_nodes()])
-        log_scores = {node.id: score for node, score in zip(self.graph.non_dummy_nodes(), log_scores)}
-        
-        for t in self.targets: 
-            nids = [node.id for node in self.graph.non_dummy_nodes()
-                    if node.id in self.u and t in self.u[node.id]]
+        log_scores = np.log([max(node.score, 1e-3) for node in self.graph.non_dummy_nodes()])
+        log_scores = {node.id: score for node, score in zip(self.graph.reaction_nodes_only(), log_scores)}
+
+        for t in tqdm(self.targets, 'Nonlinear constraints'): 
+            nids = [nid for nid in self.u_by_targets[t] if nid in log_scores]
+                    #[node.id for node in self.graph.non_dummy_nodes()
+                   # if node.id in self.u and t in self.u[node.id]]
             self.problem.addConstr(
                 self.usum[t] == gp.quicksum(
                     self.u[nid][t]*log_scores[nid] 
@@ -643,14 +714,14 @@ class PrunedERSelector(ExpectedRewardSelector):
                 ),
                 name=f'usumConstr_{t}',
             )
-            self.problem.addGenConstrExp(self.usum[t], self.expusum[t], name=f'expusumConstr_{t}',options="FuncPieces=-2 FuncPieceError=0.00001")
+            self.problem.addGenConstrExp(self.usum[t], self.expusum[t], name=f'expusumConstr_{t}')
             self.problem.addQConstr(
-                self.probsuccess[t], GRB.LESS_EQUAL, self.expusum[t]*self.cpdfor[t][t], 
+                self.probsuccess[t], GRB.EQUAL, self.expusum[t]*self.cpdfor[t][t], 
                 name=f'probsuccessConstr_{t}',
             )
         
         self.problem.addQConstr(
-            self.sumer, GRB.LESS_EQUAL, gp.quicksum(
+            self.sumer, GRB.EQUAL, gp.quicksum(
                 self.target_dict[t]*self.probsuccess[t] for t in self.targets
             ),
             name='sumER_constr',
@@ -681,11 +752,15 @@ class PrunedERSelector(ExpectedRewardSelector):
                         'starting material cost ($/g)': self.cost_of_dummy(node), 
                     })
                 else: 
-                    store_dict['Reactions'].append({
+                    new_rxn_entry = {
                         'smiles': node.smiles,
                         'conditions': node.get_condition(1)[0], 
                         'score': node.score,
-                    })
+                    }
+                    if self.rxn_classes: 
+                        new_rxn_entry['class'] = self.id_to_classes[par]
+                    store_dict['Reactions'].append(new_rxn_entry)  
+
                 store_dict = self.find_rxn_parents(store_dict, par, selected_mols, selected_rxns, target=target)
         return store_dict
 

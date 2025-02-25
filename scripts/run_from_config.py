@@ -1,6 +1,6 @@
 from sparrow.cli.run import * 
 
-path_to_config = '/home/jfromer/sparrow/examples/reaction_classification/config_opt.ini'
+path_to_config = ''
 
 
 def run_from_config(path_to_config):
@@ -28,7 +28,7 @@ def run_from_config(path_to_config):
     )
     storage_path = get_path_storage(params, targets)
     selector = build_selector(params, target_dict, storage_path, clusters)
-    selector = optimize(selector, params)
+    selector.formulate_and_optimize(extract_routes=not params['no_routes'])
 
 if __name__=='__main__':
     run_from_config(path_to_config)

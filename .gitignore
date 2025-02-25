@@ -10,6 +10,7 @@ build
 # results 
 results/
 sparrow_results/
+*logs*
 
 # large files 
 *.json
@@ -20,12 +21,14 @@ sparrow_results/
 *.zip
 *.sdf
 
+# proprietary/from commercial software
+*reaction_classes*
 
 # figures 
 *.pdf 
 *.png 
 notebooks/nonlinear
-
+examples/automoldesigner/figures/figs
 
 # debugging 
 debug/
@@ -42,3 +45,4 @@ UNKNOWN**
 *.log
 .idea/
 tmp/
+*/.ipynb_checkpoints*

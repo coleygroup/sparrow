@@ -158,25 +158,27 @@ class RouteGraph:
 
         return 
         
-    def remove_rxn_node(self, smi) -> None: 
+    def remove_rxn_node(self, smi, remove_neighbors=True) -> None: 
         self.reaction_nodes.pop(smi)
 
-        for node in self.compound_nodes_only(): 
-            if smi in node.parents: 
-                node.parents.pop(smi)
-            if smi in node.children: 
-                node.parents.pop(smi)
+        if remove_neighbors: 
+            for node in self.compound_nodes_only(): 
+                if smi in node.parents: 
+                    node.parents.pop(smi)
+                if smi in node.children: 
+                    node.parents.pop(smi)
 
         return 
     
-    def remove_compound_node(self, smi) -> None: 
+    def remove_compound_node(self, smi, remove_neighbors=True) -> None: 
         self.compound_nodes.pop(smi)
 
-        for node in self.reaction_nodes_only(): 
-            if smi in node.parents: 
-                node.parents.pop(smi)
-            if smi in node.children: 
-                node.parents.pop(smi)
+        if remove_neighbors: 
+            for node in self.reaction_nodes_only(): 
+                if smi in node.parents: 
+                    node.parents.pop(smi)
+                if smi in node.children: 
+                    node.parents.pop(smi)
 
         return         
     
@@ -326,7 +328,7 @@ class RouteGraph:
     
     def non_dummy_nodes(self) -> List[ReactionNode]: 
         """ Returns list of reaction nodes that are not dummy reactions """
-        return [node for node in self.reaction_nodes_only() if not node.dummy]
+        return [node for node in self.reaction_nodes.values() if not node.dummy]
     
     def child_of_dummy(self, dummy_node_id: str) -> str: 
         """ Returns the ID corresponding to the starting material node that is produced by the dummy reaction """

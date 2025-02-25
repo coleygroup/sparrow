@@ -256,7 +256,10 @@ class LinearSelector(Selector):
         return
     
     def optimize(self, output_dir=None):
-        print("Solving optimization problem...")
+
+        # self.problem.writeMPS(self.dir/'chkpts'/'problem.mps')
+
+        print("Solving optimization problem ...")
         opt_start = time.time()
         if self.solver == 'GUROBI' or self.solver == 'gurobi': 
             self.problem.solve(GUROBI(timeLimit=self.max_seconds))
