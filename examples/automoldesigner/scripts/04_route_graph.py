@@ -53,7 +53,6 @@ targets_df = targets_df[['Neutral SMILES', 'Activity probability', 'Closest know
 targets_df = targets_df.rename(columns={
     'Neutral SMILES': 'SMILES', 
     'Activity probability': 'Reward', 
-    'Closest known molecule': 'Cluster'
 })
 targets_df.to_csv('examples/automoldesigner/targets.csv', index=False)
 
