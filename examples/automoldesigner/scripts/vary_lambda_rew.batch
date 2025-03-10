@@ -1,0 +1,14 @@
+#!/bin/bash
+#SBATCH -J sparrow
+#SBATCH -o examples/automoldesigner/logs/vary_lambda_rew.out
+#SBATCH -e examples/automoldesigner/logs/vary_lambda_rew.err
+
+#SBATCH -c 48                    # number of cpus
+#SBATCH -t 1-00:00
+#SBATCH -p xeon-p8    # Partition to submit to
+
+module add anaconda/2023a
+module load gurobi/gurobi-1102 
+source activate sparrow
+
+python examples/automoldesigner/scripts/screen_lambda_rew.py
