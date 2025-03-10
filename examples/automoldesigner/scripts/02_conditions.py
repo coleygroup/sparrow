@@ -8,8 +8,8 @@ import requests
 from pathlib import Path 
 from tqdm import tqdm 
 
-HOST = "3.144.172.38"
-PORT = "9100"
+HOST = "" # rename with askcos host
+PORT = "" # rename with port 
 
 # functions, templates 
 query_template = {
