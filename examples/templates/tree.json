@@ -1,0 +1,42 @@
+{
+	"Compound Nodes": [
+        {
+            "smiles": "O=C(O)[C@@H]1C[C@H](O)CN1",
+            "buyable": true,
+            "cost_per_g": 1
+        },
+        {
+            "smiles": "O=C(O)[C@@H]1C[C@H](O)CN1C(=O)OCc1ccccc1",
+            "buyable": false
+        },
+        {
+            "smiles": "O=C(Cl)OCc1ccccc1",
+            "buyable": true,
+            "cost_per_g": 1
+        },
+		{
+			"smiles": "O=C(OCc1ccccc1)N1C[C@@H](O)C[C@H]1CO",
+			"buyable": false
+		}
+    ],
+    "Reaction Nodes": [
+		{
+			"smiles": "O=C(Cl)OCc1ccccc1.O=C(O)[C@@H]1C[C@H](O)CN1>>O=C(O)[C@@H]1C[C@H](O)CN1C(=O)OCc1ccccc1",
+			"condition": [
+				[
+					"[Na+].[OH-]"
+				]
+			],
+			"score": 0.99
+		},
+		{
+			"smiles": "O=C(O)[C@@H]1C[C@H](O)CN1C(=O)OCc1ccccc1>>O=C(OCc1ccccc1)N1C[C@@H](O)C[C@H]1CO",
+			"condition": [
+				[
+					"C1CCOC1"
+				]
+			],
+			"score": 0.97
+		}
+    ]
+}

@@ -77,8 +77,8 @@ def neutralize_atoms(mol):
     return mol
 
 def main():
-    HOST = "18.223.238.150"
-    PORT = "9100"
+    HOST = "" # insert host address
+    PORT = "" # insert port
     output_dir = Path('examples/automoldesigner/trees')
     output_dir.mkdir(exist_ok=True, parents=True)
 

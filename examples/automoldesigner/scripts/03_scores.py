@@ -8,8 +8,8 @@ import requests
 from pathlib import Path 
 from tqdm import tqdm 
 
-HOSTS = ["0.0.0.0", "13.58.45.234"]
-PORT = "9100"
+HOSTS = ["", ""] # add host address(es)
+PORT = "" # add port, assumes same port for all addresses
 batch_sizes = [8, 8] 
 host_batch = [i for h, c in zip(HOSTS, batch_sizes) for i in [h]*c]
 
