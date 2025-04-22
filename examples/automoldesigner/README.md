@@ -15,7 +15,7 @@ The general workflow for this case study follows these steps, using the specifie
 5. Eliminate any node _not_ within a distance of 16 from at least one candidate and assign buyability according to Enamine's building block database ([05_costs_and_prune.py](scripts/05_costs_and_prune.py))
 6. Perform the SPARROW runs defined in [cmd_list.txt](scripts/cmd_list.txt) ([run_cmds.batch](scripts/run_cmds.batch) or [run_cmds.py](scripts/run_cmds.py))
 
-All data from steps 1-5 is included in the [trees_w_costs.json.gz](chkpts/trees_w_costs.json.gz) file. Simply decompress this file and begin running SPARROW, after following the installation instructions in [main README](../../README.md). 
+All data from steps 1-5 is included in the [trees_w_costs.json.gz](data/trees_w_costs.json.gz) file. Simply decompress this file and begin running SPARROW, after following the installation instructions in [main README](../../README.md). 
 
 To obtain results that depend on reaction classes, use NameRxn to classify all reactions and store results in a csv file following [this template](../templates/reaction_classes.csv). The commands in [cmd_list.txt](scripts/cmd_list.txt) assume this file is named ``reaction_classes.csv`` and is in the [chkpts](chkpts) directory. 
 
