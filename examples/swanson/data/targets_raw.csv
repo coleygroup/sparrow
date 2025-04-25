@@ -1,0 +1,151 @@
+SMILES,Reward,model 
+O=C(c1cc(Br)cn(C2CC2)c1=O)N1CCN(c2c(F)cc(F)cc2F)CC1,0.846949774,chemprop
+O=S(=O)(c1ccc(F)cc1)C(F)NCc1cc(F)cc(F)c1O,0.845469594,chemprop
+Fc1cc(F)c(N2CCN(Cc3cccc(C4(C(F)(F)F)N=N4)c3)CC2)c(F)c1,0.843733734,chemprop
+C=CS(=O)(=O)C(F)(F)N1CCN(C)c2cccc(F)c21,0.83083953,chemprop
+O=S(=O)(c1ccc(N2CCN(c3c(F)cc(F)cc3F)CC2)cc1)C(F)F,0.82185562,chemprop
+O=S(=O)(c1ccc(N2CCN(c3c(F)cc(F)cc3F)CC2)cc1)C(F)(F)Cl,0.817698988,chemprop
+Fc1cc(F)c(N2CCN(c3cc(C4CC4)nc4c(Br)cccc34)CC2)c(F)c1,0.817264336,chemprop
+CC(CN1CCc2cc(F)cc(F)c21)C1CCC1,0.817192328,chemprop
+O=S(=O)(c1cccc(CN2CCN(c3c(F)cc(F)cc3F)CC2)c1)C(F)(F)F,0.794482599,chemprop
+CC1(C)CCN(C(=O)CN2C(=O)C(F)(F)Oc3ccccc32)CC(C)(C)S1(=O)=O,0.778808479,chemprop
+O=S(=O)(c1ccc(C2(C(F)(F)F)N=N2)cc1)N1CCN(c2c(F)cc(F)cc2F)CC1,0.77705658,chemprop
+O=S(=O)(c1ccccc1N1CCN(c2c(F)cc(F)cc2F)CC1)C(F)(F)F,0.766239031,chemprop
+CC1(C)CCN(C(=O)c2cc(F)c(N3CCOCC3)c(F)c2)CC(C)(C)S1(=O)=O,0.76421914,chemprop
+O=[N+]([O-])c1cc(S(=O)(=O)C(F)(F)F)ccc1N1CCN(c2c(F)cc(F)cc2F)CC1,0.753584766,chemprop
+O=C(NC(C(F)F)C1CC1)N1CCN(c2c(F)cc(F)cc2F)CC1,0.752544448,chemprop
+C=CS(=O)(=O)c1ccc(N2CCN(c3cc(F)c(O)c(F)c3)CC2)cc1,0.751626557,chemprop
+O=C(Nc1ccc(C2(C(F)(F)F)N=N2)cc1)N1CCN(c2c(F)cc(F)cc2F)CC1,0.748605479,chemprop
+O=C(OC(F)(F)C1(c2cccc(CBr)c2)N=N1)c1ccccc1S(=O)(=O)C(F)(F)F,0.747728165,chemprop
+CC1CN(c2cc3nccc(Cl)c3cc2F)CC(C)S1=O,0.74481315,chemprop
+O=S(=O)(c1ccc(F)cc1)C(F)(F)N1CC2(CCC2)c2c(F)cccc21,0.739125347,chemprop
+Fc1cccc2cc(Br)c(N3CCC3CC3CC3)nc12,0.736651266,chemprop
+O=c1c(N2CC(C3CCCC3)C2)c(Cl)cnn1-c1cccc(C(F)(F)F)c1,0.731187543,chemprop
+O=S(=O)(c1ccc(F)cc1)C(F)(F)NC(C1CCCC1)C1CCCC1,0.729690784,chemprop
+O=C1C(Br)CCN1c1c(F)cccc1N1CCCc2cc(F)cc(F)c21,0.723632795,chemprop
+CSc1ccc(CN(CC(F)F)CC2CCC2)cc1,0.720589092,chemprop
+O=S(=O)(c1cc(N2CCN(c3c(F)cc(F)cc3F)CC2)ccc1F)C(F)(F)F,0.718809875,chemprop
+C=CS(=O)(=O)c1cccc(N2CCN(c3c(F)cccc3F)CC2)c1,0.710759354,chemprop
+O=c1c(N2CCC(Cc3ccc(C(F)F)cc3)C2)nccn1C1CC1,0.701226395,chemprop
+O=C(c1cc(S(=O)(=O)C(F)(F)F)ccc1F)N1CCN(c2c(F)cc(F)cc2F)CC1,0.697042643,chemprop
+O=S(=O)(c1ccccc1NCc1cc(F)cc(F)c1O)C(F)(F)F,0.690584073,chemprop
+O=C(CN1C(=O)C(F)(F)Oc2ccccc21)N1CC(C2(C(F)(F)F)N=N2)C1,0.686976089,chemprop
+CC(C)(C)CCCN(Cc1cccc(C(F)(F)F)c1)Cc1cccc(C(F)(F)F)c1,0.682695095,chemprop
+C=CCCCCCCCNc1ccc(S(=O)(=O)C(F)(F)F)cc1,0.68230577,chemprop
+O=[N+]([O-])c1cc(S(=O)(=O)C(F)(F)F)ccc1NCCN=S(=O)(c1ccccc1)C(F)(F)F,0.677529624,chemprop
+O=C(c1cccc(S(=O)(=O)C(F)(F)F)c1)N1CCN(c2ccccc2S(=O)(=O)C(F)(F)F)CC1,0.67530753,chemprop
+N=S(=O)(c1ccc(F)cc1)C(F)(F)NCCOc1ccc(S(=O)(=O)C(F)(F)F)cc1,0.674501267,chemprop
+CCCN(c1ccc(S(=O)(=O)C(F)(F)F)cc1)c1nnc(S)s1,0.651373998,chemprop
+C=CCN(Cc1ccccc1)c1ccc(S(=O)(=O)C(F)(F)Cl)cc1,0.647848576,chemprop
+C=CCC(C)(CO)CNc1cnc2c(F)cccc2n1,0.645270897,chemprop
+CCN(C(=O)c1cccc(S(=O)(=O)C(F)(F)F)c1)c1ccc(S(=O)(=O)C(F)(F)F)cc1,0.64402107,chemprop
+COc1cccc(F)c1N1CCN(C(=O)c2cccc(S(=O)(=O)C(F)(F)F)c2)CC1,0.639366415,chemprop
+CC(C)(C)OC(=O)CN(Cc1ccc(CF)cc1)CC1CC1,0.637355193,chemprop
+CCN(CCC1CC1)c1ccccc1S(=O)(=O)C(F)(F)Cl,0.631981324,chemprop
+Cc1c(Br)c(=O)c(C(=O)N2CC(C)S(=O)C(C)C2)cn1C1CC1,0.631113301,chemprop
+CCc1nc(C(NC(=O)OC(C)(C)C)C(=O)N2CCCc3cc(F)cc(Cl)c32)cs1,0.62593229,chemprop
+Fc1ccccc1CN(CCCCC1CC1)CC1CC1,0.61623421,chemprop
+CC(c1ccc(C(F)(F)F)cc1)N(Cc1ccc(F)cc1)CC1CC1,0.585273834,chemprop
+O=C(CN1C(=O)C(F)(F)Oc2ccccc21)N1CCC(CC2(C(F)(F)F)N=N2)C1,0.581864881,chemprop
+O=C(c1c[nH]c2c(Cl)cc(Br)cc2c1=O)N1CCN(c2c(F)cncc2F)CC1,0.581613289,chemprop
+CC(C)C(NC(=O)c1cc(Br)cn(C2CC2)c1=O)C(NC(=O)c1cc(F)c(N2CCOCC2)c(F)c1)C1CCCCC1,0.578542305,chemprop
+CC(C)(C)OC(=O)N(CC(N)(CO)CO)C(=O)Cc1ccccc1S(=O)(=O)C(F)F,0.817955279,chemprop-rdkit
+O=S(=O)(c1ccc(F)cc1)C(F)(Br)NCC(C1CCCC1)C1CCCC1,0.794060206,chemprop-rdkit
+CC(C)(C)CCCCCNC(CC1CCCC1)c1ccc(Oc2ccccc2)cc1,0.761220239,chemprop-rdkit
+CC(C)(C)CN(CC(=O)OC(C)(C)C)Cc1cccc(S(=O)(=O)C(F)(F)F)c1,0.742936448,chemprop-rdkit
+O=S(=O)(c1ccc(NC(C2CCCC2)C2CCCC2)cc1)C(F)(F)F,0.714619718,chemprop-rdkit
+COC(=O)C12CN(c3ncccc3C(=O)O)CC1S(=O)(=O)c1ccccc12,0.708731234,chemprop-rdkit
+C=CS(=O)(=O)C(F)(F)NC(c1cccc(C(F)(F)F)c1)C1CC1,0.704085936,chemprop-rdkit
+CC1(C)CC(CNC(F)(F)S(=O)(=O)c2ccc(Br)cc2)CC(C)(C)C1,0.701659413,chemprop-rdkit
+Brc1cccc(CCCNC2CCc3cccc4cccc2c34)c1,0.700753176,chemprop-rdkit
+O=S(=O)(c1ccccc1NC1CCCCCCCC1)C(F)(F)Cl,0.690758672,chemprop-rdkit
+O=S(=O)(c1ccccc1F)C(F)(Cl)NC1CCCCCCCC1,0.683379263,chemprop-rdkit
+CC(C)(C)CN(CC(=O)OC(C)(C)C)C(F)(F)S(=O)(=O)c1cccc(CBr)c1,0.671509592,chemprop-rdkit
+COc1cccc(C2(NCCCCCCSc3ccccc3OC(C)=O)CCCCC2)c1,0.666307732,chemprop-rdkit
+O=S(=O)(c1ccc(NCC2(c3cccc(C(F)(F)F)c3)CCC2)cc1)C(F)F,0.665320362,chemprop-rdkit
+CCCc1cccc(CNC(c2cccc(C(F)(F)F)c2)C2CCCCC2)n1,0.647353768,chemprop-rdkit
+c1ccc(CN(CCN(Cc2ccccn2)CC2CCC(c3ccccc3)CC2)Cc2ccccc2)cc1,0.616948152,chemprop-rdkit
+O=S(=O)(c1ccccc1F)C(F)(F)NCC1(c2cccc(C(F)(F)F)c2)CCCC1,0.607598175,chemprop-rdkit
+Cc1cc(SC(C)(C)C)ccc1NC(=O)C1CN(C(=O)OC(C)(C)C)CC(C)(C)S1(=O)=O,0.606890091,chemprop-rdkit
+O=C(NCCCCc1ccc(C(F)(F)F)cc1)NCC1(c2cc(F)cc(C(F)(F)F)c2)CC1,0.590765069,chemprop-rdkit
+O=S(=O)(c1cc(NCC2(c3cccc(C(F)(F)F)c3)CCCC2)ccc1F)C(F)(F)F,0.589898106,chemprop-rdkit
+CC(C)(C)Oc1ccc(CNC(F)(Cl)S(=O)(=O)c2ccccc2F)c(C(F)(F)F)c1,0.588143826,chemprop-rdkit
+O=S(=O)(c1ccc(NCCOc2ccc(Br)cc2C(F)(F)F)cc1)C(F)(F)F,0.58677622,chemprop-rdkit
+COc1ccc(C(NC[Si](C)(C)c2ccccc2)c2ccc(C(F)(F)F)cc2)cc1,0.57032147,chemprop-rdkit
+O=S(=O)(c1ccccc1F)C(F)NCC(CCO)c1ccc(C(F)(F)F)cc1,0.560683253,chemprop-rdkit
+CC(C)(C)Sc1ccc(Nc2ccccc2S(=O)(=O)C(F)(F)Cl)cc1,0.555421642,chemprop-rdkit
+CC(C)(Cc1ccc2c(c1)CCCC2)NC(F)(F)S(=O)c1ccccc1F,0.542659619,chemprop-rdkit
+O=S(=O)(c1ccc(F)cc1)C(F)(Br)NC1CC(Cn2cccn2)C1,0.535392271,chemprop-rdkit
+O=S(=O)(c1cc(F)ccc1NCc1ccccc1O)C(F)(F)F,0.524794729,chemprop-rdkit
+CC1(c2ccc(C(F)(F)F)cc2)CCN(c2ccc(S(=O)(=O)C(F)(F)F)cc2)C1,0.519362247,chemprop-rdkit
+CN(CCCCCCCCCC(=O)OC(C)(C)C)Cc1ccc(Oc2ccc(Cl)c(Cl)c2)cc1Br,0.518677516,chemprop-rdkit
+CC(C)(C)OC(=O)c1cccc(NC(CC2CCCC2)CC2CCCC2)n1,0.506271833,chemprop-rdkit
+O=C(NCCCn1ccc2ccccc21)NCc1ccc(O)c(Br)c1,0.505128026,chemprop-rdkit
+O=S(=O)(c1cc(NCCN=S(=O)(c2ccccc2)C(F)(F)F)ccc1F)C(F)(F)F,0.489360609,chemprop-rdkit
+O=S(=O)(c1ccccc1F)C(F)(Cl)NCc1ccc2c(n1)CCC2,0.483279702,chemprop-rdkit
+CC(Nc1ccccc1S(=O)(=O)C(F)(F)F)C(O)c1c(F)cccc1Cl,0.479493728,chemprop-rdkit
+O=C(NC(CC1CCCC1)CC1CCCC1)NC1(c2ccc(C(F)(F)F)cc2)CCC1,0.471675008,chemprop-rdkit
+O=S(=O)(N=S(=O)(c1ccccc1)C(F)(F)F)N1CCC(CCc2ccccc2C(F)(F)F)CC1,0.45400057,chemprop-rdkit
+CC(C)(C)OC(=O)N1CC(C(=O)NCc2cccc(C3(C(F)(F)F)N=N3)c2)(S(C)(=O)=O)C1,0.452150655,chemprop-rdkit
+Cn1cc(Br)c(=O)c(C(=O)N2CCN(c3ccccc3S(=O)(=O)C(F)(F)F)CC2)c1,0.442157096,chemprop-rdkit
+CN(Cc1cc(F)cc(C(F)(F)F)c1)c1ccc(S(=O)(=O)C(F)(F)F)cc1,0.433782492,chemprop-rdkit
+CCCCc1cc(NCCN2c3ccccc3N(C)S2(=O)=O)ccn1,0.42911351,chemprop-rdkit
+CC(C)(C)OC(=O)C1(C(=O)NCc2ccc(C3(C(F)(F)F)N=N3)cc2)CCCC1,0.403378332,chemprop-rdkit
+CC(C)CSC(CNC(F)S(=O)(=O)c1ccc(F)cc1)c1cccc(Cl)c1,0.37339911,chemprop-rdkit
+COC(CNc1ccc(S(=O)(=O)C(F)(F)F)cc1[N+](=O)[O-])c1ccccc1F,0.323639459,chemprop-rdkit
+Cc1nc(N2CCN(C(=O)OC(C)(C)C)CC2)sc1C(=O)OC1(F)Oc2cccc(CCl)c2O1,0.318202718,chemprop-rdkit
+O=S(=O)(Oc1cc2ccccc2cn1)C(F)(F)NCC1(c2cccc(C(F)(F)F)c2)CCCC1,0.283110197,chemprop-rdkit
+CCc1ccccc1C(F)(F)C(=O)N(N)C(=O)C(F)(F)Oc1ccccc1,0.280392953,chemprop-rdkit
+O=C(OC(F)(F)C1(c2cccc(CBr)c2)N=N1)c1nc(C2CC2)n2ccccc12,0.278643538,chemprop-rdkit
+CC(C)Sc1ncccc1C(=O)N(C(=O)CC1CCCc2ccccc21)C(CN)C1CCCC1,0.257671015,chemprop-rdkit
+CCc1ccc(CNc2ccc([N+](=O)[O-])c(OC(C)(C)C)c2)c(F)c1,0.244497892,chemprop-rdkit
+O=C(Nc1c(Br)cc(Cl)c(Cl)c1Cl)c1c(Cl)c(Cl)cc(Cl)c1Cl,0.31645,random forest
+BrCC1(N2CCN(Cc3ccc(-c4cccc(Br)c4)s3)CC2)CC1,0.302266667,random forest
+CC(CCC(F)(F)F)(NCc1ccc2ccccc2c1Br)c1ccccc1,0.28775,random forest
+CC(Cc1ccccc1C(F)(F)F)NC1(CCc2ccccc2)CCCCC1,0.280666667,random forest
+CCCN(Cc1ccc(CO[Si](C)(C)C(C)(C)C)cc1)C(CCc1cccs1)c1ccc(Br)cc1,0.262358333,random forest
+Clc1cccc(C(NCC23CCC(CC2)CC3)c2cccc(Cl)c2)c1,0.230833333,random forest
+CCc1ccc(C(CC(C)C)NC(Cc2ccccc2)C23CC4CC(CC(C4)C2)C3)cc1,0.228141667,random forest
+FC(F)(F)Oc1ccccc1C1(F)CCN(c2cc(C(F)(F)F)ncc2Br)CC1,0.225235714,random forest
+CN1CCN(c2c(CBr)ccc3ccccc23)c2ccc(Br)cc21,0.2182,random forest
+OC1(C(F)(F)F)CC2(CCN(C(F)(C(F)(F)F)C34CC(I)(C3)C4)CC2)C1,0.2165,random forest
+O=S(=O)(c1cc(F)ccc1N1CC(C(F)(F)F)C(C(F)(F)F)C1)C(F)(F)F,0.216166667,random forest
+CC(C)C(Nc1ccc(F)c(C(F)(F)F)c1)c1ccc(C2CCCCC2)cc1,0.205066667,random forest
+O=S(=O)(NC(c1ccc(OC(F)(F)F)cc1)C(F)(F)F)c1cc(C(F)(F)F)cc(C(F)(F)F)c1,0.203,random forest
+Fc1cccc(C(F)(F)N(Cc2cccc(C(F)(F)F)c2)Cc2cccc(C(F)(F)F)c2)c1F,0.201416667,random forest
+CCCC(Cc1ccc(C(F)(F)F)cc1)N(Cc1cccc(C)c1)Cc1sccc1C,0.200109524,random forest
+O=C(NC1CCS(=O)(=O)C12CN(C(=O)C1(F)CS(=O)(=O)CC13COC3)C2)c1coc(OCC(F)(F)F)n1,0.1979,random forest
+ClCCSc1ccc(N2CCCCCNCCCCCNCCCCC2)cc1,0.193916667,random forest
+COC(=O)C1(F)CN(c2cc(C)c(F)cc2[N+](=O)[O-])CC12CCOCC2,0.187833333,random forest
+Cc1cccc(N2CCN(CCN(Cc3ccc4ccccc4c3Br)CC3CC3)CC2)c1,0.187083333,random forest
+C[Si](C)(C)CCNC(c1cc(Cl)cc(Cl)c1)C1CCCCC1,0.184833333,random forest
+O=C(OC1(F)CC12CCC(CBr)CC2)c1c(Br)ccc(F)c1OC(F)(F)F,0.184107143,random forest
+O=C(Nc1ccc(C(F)(C(F)(F)F)C(F)(F)F)cc1)C(Cc1cccc(C(F)(F)F)c1)C1CCCCC1,0.184083333,random forest
+CCC1CCc2sc(C(=O)N3CCCC3CCC3CCCCN3C(=O)c3sc4nc(C)nc(N5CCCCC5)c4c3C)cc2C1,0.183416667,random forest
+Cc1ccc(C(=O)N2CCN(CCN3CCN(C(=O)C45COCCC4(F)CN(C(=O)OC(C)(C)C)C5)CC3)CC2)cc1S(=O)(=O)NC1CCCC1,0.183107143,random forest
+O=C(Nc1nc2ccc(S(F)(F)(F)(F)F)cc2s1)C(F)(F)c1ccc(OC(F)(F)F)c(Br)c1,0.180714286,random forest
+O=C(Nc1ccccc1Oc1ccccc1)C(F)(OC(F)(F)C(F)(F)C(F)(F)F)C(F)(F)F,0.177083333,random forest
+CC(C)(C)OC(=O)N1CC2(COC2)C(F)(C(=O)N(C(=O)C(F)(F)F)C2CCC(C(F)(F)F)NC2)C1,0.168938889,random forest
+O=C(c1cccc(S(=O)(=O)C(F)(F)F)c1)N(CCO)c1ccc(F)c(C(F)(F)F)c1,0.165433333,random forest
+O=C(OC1(F)CC2(COC(CI)C2)C1)c1cc(Cl)c(C(F)(F)F)c(Cl)c1,0.163654762,random forest
+O=C(OC(F)(c1ccc(CCl)s1)C(F)(F)F)c1scc(Br)c1Br,0.16225,random forest
+Cc1cc2ncc(C(=O)N3CCN(CCN4CCN(C(=O)c5cccc(C6(F)CN(C(=O)OC(C)(C)C)C6)c5)CC4)CC3)c(C(F)(F)F)n2n1,0.157416667,random forest
+Brc1ccc2c(N(Cc3ccccc3)CC3C4CC5CC(C4)CC3C5)ncc(I)c2c1,0.157225,random forest
+O=C(OCc1cccc(S(=O)(=O)C(F)(F)F)c1)c1c(C(F)(F)F)nn(CCO)c1C(F)(F)F,0.1564,random forest
+COC(=O)C12C3C4C1C1C2C3C41C(=O)N1CCC(CCN2CCN(C(=O)c3cn(C(F)(F)C(F)OC(F)(F)F)cn3)CC2)CC1,0.154308333,random forest
+Cn1nc(C(F)(F)C(F)(F)F)c(C(F)(F)F)c1C(=O)NCc1cc(OC(F)F)ccc1F,0.146015152,random forest
+O=C(NCC1CCN(C(=O)CCCC(F)(F)C(F)(F)F)CCC1(F)F)c1cnc2c(OC(F)(F)F)cccc2c1O,0.140341667,random forest
+O=C(CCl)c1cc(OC(=O)C23CC4CC(C2)CC(C(F)(F)C(F)C(F)(F)F)(C4)C3)cs1,0.139821429,random forest
+O=C(CCCC(F)(F)C(F)(F)F)NCC1CCN(C(=O)c2cnc3c(OC(F)(F)F)cccc3c2O)CCC1(F)F,0.138341667,random forest
+O=C(OC(F)(F)C1CCC(C(=O)CCl)CC1)c1csc(C(F)(F)C(F)(F)F)c1,0.138204762,random forest
+Cc1c(Br)c(=O)c(C(=O)N2CC3C4CCC(C(NC(=O)C(F)(F)C(F)(F)OC(F)(F)F)C4)C3C2)cn1C1CC1,0.136375,random forest
+O=C(OC(F)(Oc1ccc(CCl)nc1)C(F)(F)F)c1cnc(OCC(F)(F)F)c(Cl)c1,0.136369048,random forest
+FC(F)(F)C(F)(NC(CC1CCCCC1)c1cccc(I)c1)c1cccnc1Cl,0.135619048,random forest
+CC(C)OC(=O)C12CCCC1(F)CN(C(=O)OC(C)(C)C)C2,0.135333333,random forest
+CNC(CN(C(=O)OC(C)(C)C)C(=O)c1cccc(OC(F)(F)C(F)(F)F)c1)C(F)(F)C(F)(F)F,0.134166667,random forest
+C#CCOCCOCCOC(=O)COc1cccc(C(F)(F)C(F)(F)F)c1,0.1341,random forest
+CC(C)(C)CC1CN(C(=O)CCC(F)(F)c2cc(Cl)sc2Cl)CCN1C(=O)C1(F)CN(C(=O)OC(C)(C)C)CC12COC2,0.130886111,random forest
+FC(F)(c1nc(Br)sc1Br)N1CCC(C2(c3cccc(Cl)c3)CC2)CC1,0.127142857,random forest
+COC(=O)C12CCN(C(=O)OC(C)(C)C)CC1(F)CN(S(=O)(=O)CI)C2,0.12665487,random forest
+CC12CC3(C)CC(F)(C1)CC(C(=O)NC14CC(CO)(C1)OC41CCN(C(=O)C4(CNC(=O)OC(C)(C)C)CC4(F)F)CC1)(C2)C3,0.125033333,random forest
+CC(C)(C)OC(=O)NC1CCc2c(C(=O)NCC3(F)CCC(CNC(=O)c4c(O)cc(=O)n5c4CCCC5)CC3)n[nH]c2C1,0.115166667,random forest
