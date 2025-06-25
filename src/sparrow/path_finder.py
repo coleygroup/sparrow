@@ -9,6 +9,7 @@ import urllib3
 from pathlib import Path
 from typing import List, Union
 from sparrow.utils.json_utils import storage_from_api_response, save_storage_dict
+import networkx as nx 
 
 urllib3.disable_warnings()
 
@@ -25,6 +26,47 @@ class PathFinder(ABC):
     def get_save_trees() -> Path: 
         """ Stores the retrosynthesis tree object as a single json file, 
         returns the path to the file """
+
+
+def uds2conn(uds: dict, format: str = ["graph", "unified_tree","pathways"]):
+    node_dict = uds["node_dict"]
+    uuid2smiles = uds["uuid2smiles"]
+    connectivity = uds[format]
+    
+    if format == "graph":
+        node_list = [prop for _, prop in node_dict.items()]
+        data = {
+            "directed": True,
+            "multigraph": False,
+            "nodes": node_list,
+            "links": connectivity
+        }
+        graph = nx.node_link_graph(data)
+        return graph
+    elif format == "pathways":
+        pathways = []
+        for path_edges in connectivity:
+            path_node_dict = {}
+            for edge in path_edges:
+                source_uuid = edge["source"]
+                target_uuid = edge["target"]
+                source_smiles = uuid2smiles[source_uuid]
+                target_smiles = uuid2smiles[target_uuid]
+                new_source_dict = {k:v for k, v in node_dict[source_smiles].items() if k != 'id'}
+                new_target_dict = {k:v for k, v in node_dict[target_smiles].items() if k != 'id'}
+                path_node_dict[source_uuid] = new_source_dict
+                path_node_dict[target_uuid] = new_target_dict
+
+            path_node_list = [{'id': node, **prop} for node, prop in path_node_dict.items()]
+            data = {
+                "directed": True,
+                "multigraph": False,
+                "nodes": path_node_list,
+                "links": path_edges
+            }
+            # path = nx.node_link_graph(data)
+            pathways.append(data)
+        return pathways
 
 
 class AskcosAPIPlanner(PathFinder):
@@ -86,7 +128,7 @@ class AskcosAPIPlanner(PathFinder):
                     url=f"http://{self.host}/api/tree-search/mcts/call-sync-without-token",
                     json=self.params
                 ).json()
-                paths = resp["result"]["paths"]
+                paths = uds2conn(resp['result']['uds'], format='pathways') # resp["result"]["paths"]
             except ConnectionError:
                 print ("Connection Error from " + self.host)
         
